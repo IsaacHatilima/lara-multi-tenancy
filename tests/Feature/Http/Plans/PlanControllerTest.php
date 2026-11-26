@@ -247,3 +247,27 @@ test('the shared user carries no roles or permissions after the permission check
             ->missing('auth.user.permissions')
             ->missing('auth.user.roles'));
 });
+
+test('the create form offers every plan to start from, the intervals and the next display order', function () {
+    Plan::factory()->create(['code' => 'basic', 'sort_order' => 0]);
+    Plan::factory()->custom()->create(['code' => 'acme', 'sort_order' => 4]);
+    Plan::factory()->inactive()->create(['code' => 'pro', 'sort_order' => 1]);
+
+    $this->actingAs(planManager())
+        ->get(route('plans.create'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('plans/create')
+            ->has('plans', 3)
+            ->where('plans.0.code', 'basic')
+            ->where('plans.1.code', 'pro')
+            ->where('plans.2.code', 'acme')
+            ->where('intervals', BillingInterval::options())
+            ->where('defaultSortOrder', 5));
+});
+
+test('without plans the create form starts the display order at 0', function () {
+    $this->actingAs(planManager())
+        ->get(route('plans.create'))
+        ->assertInertia(fn (Assert $page) => $page->component('plans/create')->where('plans', [])->where('defaultSortOrder', 0));
+});
