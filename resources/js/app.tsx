@@ -13,7 +13,7 @@ configureEcho({
 });
 
 // Shows the toasts the server flashes with Toast::...->flash().
-initNotifications({ duration: 5000, limit: 1 });
+initNotifications({ duration: 5000 });
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
