@@ -42,7 +42,9 @@ final class PlanController extends Controller
     {
         $plan = $createPlan->handle(CreatePlanData::fromRequest($request));
 
-        Toast::success('Plan created.')->flash();
+        Toast::success('Plan created.')
+            ->description('Choose its features below.')
+            ->flash();
 
         return to_route('plans.edit', $plan);
     }

@@ -41,7 +41,9 @@ final class FeatureController extends Controller
     {
         $createFeature->handle(CreateFeatureData::fromRequest($request));
 
-        Toast::success('Feature created.')->flash();
+        Toast::success('Feature created.')
+            ->description('Include it in a plan from that plan\'s edit page.')
+            ->flash();
 
         return to_route('features.index');
     }
@@ -67,7 +69,9 @@ final class FeatureController extends Controller
     {
         $deleteFeature->handle($feature);
 
-        Toast::success('Feature deleted.')->flash();
+        Toast::success('Feature deleted.')
+            ->description('It was removed from every plan that included it.')
+            ->flash();
 
         return to_route('features.index');
     }
