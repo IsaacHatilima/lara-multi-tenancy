@@ -1,14 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Plans;
 
-class ListPlansAction
+use App\Data\Plans\PlanResource;
+use App\Models\Plan;
+use App\Repositories\Billing\ListPlansRepository;
+
+final readonly class ListPlansAction
 {
+    public function __construct(
+        private ListPlansRepository $listPlans,
+    ) {
+    }
+
     /**
-     * Create a new class instance.
+     * @return list<PlanResource>
      */
-    public function __construct()
+    public function handle(): array
     {
-        //
+        return array_values($this->listPlans->handle()
+            ->map(fn (Plan $plan): PlanResource => PlanResource::fromModel($plan))
+            ->all());
     }
 }
