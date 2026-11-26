@@ -12,5 +12,5 @@ Route::middleware([
     'verified',
     PermissionMiddleware::using(CentralPermission::ManagePlans),
 ])->group(function () {
-    Route::resource('plans', PlanController::class)->only(['index', 'create']);
+    Route::resource('plans', PlanController::class)->only(['index', 'create', 'store']);
 });
