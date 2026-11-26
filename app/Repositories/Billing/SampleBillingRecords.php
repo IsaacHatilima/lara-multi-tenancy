@@ -23,17 +23,11 @@ final class SampleBillingRecords
 
     private const int MONTHS_BILLED = 8;
 
-    /**
-     * @var list<array{name: string, amountMinor: int}>
-     */
     private const array PLANS = [
         ['name' => 'Basic', 'amountMinor' => 1900],
         ['name' => 'Pro', 'amountMinor' => 4900],
     ];
 
-    /**
-     * @var list<string>
-     */
     private const array CARD_BRANDS = ['Visa', 'Mastercard', 'American Express'];
 
     public static function subscription(Tenant $tenant): ?SubscriptionRecord
