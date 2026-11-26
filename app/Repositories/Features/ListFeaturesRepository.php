@@ -19,14 +19,16 @@ final readonly class ListFeaturesRepository
     public function handle(): Collection
     {
         return Feature::query()
-            ->with(['plans' => fn ($query) => $query
-                ->where('plans.status', PlanStatus::Active)
-                ->where('plans.deployment', PlanDeployment::Hosted)
-                ->with('tenant:id,name')
-                ->orderBy('plans.sort_order')
-                ->orderBy('plans.name')
-                ->orderBy('plans.id')
-                ->select(['plans.id', 'plans.code', 'plans.name', 'plans.tenant_id'])])
+            ->with([
+                'plans' => fn ($query) => $query
+                    ->where('plans.status', PlanStatus::Active)
+                    ->where('plans.deployment', PlanDeployment::Hosted)
+                    ->with('tenant:id,name')
+                    ->orderBy('plans.sort_order')
+                    ->orderBy('plans.name')
+                    ->orderBy('plans.id')
+                    ->select(['plans.id', 'plans.code', 'plans.name', 'plans.tenant_id']),
+            ])
             ->orderBy('key')
             ->get(['id', 'key']);
     }
