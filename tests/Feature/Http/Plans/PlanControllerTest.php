@@ -10,6 +10,7 @@ use App\Models\PlanFeature;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Events\TenantCreated;
 
@@ -192,3 +193,57 @@ test('invalid input is refused on its own field', function (string $field, strin
     'start from a plan that does not exist' => ['start_from', '0199d1a0-0000-7000-8000-000000000000'],
     'start from a value that is not a plan id' => ['start_from', 'basic'],
 ]);
+
+test('plan managers see every hosted plan with its status, price and interval', function () {
+    $basic = Plan::factory()->create(['code' => 'basic', 'name' => 'Basic', 'price_minor' => 1900, 'currency' => 'EUR', 'sort_order' => 0]);
+    Plan::factory()->custom()->create([
+        'code' => 'acme',
+        'name' => 'Acme',
+        'tenant_id' => Tenant::factory()->create(['name' => 'Acme GmbH'])->id,
+        'price_minor' => 9900,
+        'currency' => 'USD',
+        'interval' => BillingInterval::Year,
+        'sort_order' => 1,
+    ]);
+    Plan::factory()->inactive()->create(['code' => 'pro', 'name' => 'Pro (old)', 'price_minor' => 3900, 'sort_order' => 2]);
+
+    $this->actingAs(planManager())
+        ->get(route('plans.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('plans/index')
+            ->where('canManagePlans', true)
+            ->has('plans', 3)
+            ->where('plans.0', [
+                'id' => $basic->id,
+                'code' => 'basic',
+                'name' => 'Basic',
+                'status' => 'active',
+                'statusLabel' => 'Active',
+                'price' => '€19.00',
+                'intervalLabel' => 'Monthly',
+                'tenantName' => null,
+            ])
+            ->where('plans.1.code', 'acme')
+            ->where('plans.1.tenantName', 'Acme GmbH')
+            ->where('plans.1.price', '$99.00')
+            ->where('plans.1.intervalLabel', 'Yearly')
+            ->where('plans.2.code', 'pro')
+            ->where('plans.2.status', 'inactive')
+            ->where('plans.2.statusLabel', 'Inactive'));
+});
+
+test('without plans the list is empty', function () {
+    $this->actingAs(planManager())
+        ->get(route('plans.index'))
+        ->assertInertia(fn (Assert $page) => $page->component('plans/index')->where('plans', []));
+});
+
+test('the shared user carries no roles or permissions after the permission checks', function () {
+    $this->actingAs(planManager())
+        ->get(route('plans.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('auth.user.email')
+            ->missing('auth.user.permissions')
+            ->missing('auth.user.roles'));
+});
