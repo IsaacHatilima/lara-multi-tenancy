@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\BillingInterval;
 use App\Enums\PlanDeployment;
 use App\Enums\PlanStatus;
+use Carbon\CarbonImmutable;
 use Database\Factories\PlanFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,7 +16,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Carbon;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
 /**
@@ -37,8 +37,8 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
  * @property int $sort_order
  * @property int|null $created_by
  * @property int|null $updated_by
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  *
  * @property-read Tenant|null $tenant
  * @property-read Collection<int, Feature> $features
