@@ -18,4 +18,28 @@ final readonly class SubscriptionState
         public ?CarbonImmutable $graceEndsAt,
     ) {
     }
+
+    /**
+     * @param  array{status: string, trialEndsAt: string|null, graceEndsAt: string|null}  $state
+     */
+    public static function fromArray(array $state): self
+    {
+        return new self(
+            status: SubscriptionStatus::from($state['status']),
+            trialEndsAt: $state['trialEndsAt'] === null ? null : CarbonImmutable::parse($state['trialEndsAt']),
+            graceEndsAt: $state['graceEndsAt'] === null ? null : CarbonImmutable::parse($state['graceEndsAt']),
+        );
+    }
+
+    /**
+     * @return array{status: string, trialEndsAt: string|null, graceEndsAt: string|null}
+     */
+    public function toArray(): array
+    {
+        return [
+            'status' => $this->status->value,
+            'trialEndsAt' => $this->trialEndsAt?->toIso8601String(),
+            'graceEndsAt' => $this->graceEndsAt?->toIso8601String(),
+        ];
+    }
 }

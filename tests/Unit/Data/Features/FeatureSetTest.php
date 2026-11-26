@@ -37,6 +37,44 @@ function featureSet(array $overrides = []): FeatureSet
     ]);
 }
 
+test('equal sets share an eight character version whatever order their items came in', function () {
+    $reversed = featureSet(['items' => array_reverse(featureItems(), true)]);
+
+    expect(featureSet()->version())->toMatch('/^[0-9a-f]{8}$/')
+        ->and($reversed->version())->toBe(featureSet()->version());
+});
+
+test('a different plan gives a different version', function (array $overrides) {
+    expect(featureSet($overrides)->version())->not->toBe(featureSet()->version());
+})->with([
+    'name' => [['planName' => 'Basic plus']],
+    'code' => [['planCode' => 'basic-plus']],
+]);
+
+test('a different subscription state gives a different version', function (array $changed, array $original) {
+    expect(featureSet($changed)->version())->not->toBe(featureSet($original)->version());
+})->with([
+    'status' => [fn () => ['subscription' => new SubscriptionState(SubscriptionStatus::Active, trialState()->trialEndsAt, trialState()->graceEndsAt)], []],
+    'trial end' => [fn () => ['subscription' => new SubscriptionState(SubscriptionStatus::Trialing, null, trialState()->graceEndsAt)], []],
+    'grace end' => [fn () => ['subscription' => new SubscriptionState(SubscriptionStatus::Trialing, trialState()->trialEndsAt, CarbonImmutable::parse('2026-12-09 10:00:00'))], []],
+    'none to one' => [[], ['subscription' => null]],
+]);
+
+test('flipping read-only gives a different version', function () {
+    expect(featureSet(['readOnly' => true])->version())->not->toBe(featureSet()->version());
+});
+
+test('a different item gives a different version', function (FeatureItem $attachments) {
+    $changed = featureSet(['items' => [...featureItems(), 'attachments' => $attachments]]);
+
+    expect($changed->version())->not->toBe(featureSet()->version());
+})->with([
+    'enabled' => [fn () => new FeatureItem(enabled: false, limit: 15, unit: LimitUnit::Megabytes, availableOn: [])],
+    'limit' => [fn () => new FeatureItem(enabled: true, limit: 50, unit: LimitUnit::Megabytes, availableOn: [])],
+    'unit' => [fn () => new FeatureItem(enabled: true, limit: 15, unit: LimitUnit::Count, availableOn: [])],
+    'available on' => [fn () => new FeatureItem(enabled: true, limit: 15, unit: LimitUnit::Megabytes, availableOn: ['pro'])],
+]);
+
 test('a feature is enabled only when the plan includes it', function () {
     $set = featureSet();
 
@@ -97,3 +135,20 @@ test('the ungated set has no plan and allows every feature without a limit', fun
         ->and($set->limit('not-a-feature'))->toBeNull()
         ->and($set->allows('not-a-feature', PHP_INT_MAX))->toBeTrue();
 });
+
+test('a set turns into plain data and back unchanged', function (FeatureSet $set) {
+    $array = $set->toArray();
+
+    array_walk_recursive($array, function (mixed $value): void {
+        expect(is_string($value) || is_int($value) || is_bool($value) || $value === null)->toBeTrue();
+    });
+
+    $restored = FeatureSet::fromArray($array);
+
+    expect($restored)->toEqual($set)
+        ->and($restored->version())->toBe($set->version());
+})->with([
+    'gated with a subscription' => [fn () => featureSet()],
+    'gated without a subscription' => [fn () => featureSet(['subscription' => null, 'readOnly' => true])],
+    'ungated' => [fn () => FeatureSet::ungated()],
+]);

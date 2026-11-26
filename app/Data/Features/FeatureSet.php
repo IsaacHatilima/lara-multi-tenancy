@@ -8,6 +8,15 @@ use App\Enums\Feature;
 
 /**
  * What a tenant may use, worked out from its plan. An ungated set, for the central host and self-hosted installs, allows everything.
+ *
+ * @phpstan-type FeatureSetArray array{
+ *     gated: bool,
+ *     planName: string|null,
+ *     planCode: string|null,
+ *     subscription: array{status: string, trialEndsAt: string|null, graceEndsAt: string|null}|null,
+ *     readOnly: bool,
+ *     items: array<string, array{enabled: bool, limit: int|null, unit: string|null, availableOn: list<string>}>,
+ * }
  */
 final readonly class FeatureSet
 {
@@ -44,6 +53,32 @@ final readonly class FeatureSet
         return new self(false, null, null, null, false, $items);
     }
 
+    /**
+     * @param  FeatureSetArray  $set
+     */
+    public static function fromArray(array $set): self
+    {
+        return new self(
+            gated: $set['gated'],
+            planName: $set['planName'],
+            planCode: $set['planCode'],
+            subscription: $set['subscription'] === null ? null : SubscriptionState::fromArray($set['subscription']),
+            readOnly: $set['readOnly'],
+            items: array_map(FeatureItem::fromArray(...), $set['items']),
+        );
+    }
+
+    /**
+     * A short hash of the whole set, so equal sets share it whatever order their items were read in.
+     */
+    public function version(): string
+    {
+        $set = $this->toArray();
+        ksort($set['items']);
+
+        return substr(hash('sha256', json_encode($set, JSON_THROW_ON_ERROR)), 0, 8);
+    }
+
     public function isEnabled(string $key): bool
     {
         return ! $this->gated || ($this->items[$key]->enabled ?? false);
@@ -65,5 +100,20 @@ final readonly class FeatureSet
         $limit = $this->limit($key);
 
         return $this->isEnabled($key) && ($limit === null || $amount <= $limit);
+    }
+
+    /**
+     * @return FeatureSetArray
+     */
+    public function toArray(): array
+    {
+        return [
+            'gated' => $this->gated,
+            'planName' => $this->planName,
+            'planCode' => $this->planCode,
+            'subscription' => $this->subscription?->toArray(),
+            'readOnly' => $this->readOnly,
+            'items' => array_map(fn (FeatureItem $item): array => $item->toArray(), $this->items),
+        ];
     }
 }

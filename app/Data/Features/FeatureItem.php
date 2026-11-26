@@ -21,4 +21,30 @@ final readonly class FeatureItem
         public array $availableOn,
     ) {
     }
+
+    /**
+     * @param  array{enabled: bool, limit: int|null, unit: string|null, availableOn: list<string>}  $item
+     */
+    public static function fromArray(array $item): self
+    {
+        return new self(
+            enabled: $item['enabled'],
+            limit: $item['limit'],
+            unit: $item['unit'] === null ? null : LimitUnit::from($item['unit']),
+            availableOn: $item['availableOn'],
+        );
+    }
+
+    /**
+     * @return array{enabled: bool, limit: int|null, unit: string|null, availableOn: list<string>}
+     */
+    public function toArray(): array
+    {
+        return [
+            'enabled' => $this->enabled,
+            'limit' => $this->limit,
+            'unit' => $this->unit?->value,
+            'availableOn' => $this->availableOn,
+        ];
+    }
 }
