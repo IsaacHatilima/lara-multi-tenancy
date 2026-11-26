@@ -18,7 +18,7 @@ type Props = {
     errors: Partial<Record<string, string>>;
 };
 
-/** Every feature row, each included or not; an included feature sends its key and limit, so one left unchecked is removed. */
+/** Every feature row, each included or not. A checked feature submits its key and limit; one left unchecked is removed. */
 export function PlanFeatureFields({ features, errors }: Props) {
     if (features.length === 0) {
         return (
@@ -68,6 +68,8 @@ function PlanFeatureField({
             <div className="flex min-h-(--control-height) items-center gap-3">
                 <Checkbox
                     id={id}
+                    name={`features[${index}][key]`}
+                    value={feature.key}
                     checked={included}
                     onCheckedChange={setIncluded}
                 />
@@ -76,11 +78,6 @@ function PlanFeatureField({
                 </Label>
                 {included && (
                     <>
-                        <input
-                            type="hidden"
-                            name={`features[${index}][key]`}
-                            value={feature.key}
-                        />
                         <Input
                             name={`features[${index}][limit]`}
                             type="number"
