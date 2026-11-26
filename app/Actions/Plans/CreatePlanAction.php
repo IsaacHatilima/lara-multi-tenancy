@@ -6,8 +6,7 @@ namespace App\Actions\Plans;
 
 use App\Data\Plans\CreatePlanData;
 use App\Models\Plan;
-use App\Models\User;
-use App\Repositories\Billing\CreatePlanRepository;
+use App\Repositories\Plans\CreatePlanRepository;
 
 final readonly class CreatePlanAction
 {
@@ -16,8 +15,8 @@ final readonly class CreatePlanAction
     ) {
     }
 
-    public function handle(CreatePlanData $data, User $actor): Plan
+    public function handle(CreatePlanData $data): Plan
     {
-        return $this->createPlan->handle($data, $actor);
+        return $this->createPlan->handle($data);
     }
 }

@@ -24,7 +24,6 @@ import {
 } from '@/components/ui/table';
 import { EDGE_CELL_PADDING } from '@/lib/table-classes';
 import { create, edit } from '@/routes/plans';
-import { PlanStatusBadge } from './components/plan-status-badge';
 import type { Plan } from './types';
 
 type Props = {
@@ -52,24 +51,12 @@ export default function PlansIndex({ plans }: Props) {
                                     <TableHead className="sticky left-0 bg-card">
                                         Plan
                                     </TableHead>
-                                    <TableHead>Company</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Interval</TableHead>
-                                    <TableHead className="text-right">
-                                        Price
-                                    </TableHead>
+                                    <TableHead>Description</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {plans.map((plan) => (
-                                    <TableRow
-                                        key={plan.id}
-                                        className={
-                                            plan.status === 'inactive'
-                                                ? 'text-muted-foreground'
-                                                : undefined
-                                        }
-                                    >
+                                    <TableRow key={plan.id}>
                                         <TableCell className="sticky left-0 max-w-64 bg-card">
                                             <Link
                                                 href={edit(plan.id)}
@@ -81,17 +68,8 @@ export default function PlansIndex({ plans }: Props) {
                                                 {plan.code}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="max-w-56 truncate">
-                                            {plan.tenantName}
-                                        </TableCell>
-                                        <TableCell>
-                                            <PlanStatusBadge plan={plan} />
-                                        </TableCell>
-                                        <TableCell>
-                                            {plan.intervalLabel}
-                                        </TableCell>
-                                        <TableCell className="text-right tabular-nums">
-                                            {plan.price}
+                                        <TableCell className="max-w-96 truncate text-muted-foreground">
+                                            {plan.description}
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -122,7 +100,7 @@ function PlansEmpty() {
                 </EmptyMedia>
                 <EmptyTitle>No plans yet</EmptyTitle>
                 <EmptyDescription>
-                    A plan sets the price and features a company subscribes to.
+                    A plan sets the features a company can use.
                 </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>

@@ -5,28 +5,23 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Plans;
 
 use App\Actions\Plans\CreatePlanAction;
-use App\Actions\Plans\GetNextPlanSortOrderAction;
+use App\Actions\Plans\DeletePlanAction;
 use App\Actions\Plans\GetPlanAction;
+use App\Actions\Plans\ListPlanFeaturesAction;
 use App\Actions\Plans\ListPlansAction;
 use App\Actions\Plans\UpdatePlanAction;
 use App\Data\Plans\CreatePlanData;
 use App\Data\Plans\UpdatePlanData;
-use App\Enums\BillingInterval;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Plans\CreatePlanRequest;
 use App\Http\Requests\Plans\UpdatePlanRequest;
 use App\Models\Plan;
-use App\Models\User;
-use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 final class PlanController extends Controller
 {
-    /**
-     * List every hosted plan, public and custom, active and inactive.
-     */
     public function index(ListPlansAction $listPlans): Response
     {
         return Inertia::render('plans/index', [
@@ -34,49 +29,46 @@ final class PlanController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for a new plan, with the plans it can start from.
-     */
-    public function create(ListPlansAction $listPlans, GetNextPlanSortOrderAction $getNextSortOrder): Response
+    public function create(): Response
     {
-        return Inertia::render('plans/create', [
-            'plans' => $listPlans->handle(),
-            'intervals' => BillingInterval::options(),
-            'defaultSortOrder' => $getNextSortOrder->handle(),
-        ]);
+        return Inertia::render('plans/create');
     }
 
     /**
-     * Create an active hosted plan, recorded as created by the signed-in user.
+     * Creates the plan and opens it, where its features are chosen.
      */
-    public function store(CreatePlanRequest $request, #[CurrentUser] User $user, CreatePlanAction $createPlan): RedirectResponse
+    public function store(CreatePlanRequest $request, CreatePlanAction $createPlan): RedirectResponse
     {
-        $createPlan->handle(CreatePlanData::fromRequest($request), $user);
+        $plan = $createPlan->handle(CreatePlanData::fromRequest($request));
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan created.')]);
 
-        return to_route('plans.index');
+        return to_route('plans.edit', $plan);
     }
 
-    /**
-     * Show the form for a plan's own fields and the features it includes, with every feature row to choose from.
-     */
-    public function edit(Plan $plan, GetPlanAction $getPlan): Response
+    public function edit(Plan $plan, GetPlanAction $getPlan, ListPlanFeaturesAction $listPlanFeatures): Response
     {
         return Inertia::render('plans/edit', [
             'plan' => $getPlan->handle($plan),
+            'features' => $listPlanFeatures->handle($plan),
         ]);
     }
 
-    /**
-     * Save a plan's own fields and the features it includes, recorded as updated by the signed-in user.
-     */
-    public function update(UpdatePlanRequest $request, Plan $plan, #[CurrentUser] User $user, UpdatePlanAction $updatePlan): RedirectResponse
+    public function update(UpdatePlanRequest $request, Plan $plan, UpdatePlanAction $updatePlan): RedirectResponse
     {
-        $updatePlan->handle($plan, UpdatePlanData::fromRequest($request), $user);
+        $updatePlan->handle($plan, UpdatePlanData::fromRequest($request));
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan updated.')]);
 
         return to_route('plans.edit', $plan);
+    }
+
+    public function destroy(Plan $plan, DeletePlanAction $deletePlan): RedirectResponse
+    {
+        $deletePlan->handle($plan);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan deleted.')]);
+
+        return to_route('plans.index');
     }
 }

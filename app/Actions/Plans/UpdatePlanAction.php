@@ -6,8 +6,7 @@ namespace App\Actions\Plans;
 
 use App\Data\Plans\UpdatePlanData;
 use App\Models\Plan;
-use App\Models\User;
-use App\Repositories\Billing\UpdatePlanRepository;
+use App\Repositories\Plans\UpdatePlanRepository;
 
 final readonly class UpdatePlanAction
 {
@@ -16,8 +15,8 @@ final readonly class UpdatePlanAction
     ) {
     }
 
-    public function handle(Plan $plan, UpdatePlanData $data, User $actor): Plan
+    public function handle(Plan $plan, UpdatePlanData $data): Plan
     {
-        return $this->updatePlan->handle($plan, $data, $actor);
+        return $this->updatePlan->handle($plan, $data);
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Data\Plans;
 
-use App\Enums\Feature;
+use App\Models\Feature;
 use Spatie\LaravelData\Resource;
 
 /**
@@ -13,23 +13,27 @@ use Spatie\LaravelData\Resource;
 final class PlanFeatureResource extends Resource
 {
     public function __construct(
+        public readonly int $id,
         public readonly string $key,
-        public readonly ?string $unitLabel,
+        public readonly string $name,
+        public readonly ?string $limitUnitLabel,
         public readonly bool $included,
         public readonly ?int $limit,
     ) {
     }
 
     /**
-     * @param  array<string, int|null>  $planLimits  the features the plan includes, keyed by feature key
+     * @param  array<int, int|null>  $planLimits  the features the plan includes, keyed by feature id
      */
-    public static function fromKey(string $key, array $planLimits): self
+    public static function fromModel(Feature $feature, array $planLimits): self
     {
         return new self(
-            key: $key,
-            unitLabel: Feature::limitUnitOf($key)?->label(),
-            included: array_key_exists($key, $planLimits),
-            limit: $planLimits[$key] ?? null,
+            id: $feature->id,
+            key: $feature->key,
+            name: $feature->name,
+            limitUnitLabel: $feature->limit_unit?->label(),
+            included: array_key_exists($feature->id, $planLimits),
+            limit: $planLimits[$feature->id] ?? null,
         );
     }
 }

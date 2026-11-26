@@ -1,14 +1,17 @@
-/** FeaturePlanResource */
-export type FeaturePlan = {
-    id: string;
-    code: string;
-    name: string;
-    tenantName: string | null;
-};
+export type LimitUnit = 'megabytes' | 'count';
 
 /** FeatureResource */
 export type Feature = {
+    id: number;
     key: string;
-    unitLabel: string | null;
-    plans: FeaturePlan[];
+    name: string;
+    description: string | null;
+    limitUnit: LimitUnit | null;
+    limitUnitLabel: string | null;
+};
+
+/** LimitUnit::options() */
+export type LimitUnitOption = {
+    value: LimitUnit;
+    label: string;
 };

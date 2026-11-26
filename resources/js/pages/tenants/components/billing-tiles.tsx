@@ -66,10 +66,8 @@ function statusDetail(subscription: Subscription): string {
         case 'trialing':
             return `Trial ends ${periodEnd}`;
         case 'past_due':
-        case 'read_only':
             return 'Last charge failed';
-        case 'canceled':
-        case 'ended':
+        case 'cancelled':
             return `Ends ${periodEnd}`;
     }
 }

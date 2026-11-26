@@ -1,14 +1,19 @@
-import { Head } from '@inertiajs/react';
-import { PuzzleIcon } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Head, Link } from '@inertiajs/react';
+import { PlusIcon, PuzzleIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
     Empty,
+    EmptyContent,
     EmptyDescription,
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,
 } from '@/components/ui/empty';
-import { StackContent, StackedCard } from '@/components/ui/stacked-card';
+import {
+    StackContent,
+    StackedCard,
+    StackHeader,
+} from '@/components/ui/stacked-card';
 import {
     Table,
     TableBody,
@@ -18,6 +23,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { EDGE_CELL_PADDING } from '@/lib/table-classes';
+import { create, edit } from '@/routes/features';
 import type { Feature } from './types';
 
 type Props = {
@@ -30,7 +36,11 @@ export default function FeaturesIndex({ features }: Props) {
             <Head title="Features" />
             <h1 className="sr-only">Features</h1>
 
-            <StackedCard className="h-auto">
+            <StackedCard top className="h-auto">
+                <StackHeader className="justify-end">
+                    <NewFeatureButton />
+                </StackHeader>
+
                 <StackContent className="py-0">
                     {features.length === 0 ? (
                         <FeaturesEmpty />
@@ -42,28 +52,30 @@ export default function FeaturesIndex({ features }: Props) {
                                         Feature
                                     </TableHead>
                                     <TableHead>Limit unit</TableHead>
-                                    <TableHead>Active plans</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {features.map((feature) => (
-                                    <TableRow key={feature.key}>
+                                    <TableRow key={feature.id}>
                                         <TableCell className="sticky left-0 max-w-64 bg-card">
-                                            <span className="block truncate font-mono">
+                                            <Link
+                                                href={edit(feature.id)}
+                                                className="block truncate font-medium hover:underline"
+                                            >
+                                                {feature.name}
+                                            </Link>
+                                            <span className="block truncate font-mono text-muted-foreground">
                                                 {feature.key}
                                             </span>
                                         </TableCell>
                                         <TableCell
                                             className={
-                                                feature.unitLabel === null
+                                                feature.limitUnitLabel === null
                                                     ? 'text-muted-foreground'
                                                     : undefined
                                             }
                                         >
-                                            {feature.unitLabel ?? 'None'}
-                                        </TableCell>
-                                        <TableCell>
-                                            <FeaturePlans feature={feature} />
+                                            {feature.limitUnitLabel ?? 'None'}
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -76,26 +88,12 @@ export default function FeaturesIndex({ features }: Props) {
     );
 }
 
-function FeaturePlans({ feature }: { feature: Feature }) {
-    if (feature.plans.length === 0) {
-        return <span className="text-muted-foreground">No active plan</span>;
-    }
-
+function NewFeatureButton() {
     return (
-        <ul className="flex flex-wrap gap-1">
-            {feature.plans.map((plan) => (
-                <li key={plan.id}>
-                    <Badge variant="outline" title={plan.code}>
-                        {plan.name}
-                        {plan.tenantName && (
-                            <span className="text-muted-foreground">
-                                {plan.tenantName}
-                            </span>
-                        )}
-                    </Badge>
-                </li>
-            ))}
-        </ul>
+        <Button nativeButton={false} render={<Link href={create()} />}>
+            <PlusIcon />
+            New feature
+        </Button>
     );
 }
 
@@ -108,10 +106,13 @@ function FeaturesEmpty() {
                 </EmptyMedia>
                 <EmptyTitle>No features yet</EmptyTitle>
                 <EmptyDescription>
-                    Features come from the code. Each one appears here once it
-                    is built, and plans include it from their edit page.
+                    A feature is something a plan can include, such as
+                    messaging. Plans include features from their edit page.
                 </EmptyDescription>
             </EmptyHeader>
+            <EmptyContent>
+                <NewFeatureButton />
+            </EmptyContent>
         </Empty>
     );
 }

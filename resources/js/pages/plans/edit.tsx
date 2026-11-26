@@ -1,39 +1,30 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import PlanController from '@/actions/App/Http/Controllers/Plans/PlanController';
+import { ConfirmDeleteDialog } from '@/components/confirm-delete-dialog';
 import InputError from '@/components/input-error';
 import { SettingsSection } from '@/components/settings-section';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { index } from '@/routes/plans';
 import { PlanFeatureFields } from './components/plan-feature-fields';
-import { PlanStatusBadge } from './components/plan-status-badge';
-import type { PlanDetails } from './types';
+import { PlanFields } from './components/plan-fields';
+import type { Plan, PlanFeature } from './types';
 
 type Props = {
-    plan: PlanDetails;
+    plan: Plan;
+    features: PlanFeature[];
 };
 
-export default function EditPlan({ plan }: Props) {
+export default function EditPlan({ plan, features }: Props) {
     return (
         <>
             <Head title={plan.name} />
 
             <div className="mx-auto flex w-full max-w-160 flex-col gap-6">
                 <header className="flex flex-col gap-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <h1 className="text-xl font-semibold">{plan.name}</h1>
-                        <PlanStatusBadge plan={plan} />
-                    </div>
+                    <h1 className="text-xl font-semibold">{plan.name}</h1>
                     <p className="font-mono text-xs text-muted-foreground">
                         {plan.code}
                     </p>
-                    {plan.tenantName && (
-                        <p className="text-muted-foreground">
-                            Custom plan for {plan.tenantName}
-                        </p>
-                    )}
                 </header>
 
                 <Form
@@ -43,48 +34,8 @@ export default function EditPlan({ plan }: Props) {
                 >
                     {({ processing, errors }) => (
                         <>
-                            <SettingsSection
-                                title="Plan"
-                                description="The code, price and billing can't be changed here."
-                            >
-                                <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
-                                    <Input
-                                        id="name"
-                                        name="name"
-                                        required
-                                        autoComplete="off"
-                                        defaultValue={plan.name}
-                                    />
-                                    <InputError message={errors.name} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="description">
-                                        Description
-                                    </Label>
-                                    <Textarea
-                                        id="description"
-                                        name="description"
-                                        defaultValue={plan.description ?? ''}
-                                    />
-                                    <InputError message={errors.description} />
-                                </div>
-                                <div className="grid gap-2 sm:max-w-1/2">
-                                    <Label htmlFor="sort_order">
-                                        Display order
-                                    </Label>
-                                    <Input
-                                        id="sort_order"
-                                        name="sort_order"
-                                        type="number"
-                                        min={0}
-                                        step={1}
-                                        required
-                                        defaultValue={plan.sortOrder}
-                                        className="tabular-nums"
-                                    />
-                                    <InputError message={errors.sort_order} />
-                                </div>
+                            <SettingsSection title="Plan">
+                                <PlanFields defaults={plan} errors={errors} />
                             </SettingsSection>
 
                             <SettingsSection
@@ -92,7 +43,7 @@ export default function EditPlan({ plan }: Props) {
                                 description="What a company on this plan can use. An empty limit means unlimited."
                             >
                                 <PlanFeatureFields
-                                    features={plan.features}
+                                    features={features}
                                     errors={errors}
                                 />
                                 <InputError message={errors.features} />
@@ -113,6 +64,20 @@ export default function EditPlan({ plan }: Props) {
                         </>
                     )}
                 </Form>
+
+                <SettingsSection
+                    title="Delete plan"
+                    description="The plan and its features are removed."
+                >
+                    <div>
+                        <ConfirmDeleteDialog
+                            form={PlanController.destroy.form(plan.id)}
+                            title={`Delete ${plan.name}?`}
+                            description="The plan and the features it includes are removed. This can't be undone."
+                            confirmLabel="Delete plan"
+                        />
+                    </div>
+                </SettingsSection>
             </div>
         </>
     );

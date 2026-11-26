@@ -6,7 +6,7 @@ namespace App\Actions\Plans;
 
 use App\Data\Plans\PlanResource;
 use App\Models\Plan;
-use App\Repositories\Billing\ListPlansRepository;
+use App\Repositories\Plans\ListPlansRepository;
 
 final readonly class ListPlansAction
 {

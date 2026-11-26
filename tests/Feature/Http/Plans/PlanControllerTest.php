@@ -1,18 +1,15 @@
 <?php
 
-use App\Enums\BillingInterval;
 use App\Enums\CentralPermission;
-use App\Enums\PlanDeployment;
-use App\Enums\PlanStatus;
+use App\Enums\LimitUnit;
 use App\Models\Domain;
 use App\Models\Feature;
 use App\Models\Plan;
-use App\Models\PlanFeature;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Inertia\Testing\AssertableInertia as Assert;
-use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Events\TenantCreated;
 
@@ -30,8 +27,9 @@ dataset('plan routes', [
     'list' => ['get', 'plans.index', fn (): array => []],
     'create form' => ['get', 'plans.create', fn (): array => []],
     'store' => ['post', 'plans.store', fn (): array => []],
-    'edit' => ['get', 'plans.edit', fn (): array => [PlanFeature::factory()->create()->plan_id]],
-    'update' => ['put', 'plans.update', fn (): array => [PlanFeature::factory()->create()->plan_id]],
+    'edit' => ['get', 'plans.edit', fn (): array => [Plan::factory()->create()->id]],
+    'update' => ['put', 'plans.update', fn (): array => [Plan::factory()->create()->id]],
+    'delete' => ['delete', 'plans.destroy', fn (): array => [Plan::factory()->create()->id]],
 ]);
 
 function planManager(): User
@@ -40,26 +38,19 @@ function planManager(): User
 }
 
 /**
- * @return array<string, string>
+ * @return array<string, mixed>
  */
 function planForm(array $overrides = []): array
 {
     return [
-        'code' => 'team',
         'name' => 'Team',
+        'code' => 'team',
         'description' => 'For growing teams',
-        'price' => '29.00',
-        'currency' => 'EUR',
-        'interval' => 'month',
-        'trial_days' => '14',
-        'is_public' => '1',
-        'sort_order' => '3',
-        'start_from' => '',
         ...$overrides,
     ];
 }
 
-function onTenantHost(string $route, array $parameters = []): string
+function planUrlOnTenantHost(string $route, array $parameters): string
 {
     Domain::factory()->for(Tenant::factory())->create(['domain' => 'acme.example']);
 
@@ -67,415 +58,194 @@ function onTenantHost(string $route, array $parameters = []): string
 }
 
 /**
- * The edit page's fields as staff submit them.
+ * The features a plan includes, keyed by feature id, each with its limit.
  *
- * @return array<string, mixed>
+ * @return array<int, int|null>
  */
-function planEditForm(array $overrides = []): array
+function planLimits(Plan $plan): array
 {
-    return [
-        'name' => 'Starter',
-        'description' => 'For new teams',
-        'sort_order' => '4',
-        'features' => [],
-        ...$overrides,
-    ];
+    return DB::table('plan_feature')->where('plan_id', $plan->id)->orderBy('feature_id')->pluck('limit', 'feature_id')->all();
 }
 
-/**
- * The features a plan includes, keyed by feature key, each with its limit.
- *
- * @return array<string, int|null>
- */
-function includedFeatures(Plan $plan): array
-{
-    return PlanFeature::query()
-        ->join('features', 'features.id', '=', 'plan_feature.feature_id')
-        ->where('plan_feature.plan_id', $plan->id)
-        ->orderBy('features.key')
-        ->pluck('plan_feature.limit', 'features.key')
-        ->all();
-}
+test('the plans screens are not found on a tenant domain', function (string $method, string $route, array $parameters) {
+    $url = planUrlOnTenantHost($route, $parameters);
 
-/**
- * Every plan, plan feature row and plan activity entry, to show a refused request wrote nothing.
- *
- * @return array{0: list<array<string, mixed>>, 1: list<array<string, mixed>>, 2: int}
- */
-function savedPlans(): array
-{
-    return [
-        Plan::query()->orderBy('id')->get()->toArray(),
-        PlanFeature::query()->orderBy('id')->get()->toArray(),
-        Activity::query()->where('subject_type', Plan::class)->count(),
-    ];
-}
-
-test('guests on a tenant domain get not found', function (string $method, string $route, array $parameters) {
-    $this->call($method, onTenantHost($route, $parameters), planForm())->assertNotFound();
-})->with('plan routes');
-
-test('plan managers on a tenant domain get not found', function (string $method, string $route, array $parameters) {
-    $url = onTenantHost($route, $parameters);
-    $saved = savedPlans();
-
+    $this->call($method, $url, planForm())->assertNotFound();
     $this->actingAs(planManager())->call($method, $url, planForm())->assertNotFound();
-
-    expect(savedPlans())->toBe($saved);
 })->with('plan routes');
 
-test('plan managers on a self-hosted install get not found', function (string $method, string $route, array $parameters) {
+test('the plans screens are not found on a self-hosted install', function (string $method, string $route, array $parameters) {
     config(['mitarbo.managed_deployment' => false]);
-    $saved = savedPlans();
 
     $this->actingAs(planManager())->call($method, route($route, $parameters), planForm())->assertNotFound();
-
-    expect(savedPlans())->toBe($saved);
 })->with('plan routes');
 
-test('guests on the central host are sent to log in', function (string $method, string $route, array $parameters) {
+test('guests are sent to log in', function (string $method, string $route, array $parameters) {
     $this->call($method, route($route, $parameters), planForm())->assertRedirect(route('login'));
 })->with('plan routes');
 
-test('unverified users are sent to verify their email before the permission is checked', function (string $method, string $route, array $parameters) {
-    $this->actingAs(User::factory()->unverified()->create())
-        ->call($method, route($route, $parameters), planForm())
-        ->assertRedirect(route('verification.notice'));
+test('users without plans.manage are forbidden and change nothing', function (string $method, string $route, array $parameters) {
+    $plans = Plan::query()->orderBy('id')->get()->toArray();
+
+    $this->actingAs(User::factory()->create())->call($method, route($route, $parameters), planForm())->assertForbidden();
+
+    expect(Plan::query()->orderBy('id')->get()->toArray())->toBe($plans);
 })->with('plan routes');
 
-test('central users without plans.manage are forbidden', function (string $method, string $route, array $parameters) {
-    $user = User::factory()->create();
-    $saved = savedPlans();
+test('the list shows every plan by name', function () {
+    Plan::factory()->create(['name' => 'Pro']);
+    $basic = Plan::factory()->create(['name' => 'Basic', 'code' => 'basic', 'description' => null]);
 
-    $this->actingAs($user)->call($method, route($route, $parameters), planForm())->assertForbidden();
-
-    expect(savedPlans())->toBe($saved);
-})->with('plan routes');
-
-test('a plan is created as typed, active, hosted and not default', function () {
-    $response = $this->actingAs(planManager())->post(route('plans.store'), planForm());
-
-    $response->assertRedirect(route('plans.index'))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan created.']);
-    expect(Plan::query()->sole())
-        ->code->toBe('team')
-        ->name->toBe('Team')
-        ->description->toBe('For growing teams')
-        ->price_minor->toBe(2900)
-        ->currency->toBe('EUR')
-        ->interval->toBe(BillingInterval::Month)
-        ->trial_days->toBe(14)
-        ->is_public->toBeTrue()
-        ->sort_order->toBe(3)
-        ->status->toBe(PlanStatus::Active)
-        ->deployment->toBe(PlanDeployment::Hosted)
-        ->is_default->toBeFalse()
-        ->tenant_id->toBeNull();
-});
-
-test('the price is stored in minor units', function (string $price, int $priceMinor) {
-    $this->actingAs(planManager())->post(route('plans.store'), planForm(['price' => $price]))->assertSessionHasNoErrors();
-
-    expect(Plan::query()->sole()->price_minor)->toBe($priceMinor);
-})->with([
-    'two decimals' => ['19.99', 1999],
-    'one decimal' => ['19.9', 1990],
-    'whole' => ['19', 1900],
-    'zero' => ['0', 0],
-]);
-
-test('the currency is stored in upper case', function () {
-    $this->actingAs(planManager())->post(route('plans.store'), planForm(['currency' => 'usd']));
-
-    expect(Plan::query()->sole()->currency)->toBe('USD');
-});
-
-test('a blank description is stored as null and an unchecked public flag as false', function () {
-    $form = planForm(['description' => '   ']);
-    unset($form['is_public']);
-
-    $this->actingAs(planManager())->post(route('plans.store'), $form)->assertSessionHasNoErrors();
-
-    expect(Plan::query()->sole())
-        ->description->toBeNull()
-        ->is_public->toBeFalse();
-});
-
-test('a plan starting from another gets its features', function () {
-    $source = Plan::factory()->create();
-    PlanFeature::factory()->limit(5)->create(['plan_id' => $source->id]);
-
-    $this->actingAs(planManager())->post(route('plans.store'), planForm(['start_from' => $source->id]));
-
-    expect(Plan::query()->where('code', 'team')->sole()->features()->sole()->pivot->limit)->toBe(5);
-});
-
-test('a code that already has an active plan is refused', function () {
-    Plan::factory()->create(['code' => 'team']);
-
-    $this->actingAs(planManager())
-        ->post(route('plans.store'), planForm())
-        ->assertSessionHasErrors('code');
-
-    expect(Plan::query()->count())->toBe(1);
-});
-
-test('a code that has only an inactive plan is accepted', function () {
-    Plan::factory()->inactive()->create(['code' => 'team']);
-
-    $this->actingAs(planManager())
-        ->post(route('plans.store'), planForm())
-        ->assertSessionHasNoErrors();
-
-    expect(Plan::query()->where('code', 'team')->pluck('status')->all())
-        ->toEqualCanonicalizing([PlanStatus::Inactive, PlanStatus::Active]);
-});
-
-test('invalid input is refused on its own field', function (string $field, string $value) {
-    $this->actingAs(planManager())
-        ->post(route('plans.store'), planForm([$field => $value]))
-        ->assertSessionHasErrors($field);
-
-    expect(Plan::query()->count())->toBe(0);
-})->with([
-    'negative price' => ['price', '-1'],
-    'price with three decimals' => ['price', '19.999'],
-    'negative trial days' => ['trial_days', '-1'],
-    'unknown interval' => ['interval', 'week'],
-    'unknown currency' => ['currency', 'XYZ'],
-    'negative sort order' => ['sort_order', '-1'],
-    'missing code' => ['code', ''],
-    'missing name' => ['name', ''],
-    'start from a plan that does not exist' => ['start_from', '0199d1a0-0000-7000-8000-000000000000'],
-    'start from a value that is not a plan id' => ['start_from', 'basic'],
-]);
-
-test('plan managers see every hosted plan with its status, price and interval', function () {
-    $basic = Plan::factory()->create(['code' => 'basic', 'name' => 'Basic', 'price_minor' => 1900, 'currency' => 'EUR', 'sort_order' => 0]);
-    Plan::factory()->custom()->create([
-        'code' => 'acme',
-        'name' => 'Acme',
-        'tenant_id' => Tenant::factory()->create(['name' => 'Acme GmbH'])->id,
-        'price_minor' => 9900,
-        'currency' => 'USD',
-        'interval' => BillingInterval::Year,
-        'sort_order' => 1,
-    ]);
-    Plan::factory()->inactive()->create(['code' => 'pro', 'name' => 'Pro (old)', 'price_minor' => 3900, 'sort_order' => 2]);
-
-    $this->actingAs(planManager())
-        ->get(route('plans.index'))
+    $this->actingAs(planManager())->get(route('plans.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('plans/index')
-            ->where('canManagePlans', true)
-            ->has('plans', 3)
-            ->where('plans.0', [
-                'id' => $basic->id,
-                'code' => 'basic',
-                'name' => 'Basic',
-                'status' => 'active',
-                'statusLabel' => 'Active',
-                'price' => '€19.00',
-                'intervalLabel' => 'Monthly',
-                'tenantName' => null,
-            ])
-            ->where('plans.1.code', 'acme')
-            ->where('plans.1.tenantName', 'Acme GmbH')
-            ->where('plans.1.price', '$99.00')
-            ->where('plans.1.intervalLabel', 'Yearly')
-            ->where('plans.2.code', 'pro')
-            ->where('plans.2.status', 'inactive')
-            ->where('plans.2.statusLabel', 'Inactive'));
+            ->has('plans', 2)
+            ->where('plans.0', ['id' => $basic->id, 'name' => 'Basic', 'code' => 'basic', 'description' => null])
+            ->where('plans.1.name', 'Pro'));
 });
 
-test('without plans the list is empty', function () {
-    $this->actingAs(planManager())
-        ->get(route('plans.index'))
-        ->assertInertia(fn (Assert $page) => $page->component('plans/index')->where('plans', []));
-});
-
-test('the shared user carries no roles or permissions after the permission checks', function () {
-    $this->actingAs(planManager())
-        ->get(route('plans.index'))
-        ->assertInertia(fn (Assert $page) => $page
-            ->has('auth.user.email')
-            ->missing('auth.user.permissions')
-            ->missing('auth.user.roles'));
-});
-
-test('the create form offers every plan to start from, the intervals and the next display order', function () {
-    Plan::factory()->create(['code' => 'basic', 'sort_order' => 0]);
-    Plan::factory()->custom()->create(['code' => 'acme', 'sort_order' => 4]);
-    Plan::factory()->inactive()->create(['code' => 'pro', 'sort_order' => 1]);
-
-    $this->actingAs(planManager())
-        ->get(route('plans.create'))
+test('the create form opens', function () {
+    $this->actingAs(planManager())->get(route('plans.create'))
         ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('plans/create')
-            ->has('plans', 3)
-            ->where('plans.0.code', 'basic')
-            ->where('plans.1.code', 'pro')
-            ->where('plans.2.code', 'acme')
-            ->where('intervals', BillingInterval::options())
-            ->where('defaultSortOrder', 5));
+        ->assertInertia(fn (Assert $page) => $page->component('plans/create'));
 });
 
-test('without plans the create form starts the display order at 0', function () {
-    $this->actingAs(planManager())
-        ->get(route('plans.create'))
-        ->assertInertia(fn (Assert $page) => $page->component('plans/create')->where('plans', [])->where('defaultSortOrder', 0));
-});
+test('a plan is created as typed and opened to choose its features', function () {
+    $response = $this->actingAs(planManager())->post(route('plans.store'), planForm(['name' => '  Team  ']));
 
-test('plan managers can open any plan to edit it', function () {
-    $plan = Plan::factory()->inactive()->create(['code' => 'pro', 'name' => 'Pro', 'description' => 'For larger teams', 'sort_order' => 2]);
-
-    $this->actingAs(planManager())
-        ->get(route('plans.edit', $plan))
-        ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('plans/edit')
-            ->where('plan.id', $plan->id)
-            ->where('plan.code', 'pro')
-            ->where('plan.name', 'Pro')
-            ->where('plan.description', 'For larger teams')
-            ->where('plan.sortOrder', 2)
-            ->where('plan.status', 'inactive')
-            ->where('plan.statusLabel', 'Inactive')
-            ->where('plan.tenantName', null));
-});
-
-test('without feature rows the edit page lists no features', function () {
-    $this->actingAs(planManager())
-        ->get(route('plans.edit', Plan::factory()->create()))
-        ->assertInertia(fn (Assert $page) => $page->component('plans/edit')->where('plan.features', []));
-});
-
-test('an unknown plan is not found', function () {
-    $this->actingAs(planManager())->get(route('plans.edit', '0199d1a0-0000-7000-8000-000000000000'))->assertNotFound();
-});
-
-test('saving stores the plan\'s name, description and display order', function () {
-    $plan = Plan::factory()->create(['name' => 'Basic', 'description' => 'For small teams', 'sort_order' => 1]);
-
-    $this->actingAs(planManager())
-        ->put(route('plans.update', $plan), planEditForm())
-        ->assertRedirect(route('plans.edit', $plan))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan updated.']);
-
-    expect($plan->fresh())
-        ->name->toBe('Starter')
-        ->description->toBe('For new teams')
-        ->sort_order->toBe(4);
+    $plan = Plan::query()->sole();
+    $response->assertRedirect(route('plans.edit', $plan))
+        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan created.']);
+    expect($plan)
+        ->name->toBe('Team')
+        ->code->toBe('team')
+        ->description->toBe('For growing teams')
+        ->and(planLimits($plan))->toBe([]);
 });
 
 test('a blank description is stored as null', function () {
-    $plan = Plan::factory()->create(['description' => 'For small teams']);
+    $this->actingAs(planManager())->post(route('plans.store'), planForm(['description' => '  ']))->assertSessionHasNoErrors();
 
-    $this->actingAs(planManager())->put(route('plans.update', $plan), planEditForm(['description' => '  ']))->assertSessionHasNoErrors();
-
-    expect($plan->fresh()->description)->toBeNull();
+    expect(Plan::query()->sole()->description)->toBeNull();
 });
 
-test('fields outside the edit page stay as they were', function () {
-    $plan = Plan::factory()->create(['code' => 'basic', 'price_minor' => 1900, 'currency' => 'EUR', 'trial_days' => 14, 'sort_order' => 1]);
-    $locked = collect($plan->fresh()->toArray())->except(['name', 'description', 'sort_order', 'updated_by', 'updated_at'])->all();
-    $manager = planManager();
+test('an invalid new plan is refused', function (array $overrides, string $field) {
+    Plan::factory()->create(['code' => 'pro']);
 
-    $this->actingAs($manager)->put(route('plans.update', $plan), planEditForm([
-        'code' => 'pro',
-        'price' => '99.00',
-        'price_minor' => '9900',
-        'currency' => 'USD',
-        'interval' => 'year',
-        'trial_days' => '30',
-        'is_public' => '0',
-        'is_default' => '1',
-        'status' => 'inactive',
-        'deployment' => 'self_hosted',
-        'tenant_id' => Tenant::factory()->create()->id,
-        'created_by' => User::factory()->create()->id,
-        'updated_by' => User::factory()->create()->id,
-    ]))->assertSessionHasNoErrors();
+    $this->actingAs(planManager())->post(route('plans.store'), planForm($overrides))->assertSessionHasErrors($field);
 
-    expect(collect($plan->fresh()->toArray())->except(['name', 'description', 'sort_order', 'updated_by', 'updated_at'])->all())->toBe($locked)
-        ->and($plan->fresh()->updated_by)->toBe($manager->id);
-});
-
-test('saving adds features with and without a limit and removes one left out', function () {
-    $plan = Plan::factory()->create();
-    PlanFeature::factory()->create(['plan_id' => $plan->id, 'feature_id' => Feature::factory()->create(['key' => 'test-video'])->id]);
-    Feature::factory()->create(['key' => 'test-reports']);
-    Feature::factory()->create(['key' => 'test-storage']);
-
-    $this->actingAs(planManager())->put(route('plans.update', $plan), planEditForm(['features' => [
-        ['key' => 'test-reports', 'limit' => '5'],
-        ['key' => 'test-storage', 'limit' => ''],
-    ]]))->assertSessionHasNoErrors();
-
-    expect(includedFeatures($plan))->toBe(['test-reports' => 5, 'test-storage' => null]);
-});
-
-test('saving re-limits an included feature and clears a limit to unlimited', function () {
-    $plan = Plan::factory()->create();
-    PlanFeature::factory()->limit(5)->create(['plan_id' => $plan->id, 'feature_id' => Feature::factory()->create(['key' => 'test-reports'])->id]);
-    PlanFeature::factory()->limit(100)->create(['plan_id' => $plan->id, 'feature_id' => Feature::factory()->create(['key' => 'test-storage'])->id]);
-
-    $this->actingAs(planManager())->put(route('plans.update', $plan), planEditForm(['features' => [
-        ['key' => 'test-reports', 'limit' => '10'],
-        ['key' => 'test-storage', 'limit' => ''],
-    ]]))->assertSessionHasNoErrors();
-
-    expect(includedFeatures($plan))->toBe(['test-reports' => 10, 'test-storage' => null]);
-});
-
-test('invalid edits are refused on their own field and save nothing', function (array $overrides, string $field) {
-    $plan = Plan::factory()->create();
-    PlanFeature::factory()->limit(5)->create(['plan_id' => $plan->id, 'feature_id' => Feature::factory()->create(['key' => 'test-reports'])->id]);
-    $saved = savedPlans();
-
-    $this->actingAs(planManager())
-        ->put(route('plans.update', $plan), planEditForm($overrides))
-        ->assertSessionHasErrors($field);
-
-    expect(savedPlans())->toBe($saved);
+    expect(Plan::query()->count())->toBe(1);
 })->with([
     'missing name' => [['name' => ''], 'name'],
-    'negative display order' => [['sort_order' => '-1'], 'sort_order'],
-    'display order that is not a whole number' => [['sort_order' => '1.5'], 'sort_order'],
-    'feature without a row' => [['features' => [['key' => 'test-unknown', 'limit' => '']]], 'features.0.key'],
-    'negative limit' => [['features' => [['key' => 'test-reports', 'limit' => '-1']]], 'features.0.limit'],
-    'limit that is not a whole number' => [['features' => [['key' => 'test-reports', 'limit' => '2.5']]], 'features.0.limit'],
-    'feature listed twice' => [['features' => [['key' => 'test-reports', 'limit' => '1'], ['key' => 'test-reports', 'limit' => '2']]], 'features.1.key'],
+    'name not a string' => [['name' => ['Team']], 'name'],
+    'name too long' => [['name' => str_repeat('a', 256)], 'name'],
+    'missing code' => [['code' => ''], 'code'],
+    'code not a string' => [['code' => ['team']], 'code'],
+    'code too long' => [['code' => str_repeat('a', 256)], 'code'],
+    'code taken' => [['code' => 'pro'], 'code'],
+    'description not a string' => [['description' => ['text']], 'description'],
 ]);
 
-test('an inactive plan can be edited and stays inactive', function () {
-    $plan = Plan::factory()->inactive()->create();
-
-    $this->actingAs(planManager())->put(route('plans.update', $plan), planEditForm())->assertSessionHasNoErrors();
-
-    expect($plan->fresh())
-        ->name->toBe('Starter')
-        ->status->toBe(PlanStatus::Inactive);
-});
-
-test('a custom plan can be edited and keeps its company and visibility', function () {
-    $plan = Plan::factory()->custom()->create();
-
-    $this->actingAs(planManager())->put(route('plans.update', $plan), planEditForm())->assertSessionHasNoErrors();
-
-    expect($plan->fresh())
-        ->name->toBe('Starter')
-        ->tenant_id->toBe($plan->tenant_id)
-        ->is_public->toBeFalse();
-});
-
-test('a save is logged with the signed-in staff member as causer', function () {
+test('the edit form lists every feature with whether the plan includes it', function () {
     $plan = Plan::factory()->create();
-    $manager = planManager();
+    $storage = Feature::factory()->create(['key' => 'storage', 'name' => 'Storage', 'limit_unit' => LimitUnit::Megabytes]);
+    $crm = Feature::factory()->create(['key' => 'crm', 'name' => 'CRM']);
+    $messaging = Feature::factory()->create(['key' => 'messaging', 'name' => 'Messaging']);
+    $plan->features()->attach([$storage->id => ['limit' => 500], $crm->id => ['limit' => null]]);
 
-    $this->actingAs($manager)->put(route('plans.update', $plan), planEditForm());
+    $this->actingAs(planManager())->get(route('plans.edit', $plan))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('plans/edit')
+            ->where('plan', ['id' => $plan->id, 'name' => $plan->name, 'code' => $plan->code, 'description' => $plan->description])
+            ->where('features', [
+                ['id' => $crm->id, 'key' => 'crm', 'name' => 'CRM', 'limitUnitLabel' => null, 'included' => true, 'limit' => null],
+                ['id' => $messaging->id, 'key' => 'messaging', 'name' => 'Messaging', 'limitUnitLabel' => null, 'included' => false, 'limit' => null],
+                ['id' => $storage->id, 'key' => 'storage', 'name' => 'Storage', 'limitUnitLabel' => 'Megabytes', 'included' => true, 'limit' => 500],
+            ]));
+});
 
-    expect(Activity::query()->forSubject($plan)->sole()->causer?->is($manager))->toBeTrue();
+test('saving a plan updates its fields and maps the ticked features with their limits', function () {
+    $plan = Plan::factory()->create(['code' => 'team']);
+    [$kept, $added, $removed, $unlimited] = Feature::factory()->count(4)->create();
+    $plan->features()->attach([$kept->id => ['limit' => 5], $removed->id => ['limit' => 10]]);
+
+    $response = $this->actingAs(planManager())->put(route('plans.update', $plan), planForm([
+        'name' => 'Team Plus',
+        'code' => 'team',
+        'description' => '',
+        'features' => [
+            ['id' => (string) $kept->id, 'limit' => '8'],
+            ['id' => (string) $added->id, 'limit' => '0'],
+            ['id' => (string) $unlimited->id, 'limit' => ''],
+        ],
+    ]));
+
+    $response->assertRedirect(route('plans.edit', $plan))
+        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan updated.']);
+    expect($plan->fresh())
+        ->name->toBe('Team Plus')
+        ->code->toBe('team')
+        ->description->toBeNull()
+        ->and(planLimits($plan))->toBe([$kept->id => 8, $added->id => 0, $unlimited->id => null]);
+});
+
+test('saving a plan with no feature ticked removes all its features', function () {
+    $plan = Plan::factory()->create();
+    $plan->features()->attach(Feature::factory()->create()->id, ['limit' => 3]);
+
+    $this->actingAs(planManager())->put(route('plans.update', $plan), planForm())->assertSessionHasNoErrors();
+
+    expect(planLimits($plan))->toBe([]);
+});
+
+test('an invalid plan update is refused and changes nothing', function (Closure $overrides, string $field) {
+    $plan = Plan::factory()->create();
+    $feature = Feature::factory()->create();
+    $plan->features()->attach($feature->id, ['limit' => 3]);
+    Plan::factory()->create(['code' => 'pro']);
+    $before = [$plan->fresh()->toArray(), planLimits($plan)];
+
+    $this->actingAs(planManager())
+        ->put(route('plans.update', $plan), planForm($overrides($feature)))
+        ->assertSessionHasErrors($field);
+
+    expect([$plan->fresh()->toArray(), planLimits($plan)])->toBe($before);
+})->with([
+    'missing name' => [fn (): array => ['name' => ''], 'name'],
+    'name not a string' => [fn (): array => ['name' => ['Team']], 'name'],
+    'name too long' => [fn (): array => ['name' => str_repeat('a', 256)], 'name'],
+    'missing code' => [fn (): array => ['code' => ''], 'code'],
+    'code not a string' => [fn (): array => ['code' => ['team']], 'code'],
+    'code too long' => [fn (): array => ['code' => str_repeat('a', 256)], 'code'],
+    'code of another plan' => [fn (): array => ['code' => 'pro'], 'code'],
+    'description not a string' => [fn (): array => ['description' => ['text']], 'description'],
+    'features not a list' => [fn (): array => ['features' => 'all'], 'features'],
+    'feature without an id' => [fn (): array => ['features' => [['limit' => '1']]], 'features.0.id'],
+    'feature id not a number' => [fn (): array => ['features' => [['id' => 'crm']]], 'features.0.id'],
+    'unknown feature' => [fn (): array => ['features' => [['id' => '999999']]], 'features.0.id'],
+    'feature listed twice' => [fn (Feature $feature): array => ['features' => [
+        ['id' => (string) $feature->id, 'limit' => '1'],
+        ['id' => (string) $feature->id, 'limit' => '2'],
+    ]], 'features.1.id'],
+    'limit not a number' => [fn (Feature $feature): array => ['features' => [['id' => (string) $feature->id, 'limit' => 'many']]], 'features.0.limit'],
+    'negative limit' => [fn (Feature $feature): array => ['features' => [['id' => (string) $feature->id, 'limit' => '-1']]], 'features.0.limit'],
+    'limit too large' => [fn (Feature $feature): array => ['features' => [['id' => (string) $feature->id, 'limit' => '2147483648']]], 'features.0.limit'],
+]);
+
+test('deleting a plan removes it and its feature mappings but keeps the features', function () {
+    $plan = Plan::factory()->create();
+    $kept = Plan::factory()->create();
+    $feature = Feature::factory()->create();
+    $plan->features()->attach($feature->id, ['limit' => 3]);
+    $kept->features()->attach($feature->id, ['limit' => null]);
+
+    $this->actingAs(planManager())->delete(route('plans.destroy', $plan))
+        ->assertRedirect(route('plans.index'))
+        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan deleted.']);
+
+    expect(Plan::query()->pluck('id')->all())->toBe([$kept->id])
+        ->and(DB::table('plan_feature')->pluck('plan_id')->all())->toBe([$kept->id])
+        ->and(Feature::query()->count())->toBe(1);
 });

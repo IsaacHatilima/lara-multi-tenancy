@@ -13,6 +13,6 @@ Route::middleware([
     'verified',
     PermissionMiddleware::using(CentralPermission::ManagePlans),
 ])->group(function () {
-    Route::resource('plans', PlanController::class)->only(['index', 'create', 'store', 'edit', 'update']);
-    Route::resource('features', FeatureController::class)->only(['index']);
+    Route::resource('plans', PlanController::class)->except(['show']);
+    Route::resource('features', FeatureController::class)->except(['show']);
 });

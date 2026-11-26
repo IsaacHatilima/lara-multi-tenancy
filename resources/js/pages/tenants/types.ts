@@ -47,13 +47,7 @@ export const MAX_DOMAINS = 2;
 /** SubscriptionResource */
 export type Subscription = {
     planName: string;
-    status:
-        | 'trialing'
-        | 'active'
-        | 'past_due'
-        | 'read_only'
-        | 'canceled'
-        | 'ended';
+    status: 'trialing' | 'active' | 'past_due' | 'cancelled';
     statusLabel: string;
     price: string;
     startedAt: string;
