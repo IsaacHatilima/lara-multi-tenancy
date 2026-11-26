@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Middleware\AddFeaturesVersionHeader;
-use App\Http\Middleware\EnsureFeatureIsAvailable;
 use App\Http\Middleware\EnsureTenantManagementIsAvailable;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -49,11 +47,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Tenant hosts must get a 404 for tenant management, not a login redirect that reveals it exists.
         $middleware->prependToPriorityList(AuthenticatesRequests::class, EnsureTenantManagementIsAvailable::class);
 
-        $middleware->alias(['feature' => EnsureFeatureIsAvailable::class]);
-
         $middleware->web(append: [
             HandleAppearance::class,
-            AddFeaturesVersionHeader::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
