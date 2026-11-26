@@ -1,4 +1,5 @@
 import {
+    BoxesIcon,
     Building2Icon,
     FingerprintIcon,
     KeyRoundIcon,
@@ -78,16 +79,17 @@ export const tenantsNavigation: NavSection = {
 };
 
 /**
- * Shown only on the central host of a managed deployment to staff holding
- * `plans.manage`, when the server shares `canManagePlans`.
+ * The platform owner's catalogue. Shown only on the central host of a managed
+ * deployment to staff holding `plans.manage`, when the server shares
+ * `canManagePlans`.
  */
-export const plansNavigation: NavSection = {
-    title: 'Plans',
+export const platformNavigation: NavSection = {
+    title: 'Platform',
     url: plansIndex().url,
-    icon: LayersIcon,
+    icon: BoxesIcon,
     items: [
         {
-            title: 'All plans',
+            title: 'Plans',
             url: plansIndex().url,
             icon: LayersIcon,
         },
@@ -146,6 +148,6 @@ export function mainNavigationFor({
     return [
         ...mainNavigation,
         ...(canManageTenants ? [tenantsNavigation] : []),
-        ...(canManagePlans ? [plansNavigation] : []),
+        ...(canManagePlans ? [platformNavigation] : []),
     ];
 }
