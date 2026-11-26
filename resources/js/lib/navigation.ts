@@ -2,6 +2,7 @@ import {
     Building2Icon,
     FingerprintIcon,
     KeyRoundIcon,
+    LayersIcon,
     LayoutDashboardIcon,
     Settings2Icon,
     ShieldCheckIcon,
@@ -14,6 +15,7 @@ import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editProfile } from '@/routes/profile';
 import { index as tenantsIndex } from '@/routes/tenants';
 import { edit as editPasskeys } from '@/routes/passkeys';
+import { index as plansIndex } from '@/routes/plans';
 import { edit as editTwoFactor } from '@/routes/two-factor';
 import { edit as editPassword } from '@/routes/user-password';
 
@@ -75,6 +77,23 @@ export const tenantsNavigation: NavSection = {
     ],
 };
 
+/**
+ * Shown only on the central host of a managed deployment to staff holding
+ * `plans.manage`, when the server shares `canManagePlans`.
+ */
+export const plansNavigation: NavSection = {
+    title: 'Plans',
+    url: plansIndex().url,
+    icon: LayersIcon,
+    items: [
+        {
+            title: 'All plans',
+            url: plansIndex().url,
+            icon: LayersIcon,
+        },
+    ],
+};
+
 export const settingsNavigationGroups: NavGroup[] = [
     {
         title: 'Personal',
@@ -114,9 +133,19 @@ export const settingsNavigation: NavSection = {
     items: settingsNavigationGroups.flatMap((group) => group.items),
 };
 
+type NavigationAccess = {
+    canManageTenants: boolean;
+    canManagePlans: boolean;
+};
+
 /** The rail's sections for the current visitor. */
-export function mainNavigationFor(canManageTenants: boolean): NavSection[] {
-    return canManageTenants
-        ? [...mainNavigation, tenantsNavigation]
-        : mainNavigation;
+export function mainNavigationFor({
+    canManageTenants,
+    canManagePlans,
+}: NavigationAccess): NavSection[] {
+    return [
+        ...mainNavigation,
+        ...(canManageTenants ? [tenantsNavigation] : []),
+        ...(canManagePlans ? [plansNavigation] : []),
+    ];
 }
