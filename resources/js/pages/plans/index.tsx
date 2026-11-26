@@ -23,7 +23,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { EDGE_CELL_PADDING } from '@/lib/table-classes';
-import { create } from '@/routes/plans';
+import { create, edit } from '@/routes/plans';
 import { PlanStatusBadge } from './components/plan-status-badge';
 import type { Plan } from './types';
 
@@ -71,9 +71,12 @@ export default function PlansIndex({ plans }: Props) {
                                         }
                                     >
                                         <TableCell className="sticky left-0 max-w-64 bg-card">
-                                            <span className="block truncate font-medium">
+                                            <Link
+                                                href={edit(plan.id)}
+                                                className="block truncate font-medium hover:underline"
+                                            >
                                                 {plan.name}
-                                            </span>
+                                            </Link>
                                             <span className="block truncate font-mono text-muted-foreground">
                                                 {plan.code}
                                             </span>

@@ -6,11 +6,16 @@ namespace App\Http\Controllers\Plans;
 
 use App\Actions\Plans\CreatePlanAction;
 use App\Actions\Plans\GetNextPlanSortOrderAction;
+use App\Actions\Plans\GetPlanAction;
 use App\Actions\Plans\ListPlansAction;
+use App\Actions\Plans\UpdatePlanAction;
 use App\Data\Plans\CreatePlanData;
+use App\Data\Plans\UpdatePlanData;
 use App\Enums\BillingInterval;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Plans\CreatePlanRequest;
+use App\Http\Requests\Plans\UpdatePlanRequest;
+use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
@@ -51,5 +56,27 @@ final class PlanController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan created.')]);
 
         return to_route('plans.index');
+    }
+
+    /**
+     * Show the form for a plan's own fields and the features it includes, with every feature row to choose from.
+     */
+    public function edit(Plan $plan, GetPlanAction $getPlan): Response
+    {
+        return Inertia::render('plans/edit', [
+            'plan' => $getPlan->handle($plan),
+        ]);
+    }
+
+    /**
+     * Save a plan's own fields and the features it includes, recorded as updated by the signed-in user.
+     */
+    public function update(UpdatePlanRequest $request, Plan $plan, #[CurrentUser] User $user, UpdatePlanAction $updatePlan): RedirectResponse
+    {
+        $updatePlan->handle($plan, UpdatePlanData::fromRequest($request), $user);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan updated.')]);
+
+        return to_route('plans.edit', $plan);
     }
 }

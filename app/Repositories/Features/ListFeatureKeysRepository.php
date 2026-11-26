@@ -14,6 +14,7 @@ final readonly class ListFeatureKeysRepository
     public function handle(): array
     {
         return array_values(Feature::query()
+            ->orderBy('key')
             ->get(['key'])
             ->map(fn (Feature $feature): string => $feature->key)
             ->all());

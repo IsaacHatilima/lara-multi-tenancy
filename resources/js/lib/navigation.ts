@@ -5,6 +5,7 @@ import {
     KeyRoundIcon,
     LayersIcon,
     LayoutDashboardIcon,
+    PuzzleIcon,
     Settings2Icon,
     ShieldCheckIcon,
     SlidersHorizontalIcon,
@@ -13,6 +14,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { edit as editAppearance } from '@/routes/appearance';
+import { index as featuresIndex } from '@/routes/features';
 import { edit as editProfile } from '@/routes/profile';
 import { index as tenantsIndex } from '@/routes/tenants';
 import { edit as editPasskeys } from '@/routes/passkeys';
@@ -92,6 +94,11 @@ export const platformNavigation: NavSection = {
             title: 'Plans',
             url: plansIndex().url,
             icon: LayersIcon,
+        },
+        {
+            title: 'Features',
+            url: featuresIndex().url,
+            icon: PuzzleIcon,
         },
     ],
 };
