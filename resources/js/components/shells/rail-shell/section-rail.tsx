@@ -1,0 +1,138 @@
+import { cn } from '@/lib/utils';
+import { m } from 'motion/react';
+import { Fragment } from 'react';
+import { SearchIcon } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
+import type { NavSection } from '@/lib/navigation';
+import { ShellUserMenu } from '../shared/shell-user-menu';
+import { slideSpring } from '@/lib/motion';
+import { ICON_STROKE_WIDTH } from './icon-stroke';
+
+interface SectionRailProps {
+    sections: NavSection[];
+    selected: NavSection;
+    // Section showing in the floating card while collapsed, if any.
+    peeked: NavSection | null;
+    collapsed: boolean;
+    searchOpen: boolean;
+    onSearch: () => void;
+    onSelect: (section: NavSection) => void;
+    onHover: (section: NavSection) => void;
+    onSettingsNavigate: () => void;
+}
+
+// The outer column: one icon button per section. These never navigate; they
+// choose which section the panel lists. The user menu sits at the bottom.
+export function SectionRail({
+    sections,
+    selected,
+    peeked,
+    collapsed,
+    searchOpen,
+    onSearch,
+    onSelect,
+    onHover,
+    onSettingsNavigate,
+}: SectionRailProps) {
+    return (
+        <div className="flex w-(--sidebar-width-icon) shrink-0 flex-col items-center py-2">
+            <Tooltip disabled={searchOpen}>
+                <TooltipTrigger
+                    render={
+                        <Button
+                            variant="ghost"
+                            size="icon-lg"
+                            aria-haspopup="dialog"
+                            aria-expanded={searchOpen}
+                            aria-keyshortcuts="Meta+K Control+K"
+                            className="mb-3 text-sidebar-muted-foreground"
+                            onClick={onSearch}
+                        />
+                    }
+                >
+                    <SearchIcon
+                        strokeWidth={ICON_STROKE_WIDTH}
+                        className="size-4"
+                    />
+                    <span className="sr-only">Search commands</span>
+                </TooltipTrigger>
+                <TooltipContent side="right">Search commands</TooltipContent>
+            </Tooltip>
+            <div
+                role="group"
+                aria-label="Sections"
+                className="flex min-h-0 flex-1 flex-col items-center gap-3"
+            >
+                {sections.map((section) => {
+                    const isSelected = section.title === selected.title;
+                    return (
+                        <Fragment key={section.title}>
+                            {section.dividerBefore && (
+                                <div
+                                    aria-hidden
+                                    className="-my-1 h-px w-6 bg-sidebar-border"
+                                />
+                            )}
+                            {/* Collapsed, the floating card names the section, so the
+                  tooltip is off entirely (an invisible open tooltip would
+                  eat Escape). */}
+                            <Tooltip disabled={collapsed}>
+                                <TooltipTrigger
+                                    render={
+                                        <Button
+                                            variant="ghost"
+                                            size="icon-lg"
+                                            data-section={section.title}
+                                            aria-pressed={isSelected}
+                                            aria-expanded={
+                                                collapsed
+                                                    ? peeked?.title ===
+                                                      section.title
+                                                    : undefined
+                                            }
+                                            className="relative text-sidebar-muted-foreground aria-pressed:text-foreground"
+                                            onClick={() => onSelect(section)}
+                                            onMouseEnter={() =>
+                                                onHover(section)
+                                            }
+                                        />
+                                    }
+                                >
+                                    {isSelected && (
+                                        <m.span
+                                            layoutId="rail-selected-section"
+                                            transition={slideSpring}
+                                            aria-hidden
+                                            className="absolute inset-0 rounded-md bg-muted"
+                                        />
+                                    )}
+                                    {/* Filled once selected, as ChatGPT's are. */}
+                                    <section.icon
+                                        strokeWidth={ICON_STROKE_WIDTH}
+                                        className={cn(
+                                            'relative size-4',
+                                            isSelected && 'fill-current',
+                                        )}
+                                    />
+                                    <span className="sr-only">
+                                        {section.title}
+                                    </span>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">
+                                    {section.title}
+                                </TooltipContent>
+                            </Tooltip>
+                        </Fragment>
+                    );
+                })}
+            </div>
+            <ShellUserMenu compact onSettingsNavigate={onSettingsNavigate} />
+        </div>
+    );
+}
