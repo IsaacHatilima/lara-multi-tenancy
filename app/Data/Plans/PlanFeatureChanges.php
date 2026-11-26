@@ -62,13 +62,23 @@ final readonly class PlanFeatureChanges
     public function toLog(): array
     {
         return [
-            'added' => array_map(fn (string $key, ?int $limit): array => ['key' => $key, 'limit' => $limit], array_keys($this->added), $this->added),
-            'removed' => array_map(fn (string $key, ?int $limit): array => ['key' => $key, 'limit' => $limit], array_keys($this->removed), $this->removed),
+            'added' => self::limitEntries($this->added),
+            'removed' => self::limitEntries($this->removed),
             'relimited' => array_map(
                 fn (string $key, ?int $limit): array => ['key' => $key, 'old' => $this->before[$key], 'new' => $limit],
                 array_keys($this->relimited),
                 $this->relimited,
             ),
         ];
+    }
+
+    /**
+     * @param  array<string, int|null>  $limits
+     *
+     * @return list<array{key: string, limit: int|null}>
+     */
+    private static function limitEntries(array $limits): array
+    {
+        return array_map(fn (string $key, ?int $limit): array => ['key' => $key, 'limit' => $limit], array_keys($limits), $limits);
     }
 }
