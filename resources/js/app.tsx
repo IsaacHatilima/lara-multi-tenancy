@@ -1,7 +1,7 @@
 import { createInertiaApp } from '@inertiajs/react';
+import { Toaster, initNotifications } from '@inertiaui/notifications-react';
 import { configureEcho } from '@laravel/echo-react';
 import { MotionProvider } from '@/components/motion-provider';
-import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme, useAppearanceShortcut } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
@@ -11,6 +11,9 @@ import SettingsLayout from '@/layouts/settings/layout';
 configureEcho({
     broadcaster: 'reverb',
 });
+
+// Shows the toasts the server flashes with Toast::...->flash().
+initNotifications({ duration: 5000, limit: 1 });
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -40,7 +43,7 @@ void createInertiaApp({
             <MotionProvider>
                 <TooltipProvider>
                     {app}
-                    <Toaster />
+                    <Toaster position="bottom-center" />
                     <AppearanceShortcut />
                 </TooltipProvider>
             </MotionProvider>
