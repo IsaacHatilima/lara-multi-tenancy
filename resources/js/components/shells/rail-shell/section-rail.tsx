@@ -1,8 +1,9 @@
 import { m } from 'motion/react';
 import { Fragment } from 'react';
-import { SearchIcon } from 'lucide-react';
+import { PanelLeftIcon, SearchIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { useSidebar } from '@/components/ui/sidebar';
 import {
     Tooltip,
     TooltipContent,
@@ -24,10 +25,12 @@ interface SectionRailProps {
     onSelect: (section: NavSection) => void;
     onHover: (section: NavSection) => void;
     onSettingsNavigate: () => void;
+    onToggleSidebar: () => void;
 }
 
 // The outer column: one icon button per section. These never navigate; they
-// choose which section the panel lists. The user menu sits at the bottom.
+// choose which section the panel lists. The sidebar toggle and the user menu
+// sit at the bottom.
 export function SectionRail({
     sections,
     selected,
@@ -38,7 +41,11 @@ export function SectionRail({
     onSelect,
     onHover,
     onSettingsNavigate,
+    onToggleSidebar,
 }: SectionRailProps) {
+    const { isMobile } = useSidebar();
+    const toggleLabel = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+
     return (
         <div className="flex w-(--sidebar-width-icon) shrink-0 flex-col items-center py-2">
             <Tooltip disabled={searchOpen}>
@@ -129,6 +136,30 @@ export function SectionRail({
                     );
                 })}
             </div>
+            {/* Phones show the sidebar as a drawer, closed from the header. */}
+            {!isMobile && (
+                <Tooltip>
+                    <TooltipTrigger
+                        render={
+                            <Button
+                                variant="ghost"
+                                size="icon-lg"
+                                aria-label={toggleLabel}
+                                aria-expanded={!collapsed}
+                                aria-keyshortcuts="Meta+B Control+B"
+                                className="mb-2 text-sidebar-muted-foreground aria-expanded:bg-transparent aria-expanded:text-sidebar-muted-foreground hover:aria-expanded:bg-muted hover:aria-expanded:text-foreground"
+                                onClick={onToggleSidebar}
+                            />
+                        }
+                    >
+                        <PanelLeftIcon
+                            strokeWidth={ICON_STROKE_WIDTH}
+                            className="size-4"
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">{toggleLabel}</TooltipContent>
+                </Tooltip>
+            )}
             <ShellUserMenu compact onSettingsNavigate={onSettingsNavigate} />
         </div>
     );

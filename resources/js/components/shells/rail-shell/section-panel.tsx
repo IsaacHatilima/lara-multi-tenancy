@@ -1,10 +1,8 @@
 import { cn } from '@/lib/utils';
-import { PanelLeftIcon } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { m } from 'motion/react';
 import { useId } from 'react';
 
-import { Button } from '@/components/ui/button';
 import {
     SidebarContent,
     SidebarGroup,
@@ -14,7 +12,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    useSidebar,
 } from '@/components/ui/sidebar';
 import type { NavSection } from '@/lib/navigation';
 import { slideSpring } from '@/lib/motion';
@@ -24,8 +21,6 @@ import { ICON_STROKE_WIDTH } from './icon-stroke';
 interface SectionPanelProps {
     section: NavSection;
     className?: string;
-    // Runs just before the header button collapses (or re-docks) the sidebar.
-    onToggle?: () => void;
     onNavigate?: () => void;
 }
 
@@ -34,14 +29,12 @@ interface SectionPanelProps {
 export function SectionPanel({
     section,
     className,
-    onToggle,
     onNavigate,
 }: SectionPanelProps) {
     const active = useActiveNavigation();
     // Scopes the sliding highlight to this panel, so the docked panel and the
     // floating card never trade it.
     const highlightId = useId();
-    const { open, toggleSidebar } = useSidebar();
     const groups = section.groups ?? [{ title: null, items: section.items }];
 
     return (
@@ -51,28 +44,10 @@ export function SectionPanel({
                 className,
             )}
         >
-            <SidebarHeader className="h-(--app-header-height) flex-row items-center justify-between py-0 pr-2.5 pl-4">
+            <SidebarHeader className="h-(--app-header-height) flex-row items-center py-0 pr-2.5 pl-4">
                 <h2 className="truncate text-base font-semibold">
                     {section.title}
                 </h2>
-                {/* aria-expanded reports the sidebar's state, so cancel the ghost
-            button's open look: ChatGPT shows a bare icon until hovered. */}
-                <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label="Toggle sidebar"
-                    aria-expanded={open}
-                    className="rounded-md text-sidebar-muted-foreground aria-expanded:bg-transparent aria-expanded:text-sidebar-muted-foreground hover:aria-expanded:bg-muted hover:aria-expanded:text-foreground"
-                    onClick={() => {
-                        onToggle?.();
-                        toggleSidebar();
-                    }}
-                >
-                    <PanelLeftIcon
-                        strokeWidth={ICON_STROKE_WIDTH}
-                        className="size-4"
-                    />
-                </Button>
             </SidebarHeader>
             <SidebarContent>
                 <nav
