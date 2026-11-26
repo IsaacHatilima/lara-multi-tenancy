@@ -1,14 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Billing;
 
-class ListPlansRepository
+use App\Enums\PlanDeployment;
+use App\Models\Plan;
+use Illuminate\Database\Eloquent\Collection;
+
+final readonly class ListPlansRepository
 {
     /**
-     * Create a new class instance.
+     * Every hosted plan, public and custom, active and inactive, in display order, with a custom plan's tenant.
+     *
+     * @return Collection<int, Plan>
      */
-    public function __construct()
+    public function handle(): Collection
     {
-        //
+        return Plan::query()
+            ->where('deployment', PlanDeployment::Hosted)
+            ->with('tenant:id,name')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->orderBy('id')
+            ->get(['id', 'code', 'name', 'status', 'tenant_id', 'price_minor', 'currency', 'interval']);
     }
 }
