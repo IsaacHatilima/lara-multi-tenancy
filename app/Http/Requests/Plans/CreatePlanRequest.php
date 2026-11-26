@@ -22,6 +22,7 @@ final class CreatePlanRequest extends FormRequest
 
     /**
      * A code can have only one active plan. The plan to start from is checked as a UUID first, which the exists query needs.
+     * The currency rule comes from the container because Pint and PHP Insights disagree on `new` without arguments.
      *
      * @return array<string, list<ValidationRule|object|string>>
      */
@@ -32,7 +33,7 @@ final class CreatePlanRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0', 'decimal:0,2'],
-            'currency' => ['required', 'string', new CurrencyCode],
+            'currency' => ['required', 'string', app(CurrencyCode::class)],
             'interval' => ['required', Rule::enum(BillingInterval::class)],
             'trial_days' => ['required', 'integer', 'min:0'],
             'is_public' => ['boolean'],
