@@ -18,7 +18,7 @@ class FeatureFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'key' => 'test-'.fake()->unique()->slug(2),
         ];
     }
 }
