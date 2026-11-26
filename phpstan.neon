@@ -3,6 +3,10 @@ includes:
     - vendor/nesbot/carbon/extension.neon
 
 parameters:
+    # PHP_CodeSniffer loads its classes with its own autoloader, which config/insights.php needs.
+    bootstrapFiles:
+        - vendor/squizlabs/php_codesniffer/autoload.php
+
     paths:
         - app/
         - bootstrap/app.php
