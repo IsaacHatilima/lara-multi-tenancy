@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
 /**
@@ -43,7 +42,6 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
  *
  * @property-read Tenant|null $tenant
  * @property-read Collection<int, Feature> $features
- * @property-read Collection<int, Subscription> $subscriptions
  */
 #[Fillable([
     'code', 'name', 'description', 'status', 'deployment', 'is_public', 'is_default', 'price_minor', 'currency', 'interval',
@@ -74,14 +72,6 @@ class Plan extends Model
         return $this->belongsToMany(Feature::class, PlanFeature::class)
             ->withPivot('limit', 'updated_by')
             ->withTimestamps();
-    }
-
-    /**
-     * @return HasMany<Subscription, $this>
-     */
-    public function subscriptions(): HasMany
-    {
-        return $this->hasMany(Subscription::class);
     }
 
     /**
