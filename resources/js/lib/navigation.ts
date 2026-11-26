@@ -1,8 +1,11 @@
 import {
+    BoxesIcon,
     Building2Icon,
     FingerprintIcon,
     KeyRoundIcon,
+    LayersIcon,
     LayoutDashboardIcon,
+    PuzzleIcon,
     Settings2Icon,
     ShieldCheckIcon,
     SlidersHorizontalIcon,
@@ -11,9 +14,11 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { edit as editAppearance } from '@/routes/appearance';
+import { index as featuresIndex } from '@/routes/features';
 import { edit as editProfile } from '@/routes/profile';
 import { index as tenantsIndex } from '@/routes/tenants';
 import { edit as editPasskeys } from '@/routes/passkeys';
+import { index as plansIndex } from '@/routes/plans';
 import { edit as editTwoFactor } from '@/routes/two-factor';
 import { edit as editPassword } from '@/routes/user-password';
 
@@ -75,6 +80,29 @@ export const tenantsNavigation: NavSection = {
     ],
 };
 
+/**
+ * The platform owner's catalogue. Shown only on the central host of a managed
+ * deployment to staff holding `plans.manage`, when the server shares
+ * `canManagePlans`.
+ */
+export const platformNavigation: NavSection = {
+    title: 'Platform',
+    url: plansIndex().url,
+    icon: BoxesIcon,
+    items: [
+        {
+            title: 'Plans',
+            url: plansIndex().url,
+            icon: LayersIcon,
+        },
+        {
+            title: 'Features',
+            url: featuresIndex().url,
+            icon: PuzzleIcon,
+        },
+    ],
+};
+
 export const settingsNavigationGroups: NavGroup[] = [
     {
         title: 'Personal',
@@ -114,9 +142,19 @@ export const settingsNavigation: NavSection = {
     items: settingsNavigationGroups.flatMap((group) => group.items),
 };
 
+type NavigationAccess = {
+    canManageTenants: boolean;
+    canManagePlans: boolean;
+};
+
 /** The rail's sections for the current visitor. */
-export function mainNavigationFor(canManageTenants: boolean): NavSection[] {
-    return canManageTenants
-        ? [...mainNavigation, tenantsNavigation]
-        : mainNavigation;
+export function mainNavigationFor({
+    canManageTenants,
+    canManagePlans,
+}: NavigationAccess): NavSection[] {
+    return [
+        ...mainNavigation,
+        ...(canManageTenants ? [tenantsNavigation] : []),
+        ...(canManagePlans ? [platformNavigation] : []),
+    ];
 }
