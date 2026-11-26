@@ -22,7 +22,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { EDGE_CELL_PADDING } from '@/lib/table-classes';
+import { EDGE_CELL_PADDING, STICKY_FIRST_CELL } from '@/lib/table-classes';
+import { cn } from '@/lib/utils';
 import { create, edit } from '@/routes/features';
 import type { Feature } from './types';
 
@@ -48,7 +49,7 @@ export default function FeaturesIndex({ features }: Props) {
                         <Table className={EDGE_CELL_PADDING}>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="sticky left-0 bg-card">
+                                    <TableHead className={STICKY_FIRST_CELL}>
                                         Feature
                                     </TableHead>
                                     <TableHead>Limit unit</TableHead>
@@ -57,7 +58,12 @@ export default function FeaturesIndex({ features }: Props) {
                             <TableBody>
                                 {features.map((feature) => (
                                     <TableRow key={feature.id}>
-                                        <TableCell className="sticky left-0 max-w-64 bg-card">
+                                        <TableCell
+                                            className={cn(
+                                                STICKY_FIRST_CELL,
+                                                'max-w-64',
+                                            )}
+                                        >
                                             <Link
                                                 href={edit(feature.id)}
                                                 className="block truncate font-medium hover:underline"

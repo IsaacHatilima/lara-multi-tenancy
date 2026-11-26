@@ -25,7 +25,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { EDGE_CELL_PADDING } from '@/lib/table-classes';
+import { EDGE_CELL_PADDING, STICKY_FIRST_CELL } from '@/lib/table-classes';
+import { cn } from '@/lib/utils';
 import { create, index, show } from '@/routes/tenants';
 import { DomainChips } from './components/domain-chips';
 import { formatDate } from './format';
@@ -84,7 +85,7 @@ export default function TenantsIndex({ tenants, filters }: Props) {
                         <Table className={EDGE_CELL_PADDING}>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="sticky left-0 bg-card">
+                                    <TableHead className={STICKY_FIRST_CELL}>
                                         Company
                                     </TableHead>
                                     <TableHead>Domains</TableHead>
@@ -96,7 +97,12 @@ export default function TenantsIndex({ tenants, filters }: Props) {
                             <TableBody>
                                 {tenants.data.map((tenant) => (
                                     <TableRow key={tenant.id}>
-                                        <TableCell className="sticky left-0 max-w-64 bg-card align-top">
+                                        <TableCell
+                                            className={cn(
+                                                STICKY_FIRST_CELL,
+                                                'max-w-64 align-top',
+                                            )}
+                                        >
                                             <Link
                                                 href={show(tenant.id)}
                                                 className="block truncate font-medium hover:underline"
