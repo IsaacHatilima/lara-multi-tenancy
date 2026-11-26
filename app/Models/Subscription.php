@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\SubscriptionStatus;
-use App\Observers\SubscriptionObserver;
 use Carbon\CarbonImmutable;
 use Database\Factories\SubscriptionFactory;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -35,7 +33,6 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
  *
  * @property-read Plan $plan
  */
-#[ObservedBy(SubscriptionObserver::class)]
 class Subscription extends Model
 {
     use CentralConnection;

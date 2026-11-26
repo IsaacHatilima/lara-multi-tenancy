@@ -7,11 +7,9 @@ namespace App\Models;
 use App\Enums\BillingInterval;
 use App\Enums\PlanDeployment;
 use App\Enums\PlanStatus;
-use App\Observers\PlanObserver;
 use Carbon\CarbonImmutable;
 use Database\Factories\PlanFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,7 +45,6 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
  * @property-read Collection<int, Feature> $features
  * @property-read Collection<int, Subscription> $subscriptions
  */
-#[ObservedBy(PlanObserver::class)]
 #[Fillable([
     'code', 'name', 'description', 'status', 'deployment', 'is_public', 'is_default', 'price_minor', 'currency', 'interval',
     'trial_days', 'sort_order',
