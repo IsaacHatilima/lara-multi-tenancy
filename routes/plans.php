@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\CentralPermission;
+use App\Http\Controllers\Features\FeatureController;
 use App\Http\Controllers\Plans\PlanController;
 use App\Http\Middleware\EnsureTenantManagementIsAvailable;
 use Illuminate\Support\Facades\Route;
@@ -13,4 +14,5 @@ Route::middleware([
     PermissionMiddleware::using(CentralPermission::ManagePlans),
 ])->group(function () {
     Route::resource('plans', PlanController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::resource('features', FeatureController::class)->only(['index']);
 });
