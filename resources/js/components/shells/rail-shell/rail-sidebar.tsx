@@ -116,6 +116,14 @@ export function RailSidebar() {
                             peek.close();
                             setSearchOpen(true);
                         }}
+                        onToggleSidebar={() => {
+                            // Expanding from a floating preview docks that section.
+                            if (peekSection) {
+                                setSelected(peekSection);
+                            }
+                            peek.close();
+                            setOpen(!open);
+                        }}
                         onSettingsNavigate={() => {
                             setSelected(settingsNavigation);
                             peek.close();
@@ -143,15 +151,6 @@ export function RailSidebar() {
                         <SectionPanel
                             section={selected}
                             className="flex-1 rounded-l-2xl bg-sidebar-panel shadow-(--sidebar-panel-shadow)"
-                            onToggle={() => {
-                                peek.close();
-                                // Collapsing removes this button; keep focus in the rail.
-                                if (!isMobile) {
-                                    requestAnimationFrame(() =>
-                                        focusRailButton(selected),
-                                    );
-                                }
-                            }}
                         />
                     )}
                 </div>
@@ -175,10 +174,6 @@ export function RailSidebar() {
                     <SectionPanel
                         section={peekSection}
                         className="h-full rounded-xl bg-sidebar-panel-floating text-popover-foreground shadow-lg ring-1 ring-border dark:ring-foreground/5"
-                        onToggle={() => {
-                            setSelected(peekSection);
-                            peek.close();
-                        }}
                         onNavigate={peek.close}
                     />
                 </div>
