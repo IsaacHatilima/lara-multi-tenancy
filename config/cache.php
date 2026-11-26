@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 
-return [
+$cache = [
 
     /*
     |--------------------------------------------------------------------------
@@ -133,4 +133,30 @@ return [
 
     'serializable_classes' => false,
 
+];
+
+/*
+|--------------------------------------------------------------------------
+| Central Cache Store
+|--------------------------------------------------------------------------
+|
+| Platform entries, such as each tenant's feature set, live in a copy of the
+| default store. Tenancy prefixes and scopes only the stores named in
+| tenancy.cache.stores, so an entry written during a tenant's request is
+| the one the central host clears. A database store keeps to the central
+| connection instead of following the tenant's. Like the default store, it
+| is undefined when CACHE_STORE names no store above.
+|
+*/
+
+$defaultStore = $cache['stores'][$cache['default']] ?? null;
+
+return [
+    ...$cache,
+    'stores' => [
+        ...$cache['stores'],
+        'central' => $defaultStore !== null && $defaultStore['driver'] === 'database'
+            ? [...$defaultStore, 'connection' => env('DB_CONNECTION', 'sqlite')]
+            : $defaultStore,
+    ],
 ];
