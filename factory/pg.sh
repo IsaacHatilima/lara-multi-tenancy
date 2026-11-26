@@ -1,6 +1,6 @@
 # Shared by factory/serve.sh and factory/drop-databases.sh. Source it; don't run it.
 #
-# Each job worktree gets its own throwaway Postgres database, factory_<worktree>,
+# Each job worktree gets its own throwaway Postgres database, factory_<project>_<worktree>,
 # on the local server described by .env.example (never the owner's database).
 
 FACTORY_PG_HOST="${FACTORY_PG_HOST:-127.0.0.1}"
@@ -10,9 +10,18 @@ FACTORY_PG_PASSWORD="${FACTORY_PG_PASSWORD:-}"
 
 export PGHOST="$FACTORY_PG_HOST" PGPORT="$FACTORY_PG_PORT" PGUSER="$FACTORY_PG_USER" PGPASSWORD="$FACTORY_PG_PASSWORD"
 
-# factory_<folder name>, lower case, letters, digits and underscores, at most 63 characters.
+# Other projects' factories share the local server, so every name carries this
+# project's prefix, and only that prefix is ever dropped.
+factory_sanitize() {
+    printf '%s' "$1" | tr 'A-Z-' 'a-z_' | tr -cd 'a-z0-9_'
+}
+
+# The main checkout's folder name, the same from the main checkout and from any worktree.
+FACTORY_DB_PREFIX="factory_$(factory_sanitize "$(basename "$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")")")_"
+
+# factory_<project>_<worktree folder>, at most 63 characters.
 factory_db_name() {
-    printf 'factory_%s' "$(basename "$1")" | tr 'A-Z-' 'a-z_' | tr -cd 'a-z0-9_' | cut -c1-63
+    printf '%s%s' "$FACTORY_DB_PREFIX" "$(factory_sanitize "$(basename "$1")")" | cut -c1-63
 }
 
 factory_db_exists() {

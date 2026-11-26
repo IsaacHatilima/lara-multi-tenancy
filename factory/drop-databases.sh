@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Drop every factory_* Postgres database whose job worktree no longer exists,
+# Drop this project's factory Postgres databases whose job worktree no longer exists,
 # with the per-tenant roles granted on it. Run from the main checkout:
 #
 #   bash factory/drop-databases.sh            # drop the leftovers
@@ -15,7 +15,8 @@ for worktree in .worktrees/*/; do
     [ -d "$worktree" ] && live="$live $(factory_db_name "${worktree%/}")"
 done
 
-for db in $(psql -d postgres -Atc "select datname from pg_database where datname like 'factory\_%' order by datname"); do
+prefix_pattern="$(printf '%s' "$FACTORY_DB_PREFIX" | sed 's/_/\\_/g')%"
+for db in $(psql -d postgres -Atc "select datname from pg_database where datname like '${prefix_pattern}' order by datname"); do
     case " $live " in
         *" $db "*) continue ;;
     esac
