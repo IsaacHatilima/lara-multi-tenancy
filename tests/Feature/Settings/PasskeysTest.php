@@ -9,6 +9,8 @@ test('passkeys page lists the user passkeys in the shape the page expects', func
         'confirmPassword' => true,
     ]);
 
+    $this->freezeTime();
+
     $user = User::factory()->create();
     $passkey = $user->passkeys()->create([
         'name' => 'Work laptop',
