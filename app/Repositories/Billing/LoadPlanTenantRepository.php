@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Billing;
 
-class LoadPlanTenantRepository
+use App\Models\Plan;
+
+final readonly class LoadPlanTenantRepository
 {
     /**
-     * Create a new class instance.
+     * Loads the company a custom plan belongs to; a public plan has none.
      */
-    public function __construct()
+    public function handle(Plan $plan): Plan
     {
-        //
+        return $plan->load('tenant:id,name');
     }
 }
