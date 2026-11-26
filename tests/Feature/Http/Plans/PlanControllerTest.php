@@ -328,6 +328,30 @@ test('without plans the create form starts the display order at 0', function () 
         ->assertInertia(fn (Assert $page) => $page->component('plans/create')->where('plans', [])->where('defaultSortOrder', 0));
 });
 
+test('plan managers can open any plan to edit it', function () {
+    $plan = Plan::factory()->inactive()->create(['code' => 'pro', 'name' => 'Pro', 'description' => 'For larger teams', 'sort_order' => 2]);
+
+    $this->actingAs(planManager())
+        ->get(route('plans.edit', $plan))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('plans/edit')
+            ->where('plan.id', $plan->id)
+            ->where('plan.code', 'pro')
+            ->where('plan.name', 'Pro')
+            ->where('plan.description', 'For larger teams')
+            ->where('plan.sortOrder', 2)
+            ->where('plan.status', 'inactive')
+            ->where('plan.statusLabel', 'Inactive')
+            ->where('plan.tenantName', null));
+});
+
+test('without feature rows the edit page lists no features', function () {
+    $this->actingAs(planManager())
+        ->get(route('plans.edit', Plan::factory()->create()))
+        ->assertInertia(fn (Assert $page) => $page->component('plans/edit')->where('plan.features', []));
+});
+
 test('an unknown plan is not found', function () {
     $this->actingAs(planManager())->get(route('plans.edit', '0199d1a0-0000-7000-8000-000000000000'))->assertNotFound();
 });
