@@ -1,14 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Plans;
 
-class UpdatePlanAction
+use App\Data\Plans\UpdatePlanData;
+use App\Models\Plan;
+use App\Models\User;
+use App\Repositories\Billing\UpdatePlanRepository;
+
+final readonly class UpdatePlanAction
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public function __construct(
+        private UpdatePlanRepository $updatePlan,
+    ) {
+    }
+
+    public function handle(Plan $plan, UpdatePlanData $data, User $actor): Plan
     {
-        //
+        return $this->updatePlan->handle($plan, $data, $actor);
     }
 }
