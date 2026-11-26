@@ -29,6 +29,7 @@ dataset('plan routes', [
     'list' => ['get', 'plans.index', fn (): array => []],
     'create form' => ['get', 'plans.create', fn (): array => []],
     'store' => ['post', 'plans.store', fn (): array => []],
+    'edit' => ['get', 'plans.edit', fn (): array => [PlanFeature::factory()->create()->plan_id]],
 ]);
 
 function planManager(): User
@@ -292,4 +293,8 @@ test('without plans the create form starts the display order at 0', function () 
     $this->actingAs(planManager())
         ->get(route('plans.create'))
         ->assertInertia(fn (Assert $page) => $page->component('plans/create')->where('plans', [])->where('defaultSortOrder', 0));
+});
+
+test('an unknown plan is not found', function () {
+    $this->actingAs(planManager())->get(route('plans.edit', '0199d1a0-0000-7000-8000-000000000000'))->assertNotFound();
 });
