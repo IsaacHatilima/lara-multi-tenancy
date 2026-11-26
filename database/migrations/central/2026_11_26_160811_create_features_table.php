@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('features', function (Blueprint $table): void {
             $table->id();
             $table->string('key')->unique();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('limit_unit', 16)->nullable();
             $table->timestamps();
         });
     }
