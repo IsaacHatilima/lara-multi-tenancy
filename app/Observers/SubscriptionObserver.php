@@ -1,32 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Observers;
 
 use App\Models\Subscription;
+use App\Repositories\Features\TenantFeatureSetCache;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
-class SubscriptionObserver
+/**
+ * A subscription write changes its tenant's plan or state, so its cached feature set is cleared once the write commits.
+ */
+final readonly class SubscriptionObserver implements ShouldHandleEventsAfterCommit
 {
-    /**
-     * Handle the Subscription "created" event.
-     */
+    public function __construct(
+        private TenantFeatureSetCache $tenantFeatureSets,
+    ) {
+    }
+
     public function created(Subscription $subscription): void
     {
-        //
+        $this->tenantFeatureSets->forget([$subscription->tenant_id]);
     }
 
-    /**
-     * Handle the Subscription "updated" event.
-     */
     public function updated(Subscription $subscription): void
     {
-        //
+        $this->tenantFeatureSets->forget([$subscription->tenant_id]);
     }
 
-    /**
-     * Handle the Subscription "deleted" event.
-     */
     public function deleted(Subscription $subscription): void
     {
-        //
+        $this->tenantFeatureSets->forget([$subscription->tenant_id]);
     }
 }
