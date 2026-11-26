@@ -1,11 +1,14 @@
 <?php
 
+use App\Actions\Features\GetFeatureSetAction;
 use App\Models\Feature;
 use App\Models\Plan;
 use App\Models\PlanFeature;
 use App\Models\Subscription;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Inertia\Testing\AssertableInertia as Assert;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\ScopeSessions;
 
@@ -19,9 +22,9 @@ beforeEach(function () {
 
     $this->reports = Feature::factory()->create(['key' => 'test-reports']);
     $this->plan = Plan::factory()->create();
-    $tenant = Tenant::withoutEvents(fn (): Tenant => Tenant::factory()->create(['id' => 'acme']));
-    $tenant->domains()->create(['domain' => 'acme.example.test']);
-    Subscription::factory()->active()->create(['tenant_id' => $tenant->id, 'plan_id' => $this->plan->id]);
+    $this->tenant = Tenant::withoutEvents(fn (): Tenant => Tenant::factory()->create(['id' => 'acme']));
+    $this->tenant->domains()->create(['domain' => 'acme.example.test']);
+    Subscription::factory()->active()->create(['tenant_id' => $this->tenant->id, 'plan_id' => $this->plan->id]);
 });
 
 afterEach(function () {
@@ -85,6 +88,19 @@ test('a refused Inertia patch is answered with a 303', function () {
         ->patch('https://acme.example.test/test-reports');
 
     $response->assertStatus(303);
+});
+
+test('the page after an Inertia refusal carries the current features', function () {
+    $this->actingAs(User::factory()->create())
+        ->from('https://acme.example.test/dashboard')
+        ->withHeaders(['X-Inertia' => 'true'])
+        ->post('https://acme.example.test/test-reports');
+
+    $response = $this->flushHeaders()->get('https://acme.example.test/dashboard');
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->where('features.items.test-reports.enabled', false)
+        ->where('features.version', app(GetFeatureSetAction::class)->handle('acme.example.test', $this->tenant)->version()));
 });
 
 test('other requests get a plain 403', function () {

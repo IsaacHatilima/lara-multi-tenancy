@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Actions\Features\GetFeatureSetAction;
 use App\Actions\Tenants\IsTenantManagementAvailableAction;
+use App\Data\Features\FeatureSetResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -21,6 +23,7 @@ class HandleInertiaRequests extends Middleware
 
     public function __construct(
         private readonly IsTenantManagementAvailableAction $isTenantManagementAvailable,
+        private readonly GetFeatureSetAction $getFeatureSet,
     ) {
     }
 
@@ -53,6 +56,9 @@ class HandleInertiaRequests extends Middleware
             'canManageTenants' => $request->user() !== null
                 && $this->isTenantManagementAvailable->handle($request->getHost()),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            ...$request->user() === null ? [] : [
+                'features' => FeatureSetResource::fromFeatureSet($this->getFeatureSet->handle($request->getHost(), tenant())),
+            ],
         ];
     }
 }
