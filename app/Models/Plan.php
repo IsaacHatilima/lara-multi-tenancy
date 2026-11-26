@@ -9,10 +9,12 @@ use App\Enums\PlanDeployment;
 use App\Enums\PlanStatus;
 use Database\Factories\PlanFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
@@ -39,6 +41,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
  * @property Carbon|null $updated_at
  *
  * @property-read Tenant|null $tenant
+ * @property-read Collection<int, Feature> $features
  */
 #[Fillable(['code', 'name', 'status', 'deployment', 'is_public', 'is_default', 'price_minor', 'currency', 'interval', 'sort_order'])]
 class Plan extends Model
@@ -56,6 +59,16 @@ class Plan extends Model
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * @return BelongsToMany<Feature, $this, PlanFeature>
+     */
+    public function features(): BelongsToMany
+    {
+        return $this->belongsToMany(Feature::class, PlanFeature::class)
+            ->withPivot('limit', 'updated_by')
+            ->withTimestamps();
     }
 
     /**

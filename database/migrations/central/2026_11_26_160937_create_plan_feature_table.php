@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plan_feature', function (Blueprint $table) {
+        Schema::create('plan_feature', function (Blueprint $table): void {
             $table->id();
+            $table->foreignUuid('plan_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('feature_id')->index()->constrained()->restrictOnDelete();
+            $table->unsignedBigInteger('limit')->nullable();
+            $table->foreignId('updated_by')->nullable()->index()->constrained('users')->nullOnDelete();
             $table->timestamps();
+
+            $table->unique(['plan_id', 'feature_id']);
         });
     }
 

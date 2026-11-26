@@ -1,7 +1,13 @@
 <?php
 
-test('example', function () {
-    $response = $this->get('/');
+use App\Models\PlanFeature;
+use Illuminate\Database\UniqueConstraintViolationException;
 
-    $response->assertStatus(200);
-});
+test('a plan maps a feature only once', function () {
+    $mapping = PlanFeature::factory()->create();
+
+    PlanFeature::factory()->limit(15)->create([
+        'plan_id' => $mapping->plan_id,
+        'feature_id' => $mapping->feature_id,
+    ]);
+})->throws(UniqueConstraintViolationException::class);

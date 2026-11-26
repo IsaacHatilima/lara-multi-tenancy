@@ -4,6 +4,7 @@ use App\Enums\BillingInterval;
 use App\Enums\PlanDeployment;
 use App\Enums\PlanStatus;
 use App\Models\Plan;
+use App\Models\PlanFeature;
 use App\Models\Tenant;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
@@ -63,4 +64,15 @@ test('a custom plan belongs to its tenant and a public plan to none', function (
         ->and($custom->fresh()->tenant->getTenantKey())->toBe($custom->tenant_id)
         ->and($custom->is_public)->toBeFalse()
         ->and(Plan::factory()->create()->fresh()->tenant)->toBeNull();
+});
+
+test('a plan returns its features with their limits', function () {
+    $plan = Plan::factory()->create();
+    $limited = PlanFeature::factory()->limit(15)->create(['plan_id' => $plan->id]);
+    $unlimited = PlanFeature::factory()->create(['plan_id' => $plan->id]);
+
+    expect($plan->features->pluck('pivot.limit', 'id')->all())->toBe([
+        $limited->feature_id => 15,
+        $unlimited->feature_id => null,
+    ]);
 });
