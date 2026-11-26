@@ -81,6 +81,9 @@ export default defineConfig({
             'CLAUDE.md',
             'boost.json',
             'factory/**',
+            // Prose the factory documenter and teacher rewrite on each job.
+            'Documentation/**',
+            'Knowledge/**',
         ],
         sortTailwindcss: {
             functions: ['clsx', 'cn', 'cva'],
