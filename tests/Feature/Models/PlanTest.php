@@ -5,6 +5,7 @@ use App\Enums\PlanDeployment;
 use App\Enums\PlanStatus;
 use App\Models\Plan;
 use App\Models\PlanFeature;
+use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
@@ -75,4 +76,12 @@ test('a plan returns its features with their limits', function () {
         $limited->feature_id => 15,
         $unlimited->feature_id => null,
     ]);
+});
+
+test('a plan returns its subscriptions', function () {
+    $plan = Plan::factory()->create();
+    $subscriptions = Subscription::factory()->count(2)->create(['plan_id' => $plan->id]);
+    Subscription::factory()->create();
+
+    expect($plan->subscriptions->modelKeys())->toEqualCanonicalizing($subscriptions->modelKeys());
 });
