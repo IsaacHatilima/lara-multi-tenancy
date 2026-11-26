@@ -19,10 +19,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { EDGE_CELL_PADDING } from '@/lib/table-classes';
 import { formatDate } from '../format';
 import type { Payment } from '../types';
 import { PaymentStatusBadge } from './status-badges';
-import { EDGE_CELL_PADDING } from './table-classes';
 
 export function PaymentHistory({ payments }: { payments: Payment[] }) {
     return (
