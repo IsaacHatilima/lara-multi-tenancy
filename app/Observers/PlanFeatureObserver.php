@@ -29,20 +29,4 @@ class PlanFeatureObserver
     {
         //
     }
-
-    /**
-     * Handle the PlanFeature "restored" event.
-     */
-    public function restored(PlanFeature $planFeature): void
-    {
-        //
-    }
-
-    /**
-     * Handle the PlanFeature "force deleted" event.
-     */
-    public function forceDeleted(PlanFeature $planFeature): void
-    {
-        //
-    }
 }

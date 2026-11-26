@@ -29,20 +29,4 @@ class SubscriptionObserver
     {
         //
     }
-
-    /**
-     * Handle the Subscription "restored" event.
-     */
-    public function restored(Subscription $subscription): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Subscription "force deleted" event.
-     */
-    public function forceDeleted(Subscription $subscription): void
-    {
-        //
-    }
 }
