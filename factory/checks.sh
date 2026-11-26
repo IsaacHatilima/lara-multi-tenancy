@@ -10,10 +10,15 @@ set -euo pipefail
 export COMPOSER_NO_INTERACTION=1
 
 # A fresh worktree has no dependencies, .env or generated Wayfinder files.
-composer install --no-interaction --prefer-dist --no-progress --quiet
+# Install only inside a job worktree (whose .git is a file): `npm ci` deletes
+# node_modules, and the main checkout's belongs to the owner's running pnpm dev
+# server.
+if [ -f .git ]; then
+    composer install --no-interaction --prefer-dist --no-progress --quiet
+    npm ci --prefer-offline --no-audit --no-fund --loglevel=error
+fi
 [ -f .env ] || cp .env.example .env
 grep -q '^APP_KEY=base64:' .env || php artisan key:generate --no-interaction --quiet
-npm ci --prefer-offline --no-audit --no-fund --loglevel=error
 
 # The build also generates the Wayfinder routes and actions the type check reads.
 npm run build
