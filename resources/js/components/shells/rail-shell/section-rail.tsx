@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import { m } from 'motion/react';
 import { Fragment } from 'react';
 import { SearchIcon } from 'lucide-react';
@@ -112,13 +111,11 @@ export function SectionRail({
                                             className="absolute inset-0 rounded-md bg-muted"
                                         />
                                     )}
-                                    {/* Filled once selected, as ChatGPT's are. */}
+                                    {/* Outline only: selection shows through the button's
+                                        colour (aria-pressed), so detailed icons stay legible. */}
                                     <section.icon
                                         strokeWidth={ICON_STROKE_WIDTH}
-                                        className={cn(
-                                            'relative size-4',
-                                            isSelected && 'fill-current',
-                                        )}
+                                        className="relative size-4"
                                     />
                                     <span className="sr-only">
                                         {section.title}
