@@ -16,9 +16,6 @@ final readonly class CreatePlanAction
     ) {
     }
 
-    /**
-     * The new plan takes everything but its features from the input; only features and limits come from the plan it starts from.
-     */
     public function handle(CreatePlanData $data, User $actor): Plan
     {
         return $this->createPlan->handle($data, $actor);
