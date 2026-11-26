@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Refuses creating and changing anything while the tenant is read-only, except on the routes `billing.read_only_exempt` names
- * and on routes of features the default plan includes. Reads and deletes pass, so the tenant can still see its data, export it and close its account.
+ * and on routes of features the default plan includes. Reads and deletes pass, so the tenant can still see, export and delete its data.
  */
 final readonly class EnforceReadOnlyMode
 {
@@ -51,11 +51,11 @@ final readonly class EnforceReadOnlyMode
      */
     private function isDefaultPlanFeatureRoute(Route $route): bool
     {
-        $features = array_map(
-            fn (string $middleware): string => Str::after($middleware, 'feature:'),
-            array_filter($route->gatherMiddleware(), fn (mixed $middleware): bool => is_string($middleware) && str_starts_with($middleware, 'feature:')),
+        return array_any(
+            $route->gatherMiddleware(),
+            fn (mixed $middleware): bool => is_string($middleware)
+                && str_starts_with($middleware, 'feature:')
+                && $this->isFeatureOnDefaultPlan->handle(Str::after($middleware, 'feature:')),
         );
-
-        return array_any($features, fn (string $feature): bool => $this->isFeatureOnDefaultPlan->handle($feature));
     }
 }
