@@ -11,7 +11,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        if (! app()->environment('local', 'testing')) {
+        // 'factory' is a Factory job worktree served by factory/serve.sh.
+        if (! app()->environment('local', 'testing', 'factory')) {
             $this->command->warn('Demo users and companies are only seeded in the local and testing environments.');
 
             return;
