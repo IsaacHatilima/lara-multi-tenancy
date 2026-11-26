@@ -37,12 +37,14 @@ class Plan extends Model
     use HasUuids;
 
     /**
-     * @return BelongsToMany<Feature, $this, PlanFeature>
+     * The pivot's limit caps the feature on this plan; null means unlimited.
+     *
+     * @return BelongsToMany<Feature, $this>
      */
     public function features(): BelongsToMany
     {
-        return $this->belongsToMany(Feature::class, PlanFeature::class)
-            ->withPivot('limit', 'updated_by')
+        return $this->belongsToMany(Feature::class, 'plan_feature')
+            ->withPivot('limit')
             ->withTimestamps();
     }
 }
