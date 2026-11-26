@@ -9,6 +9,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Inertia\Testing\AssertableInertia as Assert;
+use InertiaUI\Notifications\ToastType;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Events\TenantCreated;
 
@@ -117,7 +118,7 @@ test('the create form offers the limit units', function () {
 test('a feature is created as typed', function () {
     $this->actingAs(featureManager())->post(route('features.store'), featureForm(['name' => '  Messaging  ']))
         ->assertRedirect(route('features.index'))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Feature created.']);
+        ->assertToast('Feature created.', ToastType::Success);
 
     expect(Feature::query()->sole())
         ->key->toBe('messaging')
@@ -182,7 +183,7 @@ test('a feature is updated, keeping its key', function () {
     $this->actingAs(featureManager())
         ->put(route('features.update', $feature), featureForm(['key' => 'chat', 'name' => 'Chat', 'description' => '', 'limit_unit' => '']))
         ->assertRedirect(route('features.index'))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Feature updated.']);
+        ->assertToast('Feature updated.', ToastType::Success);
 
     expect($feature->fresh())
         ->key->toBe('messaging')
@@ -214,7 +215,7 @@ test('deleting a feature removes it from every plan', function () {
 
     $this->actingAs(featureManager())->delete(route('features.destroy', $feature))
         ->assertRedirect(route('features.index'))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Feature deleted.']);
+        ->assertToast('Feature deleted.', ToastType::Success);
 
     expect(Feature::query()->pluck('id')->all())->toBe([$kept->id])
         ->and($plan->features()->pluck('features.id')->all())->toBe([$kept->id]);

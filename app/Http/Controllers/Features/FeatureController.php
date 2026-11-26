@@ -19,6 +19,7 @@ use App\Models\Feature;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use InertiaUI\Notifications\Toast;
 
 final class FeatureController extends Controller
 {
@@ -40,7 +41,7 @@ final class FeatureController extends Controller
     {
         $createFeature->handle(CreateFeatureData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Feature created.')]);
+        Toast::success('Feature created.')->flash();
 
         return to_route('features.index');
     }
@@ -57,7 +58,7 @@ final class FeatureController extends Controller
     {
         $updateFeature->handle($feature, UpdateFeatureData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Feature updated.')]);
+        Toast::success('Feature updated.')->flash();
 
         return to_route('features.index');
     }
@@ -66,7 +67,7 @@ final class FeatureController extends Controller
     {
         $deleteFeature->handle($feature);
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Feature deleted.')]);
+        Toast::success('Feature deleted.')->flash();
 
         return to_route('features.index');
     }

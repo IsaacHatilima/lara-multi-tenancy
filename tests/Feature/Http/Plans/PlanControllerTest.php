@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Inertia\Testing\AssertableInertia as Assert;
+use InertiaUI\Notifications\ToastType;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Events\TenantCreated;
 
@@ -116,7 +117,7 @@ test('a plan is created as typed and opened to choose its features', function ()
 
     $plan = Plan::query()->sole();
     $response->assertRedirect(route('plans.edit', $plan))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan created.']);
+        ->assertToast('Plan created.', ToastType::Success);
     expect($plan)
         ->name->toBe('Team')
         ->code->toBe('team')
@@ -183,7 +184,7 @@ test('saving a plan updates its fields and maps the ticked features with their l
     ]));
 
     $response->assertRedirect(route('plans.edit', $plan))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan updated.']);
+        ->assertToast('Plan updated.', ToastType::Success);
     expect($plan->fresh())
         ->name->toBe('Team Plus')
         ->code->toBe('team')
@@ -243,7 +244,7 @@ test('deleting a plan removes it and its feature mappings but keeps the features
 
     $this->actingAs(planManager())->delete(route('plans.destroy', $plan))
         ->assertRedirect(route('plans.index'))
-        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => 'Plan deleted.']);
+        ->assertToast('Plan deleted.', ToastType::Success);
 
     expect(Plan::query()->pluck('id')->all())->toBe([$kept->id])
         ->and(DB::table('plan_feature')->pluck('plan_id')->all())->toBe([$kept->id])
