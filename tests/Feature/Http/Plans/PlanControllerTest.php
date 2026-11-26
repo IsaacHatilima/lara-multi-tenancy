@@ -447,6 +447,7 @@ test('invalid edits are refused on their own field and save nothing', function (
     'feature without a row' => [['features' => [['key' => 'test-unknown', 'limit' => '']]], 'features.0.key'],
     'negative limit' => [['features' => [['key' => 'test-reports', 'limit' => '-1']]], 'features.0.limit'],
     'limit that is not a whole number' => [['features' => [['key' => 'test-reports', 'limit' => '2.5']]], 'features.0.limit'],
+    'feature listed twice' => [['features' => [['key' => 'test-reports', 'limit' => '1'], ['key' => 'test-reports', 'limit' => '2']]], 'features.1.key'],
 ]);
 
 test('an inactive plan can be edited and stays inactive', function () {
