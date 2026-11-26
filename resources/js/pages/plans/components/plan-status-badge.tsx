@@ -11,7 +11,11 @@ const STATUS_STYLES: Record<
     inactive: { variant: 'outline', icon: CircleSlashIcon },
 };
 
-export function PlanStatusBadge({ plan }: { plan: Plan }) {
+export function PlanStatusBadge({
+    plan,
+}: {
+    plan: Pick<Plan, 'status' | 'statusLabel'>;
+}) {
     const { variant, icon: Icon } = STATUS_STYLES[plan.status];
 
     return (
