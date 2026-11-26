@@ -14,7 +14,15 @@ enum Feature: string
      */
     public function limitUnit(): ?LimitUnit
     {
-        return self::limitUnits()[$this->value] ?? null;
+        return self::limitUnitOf($this->value);
+    }
+
+    /**
+     * The unit of a stored feature key's limit, or null for an on/off feature or a key the enum doesn't declare.
+     */
+    public static function limitUnitOf(string $key): ?LimitUnit
+    {
+        return self::limitUnits()[$key] ?? null;
     }
 
     /**
