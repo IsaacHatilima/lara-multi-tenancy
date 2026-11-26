@@ -11,6 +11,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Inertia\Testing\AssertableInertia as Assert;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Events\TenantCreated;
 
@@ -25,9 +26,9 @@ afterEach(function () {
 });
 
 dataset('plan routes', [
-    'list' => ['get', 'plans.index'],
-    'create form' => ['get', 'plans.create'],
-    'store' => ['post', 'plans.store'],
+    'list' => ['get', 'plans.index', fn (): array => []],
+    'create form' => ['get', 'plans.create', fn (): array => []],
+    'store' => ['post', 'plans.store', fn (): array => []],
 ]);
 
 function planManager(): User
@@ -55,45 +56,66 @@ function planForm(array $overrides = []): array
     ];
 }
 
-function onTenantHost(string $route): string
+function onTenantHost(string $route, array $parameters = []): string
 {
     Domain::factory()->for(Tenant::factory())->create(['domain' => 'acme.example']);
 
-    return 'https://acme.example'.route($route, absolute: false);
+    return 'https://acme.example'.route($route, $parameters, false);
 }
 
-test('guests on a tenant domain get not found', function (string $method, string $route) {
-    $this->call($method, onTenantHost($route), planForm())->assertNotFound();
+/**
+ * Every plan, plan feature row and plan activity entry, to show a refused request wrote nothing.
+ *
+ * @return array{0: list<array<string, mixed>>, 1: list<array<string, mixed>>, 2: int}
+ */
+function savedPlans(): array
+{
+    return [
+        Plan::query()->orderBy('id')->get()->toArray(),
+        PlanFeature::query()->orderBy('id')->get()->toArray(),
+        Activity::query()->where('subject_type', Plan::class)->count(),
+    ];
+}
+
+test('guests on a tenant domain get not found', function (string $method, string $route, array $parameters) {
+    $this->call($method, onTenantHost($route, $parameters), planForm())->assertNotFound();
 })->with('plan routes');
 
-test('plan managers on a tenant domain get not found', function (string $method, string $route) {
-    $this->actingAs(planManager())->call($method, onTenantHost($route), planForm())->assertNotFound();
+test('plan managers on a tenant domain get not found', function (string $method, string $route, array $parameters) {
+    $url = onTenantHost($route, $parameters);
+    $saved = savedPlans();
 
-    expect(Plan::query()->count())->toBe(0);
+    $this->actingAs(planManager())->call($method, $url, planForm())->assertNotFound();
+
+    expect(savedPlans())->toBe($saved);
 })->with('plan routes');
 
-test('plan managers on a self-hosted install get not found', function (string $method, string $route) {
+test('plan managers on a self-hosted install get not found', function (string $method, string $route, array $parameters) {
     config(['mitarbo.managed_deployment' => false]);
+    $saved = savedPlans();
 
-    $this->actingAs(planManager())->call($method, route($route), planForm())->assertNotFound();
+    $this->actingAs(planManager())->call($method, route($route, $parameters), planForm())->assertNotFound();
 
-    expect(Plan::query()->count())->toBe(0);
+    expect(savedPlans())->toBe($saved);
 })->with('plan routes');
 
-test('guests on the central host are sent to log in', function (string $method, string $route) {
-    $this->call($method, route($route), planForm())->assertRedirect(route('login'));
+test('guests on the central host are sent to log in', function (string $method, string $route, array $parameters) {
+    $this->call($method, route($route, $parameters), planForm())->assertRedirect(route('login'));
 })->with('plan routes');
 
-test('unverified users are sent to verify their email before the permission is checked', function (string $method, string $route) {
+test('unverified users are sent to verify their email before the permission is checked', function (string $method, string $route, array $parameters) {
     $this->actingAs(User::factory()->unverified()->create())
-        ->call($method, route($route), planForm())
+        ->call($method, route($route, $parameters), planForm())
         ->assertRedirect(route('verification.notice'));
 })->with('plan routes');
 
-test('central users without plans.manage are forbidden', function (string $method, string $route) {
-    $this->actingAs(User::factory()->create())->call($method, route($route), planForm())->assertForbidden();
+test('central users without plans.manage are forbidden', function (string $method, string $route, array $parameters) {
+    $user = User::factory()->create();
+    $saved = savedPlans();
 
-    expect(Plan::query()->count())->toBe(0);
+    $this->actingAs($user)->call($method, route($route, $parameters), planForm())->assertForbidden();
+
+    expect(savedPlans())->toBe($saved);
 })->with('plan routes');
 
 test('a plan is created as typed, active, hosted and not default', function () {
