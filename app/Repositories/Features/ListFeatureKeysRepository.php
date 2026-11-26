@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Features;
 
-class ListFeatureKeysRepository
+use App\Models\Feature;
+
+final readonly class ListFeatureKeysRepository
 {
     /**
-     * Create a new class instance.
+     * @return list<string>
      */
-    public function __construct()
+    public function handle(): array
     {
-        //
+        return array_values(Feature::query()
+            ->get(['key'])
+            ->map(fn (Feature $feature): string => $feature->key)
+            ->all());
     }
 }
