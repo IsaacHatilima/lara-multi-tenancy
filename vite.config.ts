@@ -40,6 +40,9 @@ export default defineConfig({
     optimizeDeps: {
         // Don't scan job worktrees for dependencies to pre-bundle.
         entries: ['resources/js/**/*.{ts,tsx}', '!**/.worktrees/**'],
+        // Pre-bundle at startup with React. Discovered late (MotionProvider loads
+        // its features lazily), it gets its own React copy and the shell goes blank.
+        include: ['motion/react'],
     },
     lint: {
         ignorePatterns: [
