@@ -48,7 +48,10 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
  * @property-read Collection<int, Subscription> $subscriptions
  */
 #[ObservedBy(PlanObserver::class)]
-#[Fillable(['code', 'name', 'status', 'deployment', 'is_public', 'is_default', 'price_minor', 'currency', 'interval', 'sort_order'])]
+#[Fillable([
+    'code', 'name', 'description', 'status', 'deployment', 'is_public', 'is_default', 'price_minor', 'currency', 'interval',
+    'trial_days', 'sort_order',
+])]
 class Plan extends Model
 {
     use CentralConnection;

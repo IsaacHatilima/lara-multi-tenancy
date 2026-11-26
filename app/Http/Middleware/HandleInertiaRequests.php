@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use App\Actions\Features\GetFeatureSetAction;
 use App\Actions\Tenants\IsTenantManagementAvailableAction;
 use App\Data\Features\FeatureSetResource;
+use App\Enums\CentralPermission;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,7 +39,8 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Define the props that are shared by default.
+     * Define the props that are shared by default. The user is shared without relations, because permission checks
+     * later in the request load its roles and permissions onto the same model.
      *
      * @see https://inertiajs.com/shared-data
      *
@@ -51,10 +53,13 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'tenantId' => tenancy()->initialized ? (string) tenant()->getTenantKey() : null,
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user()?->withoutRelations(),
             ],
             'canManageTenants' => $request->user() !== null
                 && $this->isTenantManagementAvailable->handle($request->getHost()),
+            'canManagePlans' => $request->user() !== null
+                && $this->isTenantManagementAvailable->handle($request->getHost())
+                && $request->user()->checkPermissionTo(CentralPermission::ManagePlans),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             ...$request->user() === null ? [] : [
                 'features' => FeatureSetResource::fromFeatureSet($this->getFeatureSet->handle($request->getHost(), tenant())),

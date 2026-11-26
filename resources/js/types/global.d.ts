@@ -13,6 +13,7 @@ declare module '@inertiajs/core' {
             name: string;
             tenantId: string | null;
             canManageTenants: boolean;
+            canManagePlans: boolean;
             auth: Auth;
             sidebarOpen: boolean;
             features?: FeatureSet;

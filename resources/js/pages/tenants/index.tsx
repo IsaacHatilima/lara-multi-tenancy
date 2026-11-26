@@ -25,10 +25,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { EDGE_CELL_PADDING } from '@/lib/table-classes';
 import { create, index, show } from '@/routes/tenants';
 import { DomainChips } from './components/domain-chips';
 import { formatDate } from './format';
-import { EDGE_CELL_PADDING } from './components/table-classes';
 import { TenantPagination } from './components/tenant-pagination';
 import type { Paginated, Tenant } from './types';
 

@@ -12,10 +12,10 @@ export type Navigation = {
     all: NavSection[];
 };
 
-/** Navigation for the current visitor: tenant management appears only when the server allows it. */
+/** Navigation for the current visitor: tenant and plan management appear only when the server allows them. */
 export function useNavigation(): Navigation {
-    const { canManageTenants } = usePage().props;
-    const main = mainNavigationFor(canManageTenants);
+    const { canManageTenants, canManagePlans } = usePage().props;
+    const main = mainNavigationFor({ canManageTenants, canManagePlans });
 
     return { main, all: [...main, settingsNavigation] };
 }
