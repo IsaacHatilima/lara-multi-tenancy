@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AddFeaturesVersionHeader;
 use App\Http\Middleware\EnforceReadOnlyMode;
 use App\Http\Middleware\EnsureFeatureIsAvailable;
 use App\Http\Middleware\EnsureTenantManagementIsAvailable;
@@ -57,6 +58,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             HandleAppearance::class,
+            AddFeaturesVersionHeader::class,
             HandleInertiaRequests::class,
             // Inside HandleInertiaRequests, so a refused PUT or PATCH from Inertia is redirected with a 303.
             EnforceReadOnlyMode::class,
