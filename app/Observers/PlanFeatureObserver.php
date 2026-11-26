@@ -1,32 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Observers;
 
+use App\Actions\Features\ClearPlanTenantsFeaturesAction;
 use App\Models\PlanFeature;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
-class PlanFeatureObserver
+/**
+ * A plan gaining, losing or re-limiting a feature reaches its tenants' feature sets, including writes made through the plan's
+ * features relation, which saves and deletes this pivot model.
+ */
+final readonly class PlanFeatureObserver implements ShouldHandleEventsAfterCommit
 {
-    /**
-     * Handle the PlanFeature "created" event.
-     */
+    public function __construct(
+        private ClearPlanTenantsFeaturesAction $clearPlanTenantsFeatures,
+    ) {
+    }
+
     public function created(PlanFeature $planFeature): void
     {
-        //
+        $this->clearPlanTenantsFeatures->handle($planFeature->plan_id, false);
     }
 
-    /**
-     * Handle the PlanFeature "updated" event.
-     */
     public function updated(PlanFeature $planFeature): void
     {
-        //
+        $this->clearPlanTenantsFeatures->handle($planFeature->plan_id, false);
     }
 
-    /**
-     * Handle the PlanFeature "deleted" event.
-     */
     public function deleted(PlanFeature $planFeature): void
     {
-        //
+        $this->clearPlanTenantsFeatures->handle($planFeature->plan_id, false);
     }
 }

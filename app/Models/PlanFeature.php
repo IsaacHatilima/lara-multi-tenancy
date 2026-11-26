@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Observers\PlanFeatureObserver;
 use Carbon\CarbonImmutable;
 use Database\Factories\PlanFeatureFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -22,6 +24,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  */
+#[ObservedBy(PlanFeatureObserver::class)]
 #[Table(incrementing: true)]
 class PlanFeature extends Pivot
 {
