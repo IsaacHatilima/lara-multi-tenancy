@@ -1,14 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Billing;
 
-class GetDefaultPlanRepository
+use App\Enums\PlanDeployment;
+use App\Models\Plan;
+
+final readonly class GetDefaultPlanRepository
 {
     /**
-     * Create a new class instance.
+     * The hosted default plan, which tenants without a current subscription are on.
      */
-    public function __construct()
+    public function handle(): ?Plan
     {
-        //
+        return Plan::query()
+            ->where('is_default', true)
+            ->where('deployment', PlanDeployment::Hosted)
+            ->first(['id', 'name', 'code']);
     }
 }
