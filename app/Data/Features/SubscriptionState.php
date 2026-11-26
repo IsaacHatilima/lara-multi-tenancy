@@ -9,6 +9,8 @@ use Carbon\CarbonImmutable;
 
 /**
  * The parts of a tenant's current subscription that enforcement reads: its status and when its trial and grace end.
+ *
+ * @phpstan-type SubscriptionStateArray array{status: string, trialEndsAt: string|null, graceEndsAt: string|null}
  */
 final readonly class SubscriptionState
 {
@@ -20,7 +22,7 @@ final readonly class SubscriptionState
     }
 
     /**
-     * @param  array{status: string, trialEndsAt: string|null, graceEndsAt: string|null}  $state
+     * @param  SubscriptionStateArray  $state
      */
     public static function fromArray(array $state): self
     {
@@ -32,7 +34,7 @@ final readonly class SubscriptionState
     }
 
     /**
-     * @return array{status: string, trialEndsAt: string|null, graceEndsAt: string|null}
+     * @return SubscriptionStateArray
      */
     public function toArray(): array
     {

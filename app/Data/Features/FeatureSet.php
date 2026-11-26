@@ -9,13 +9,16 @@ use App\Enums\Feature;
 /**
  * What a tenant may use, worked out from its plan. An ungated set, for the central host and self-hosted installs, allows everything.
  *
+ * @phpstan-import-type FeatureItemArray from FeatureItem
+ * @phpstan-import-type SubscriptionStateArray from SubscriptionState
+ *
  * @phpstan-type FeatureSetArray array{
  *     gated: bool,
  *     planName: string|null,
  *     planCode: string|null,
- *     subscription: array{status: string, trialEndsAt: string|null, graceEndsAt: string|null}|null,
+ *     subscription: SubscriptionStateArray|null,
  *     readOnly: bool,
- *     items: array<string, array{enabled: bool, limit: int|null, unit: string|null, availableOn: list<string>}>,
+ *     items: array<string, FeatureItemArray>,
  * }
  */
 final readonly class FeatureSet

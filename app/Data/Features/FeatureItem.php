@@ -8,6 +8,8 @@ use App\Enums\LimitUnit;
 
 /**
  * One feature as a tenant's plan grants it. An empty limit means unlimited; a locked feature lists the plans that include it.
+ *
+ * @phpstan-type FeatureItemArray array{enabled: bool, limit: int|null, unit: string|null, availableOn: list<string>}
  */
 final readonly class FeatureItem
 {
@@ -23,7 +25,7 @@ final readonly class FeatureItem
     }
 
     /**
-     * @param  array{enabled: bool, limit: int|null, unit: string|null, availableOn: list<string>}  $item
+     * @param  FeatureItemArray  $item
      */
     public static function fromArray(array $item): self
     {
@@ -36,7 +38,7 @@ final readonly class FeatureItem
     }
 
     /**
-     * @return array{enabled: bool, limit: int|null, unit: string|null, availableOn: list<string>}
+     * @return FeatureItemArray
      */
     public function toArray(): array
     {
