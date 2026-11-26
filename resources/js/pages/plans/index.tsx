@@ -22,7 +22,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { EDGE_CELL_PADDING } from '@/lib/table-classes';
+import { EDGE_CELL_PADDING, STICKY_FIRST_CELL } from '@/lib/table-classes';
+import { cn } from '@/lib/utils';
 import { create, edit } from '@/routes/plans';
 import type { Plan } from './types';
 
@@ -48,7 +49,7 @@ export default function PlansIndex({ plans }: Props) {
                         <Table className={EDGE_CELL_PADDING}>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="sticky left-0 bg-card">
+                                    <TableHead className={STICKY_FIRST_CELL}>
                                         Plan
                                     </TableHead>
                                     <TableHead>Description</TableHead>
@@ -57,7 +58,12 @@ export default function PlansIndex({ plans }: Props) {
                             <TableBody>
                                 {plans.map((plan) => (
                                     <TableRow key={plan.id}>
-                                        <TableCell className="sticky left-0 max-w-64 bg-card">
+                                        <TableCell
+                                            className={cn(
+                                                STICKY_FIRST_CELL,
+                                                'max-w-64',
+                                            )}
+                                        >
                                             <Link
                                                 href={edit(plan.id)}
                                                 className="block truncate font-medium hover:underline"
