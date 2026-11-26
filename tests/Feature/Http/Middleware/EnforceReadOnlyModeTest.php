@@ -1,10 +1,13 @@
 <?php
 
+use App\Models\Feature;
 use App\Models\Plan;
+use App\Models\PlanFeature;
 use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Bootstrappers\BroadcastChannelPrefixBootstrapper;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -17,6 +20,7 @@ beforeEach(function () {
         Route::match(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'test-write', fn (): string => 'reached');
         Route::post('test-unlisted', fn (): string => 'reached')->name('test.unlisted');
         Route::post('test-exempt', fn (): string => 'reached')->name('test.exempt');
+        Route::post('test-reports', fn (): string => 'reached')->middleware('feature:test-reports');
     });
     Route::getRoutes()->refreshNameLookups();
 
@@ -26,6 +30,10 @@ beforeEach(function () {
     $this->subscribe = fn (string $state): Subscription => Subscription::factory()
         ->{$state}()
         ->create(['tenant_id' => $this->tenant->id, 'plan_id' => $this->plan->id]);
+    $this->reports = Feature::factory()->create(['key' => 'test-reports']);
+    $this->include = function (Plan $plan): void {
+        PlanFeature::factory()->create(['plan_id' => $plan->id, 'feature_id' => $this->reports->id]);
+    };
 });
 
 afterEach(function () {
@@ -67,6 +75,26 @@ test('writes to exempt routes pass', function () {
     $response = $this->postJson('https://acme.example.test/test-exempt');
 
     $response->assertOk();
+});
+
+test('writes to features the default plan includes pass', function () {
+    ($this->subscribe)('readOnly');
+    ($this->include)($this->plan);
+    ($this->include)(Plan::factory()->default()->create());
+
+    $response = $this->postJson('https://acme.example.test/test-reports');
+
+    $response->assertOk();
+});
+
+test('writes to features the default plan lacks are refused', function () {
+    ($this->subscribe)('readOnly');
+    ($this->include)($this->plan);
+    Plan::factory()->default()->create();
+
+    $response = $this->postJson('https://acme.example.test/test-reports');
+
+    $response->assertForbidden()->assertJsonPath('feature', null);
 });
 
 test('the shipped exempt routes are never refused', function (string $name, bool $signedIn) {
@@ -179,3 +207,18 @@ test('an ungated host is never read-only', function (bool $managed, string $host
     'managed central host' => fn (): array => [true, config('app.url')],
     'self-hosted install' => [false, 'https://acme.example.test'],
 ]);
+
+test('tenants that are not read-only add no default-plan query', function () {
+    ($this->subscribe)('active');
+    ($this->include)($this->plan);
+    $this->postJson('https://acme.example.test/test-reports')->assertOk();
+    DB::enableQueryLog();
+
+    $this->postJson('https://acme.example.test/test-reports')->assertOk();
+
+    $planQueries = array_filter(
+        array_column(DB::getQueryLog(), 'query'),
+        fn (string $query): bool => preg_match('/\b(plans|plan_feature)\b/', $query) === 1,
+    );
+    expect($planQueries)->toBe([]);
+});
