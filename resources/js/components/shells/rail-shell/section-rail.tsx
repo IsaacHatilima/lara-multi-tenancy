@@ -115,7 +115,7 @@ export function SectionRail({
                                             layoutId="rail-selected-section"
                                             transition={slideSpring}
                                             aria-hidden
-                                            className="absolute inset-0 rounded-md bg-muted"
+                                            className="absolute inset-0 rounded-md bg-sidebar-rail-active"
                                         />
                                     )}
                                     {/* Outline only: selection shows through the button's

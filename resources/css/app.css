@@ -45,6 +45,7 @@
     --color-sidebar-panel: var(--sidebar-panel);
     --color-sidebar-panel-floating: var(--sidebar-panel-floating);
     --color-sidebar-rail: var(--sidebar-rail);
+    --color-sidebar-rail-active: var(--sidebar-rail-active);
     --color-chart-5: var(--chart-5);
     --color-chart-4: var(--chart-4);
     --color-chart-3: var(--chart-3);
@@ -148,6 +149,7 @@
     --sidebar-panel: var(--background);
     --sidebar-panel-floating: var(--background);
     --sidebar-rail: var(--sidebar);
+    --sidebar-rail-active: var(--muted);
     --sidebar-foreground: rgb(13 13 13 / 85%);
     /* Sidebar icons, a step quieter than muted text. */
     --sidebar-muted-foreground: #8f8f8f;
@@ -164,13 +166,13 @@
 
 .dark {
     color-scheme: dark;
-    --background: #0b0b0a;
+    --background: #0e0e0e;
     --dashboard-background: var(--background);
     --foreground: #ededed;
-    --card: var(--background);
+    --card: #212121;
     --standalone-card-background: var(--stacked-card);
     --borderless-card-shadow: none;
-    --stacked-card: #131312;
+    --stacked-card: #1b1b1b;
     --overlay-stack-background: var(--stacked-card);
     --stacked-card-shadow:
         0 0 0 1px rgb(255 255 255 / 4%), 0 2px 4px rgb(0 0 0 / 20%),
@@ -190,7 +192,7 @@
     --muted: var(--secondary);
     --muted-foreground: #909090;
     --scrollbar-thumb: rgb(255 255 255 / 20%);
-    --accent: rgb(255 255 255 / 5%);
+    --accent: #262626;
     --accent-foreground: #ededed;
     --destructive: oklch(0.704 0.191 22.216);
     --border: rgb(255 255 255 / 5%);
@@ -204,12 +206,13 @@
     --sidebar: #171717;
     --sidebar-panel: var(--background);
     --sidebar-panel-floating: var(--popover);
-    --sidebar-rail: var(--sidebar);
+    --sidebar-rail: #000000;
+    --sidebar-rail-active: #1a1a1a;
     --sidebar-foreground: rgb(237 237 237 / 85%);
     --sidebar-muted-foreground: var(--muted-foreground);
     --sidebar-primary: #ededed;
     --sidebar-primary-foreground: #0d0d0d;
-    --sidebar-accent: var(--accent);
+    --sidebar-accent: #262626;
     --sidebar-accent-foreground: #ededed;
     --sidebar-border: var(--border);
     --sidebar-ring: #3a83f7;
