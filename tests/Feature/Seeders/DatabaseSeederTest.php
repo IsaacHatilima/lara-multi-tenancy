@@ -1,7 +1,16 @@
 <?php
 
-test('example', function () {
-    $response = $this->get('/');
+use App\Models\Plan;
+use App\Models\Tenant;
+use App\Models\User;
 
-    $response->assertStatus(200);
+test('production gets the plans and no demo users or companies', function () {
+    config(['mitarbo.managed_deployment' => true]);
+    app()->detectEnvironment(fn (): string => 'production');
+
+    $this->artisan('db:seed', ['--force' => true])->assertSuccessful();
+
+    expect(Plan::query()->orderBy('sort_order')->pluck('code')->all())->toBe(['free', 'basic', 'pro'])
+        ->and(User::query()->count())->toBe(0)
+        ->and(Tenant::query()->count())->toBe(0);
 });
