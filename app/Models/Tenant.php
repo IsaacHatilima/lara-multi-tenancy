@@ -33,6 +33,7 @@ use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
  * @property string|null $locale
  *
  * @property-read Collection<int, Domain> $domains
+ * @property-read Collection<int, Subscription> $subscriptions
  */
 class Tenant extends BaseTenant implements TenantWithDatabase
 {
@@ -73,5 +74,13 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function domains(): HasMany
     {
         return $this->hasMany(Domain::class)->orderBy('slot')->orderBy('id');
+    }
+
+    /**
+     * @return HasMany<Subscription, $this>
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 }

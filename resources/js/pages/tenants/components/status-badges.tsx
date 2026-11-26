@@ -18,7 +18,9 @@ const SUBSCRIPTION_STYLES: Record<Subscription['status'], BadgeStyle> = {
     active: { variant: 'secondary', icon: CircleCheckIcon },
     trialing: { variant: 'outline', icon: CircleDashedIcon },
     past_due: { variant: 'destructive', icon: CircleAlertIcon },
-    cancelled: { variant: 'outline', icon: CircleSlashIcon },
+    read_only: { variant: 'destructive', icon: CircleAlertIcon },
+    canceled: { variant: 'outline', icon: CircleSlashIcon },
+    ended: { variant: 'outline', icon: CircleSlashIcon },
 };
 
 const PAYMENT_STYLES: Record<Payment['status'], BadgeStyle> = {
