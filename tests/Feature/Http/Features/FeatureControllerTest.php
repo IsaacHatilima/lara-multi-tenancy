@@ -2,9 +2,11 @@
 
 use App\Enums\CentralPermission;
 use App\Models\Domain;
+use App\Models\Feature;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Events\TenantCreated;
 
@@ -44,4 +46,28 @@ test('the features page answers each visitor as the plans routes do', function (
         ->get(route('features.index'))
         ->assertRedirect(route('verification.notice')),
     'user without plans.manage' => fn () => $this->actingAs(User::factory()->create())->get(route('features.index'))->assertForbidden(),
+    'plan manager on the central host' => fn () => $this->actingAs(User::factory()->create()->givePermissionTo(CentralPermission::ManagePlans))
+        ->get(route('features.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->component('features/index')),
 ]);
+
+test('plan managers see every feature row by key with its limit unit', function () {
+    Feature::factory()->create(['key' => 'test-storage']);
+    Feature::factory()->create(['key' => 'test-reports']);
+
+    $this->actingAs(User::factory()->create()->givePermissionTo(CentralPermission::ManagePlans))
+        ->get(route('features.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('features/index')
+            ->has('features', 2)
+            ->where('features.0', ['key' => 'test-reports', 'unitLabel' => null, 'plans' => []])
+            ->where('features.1.key', 'test-storage')
+            ->where('features.1.unitLabel', null));
+});
+
+test('without feature rows the page lists no features', function () {
+    $this->actingAs(User::factory()->create()->givePermissionTo(CentralPermission::ManagePlans))
+        ->get(route('features.index'))
+        ->assertInertia(fn (Assert $page) => $page->component('features/index')->where('features', []));
+});
