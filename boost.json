@@ -12,7 +12,8 @@
     "packages": [
         "spatie/laravel-activitylog",
         "spatie/laravel-permission",
-        "spatie/laravel-query-builder"
+        "spatie/laravel-query-builder",
+        "inertiaui/notifications"
     ],
     "sail": false,
     "skills": [
@@ -26,6 +27,7 @@
         "echo-react-development",
         "tailwindcss-development",
         "echo-development",
+        "inertia-notifications-development",
         "activitylog-development",
         "laravel-permission-development",
         "laravel-query-builder",

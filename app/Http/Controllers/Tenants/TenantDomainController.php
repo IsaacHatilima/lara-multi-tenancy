@@ -13,7 +13,7 @@ use App\Http\Requests\Domains\SaveDomainRequest;
 use App\Models\Domain;
 use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
+use InertiaUI\Notifications\Toast;
 
 final class TenantDomainController extends Controller
 {
@@ -24,7 +24,7 @@ final class TenantDomainController extends Controller
     {
         $createDomain->handle($tenant, SaveDomainData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Domain added.')]);
+        Toast::success('Domain added.')->flash();
 
         return to_route('tenants.edit', $tenant);
     }
@@ -36,7 +36,7 @@ final class TenantDomainController extends Controller
     {
         $updateDomain->handle($tenant, $domain, SaveDomainData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Domain updated.')]);
+        Toast::success('Domain updated.')->flash();
 
         return to_route('tenants.edit', $tenant);
     }
@@ -48,7 +48,7 @@ final class TenantDomainController extends Controller
     {
         $deleteDomain->handle($tenant, $domain);
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Domain removed.')]);
+        Toast::success('Domain removed.')->flash();
 
         return to_route('tenants.edit', $tenant);
     }

@@ -1,3 +1,4 @@
+import type { InertiaUIFlashData } from '@inertiaui/notifications-react';
 import type { Auth } from '@/types/auth';
 
 declare module 'react' {
@@ -8,6 +9,7 @@ declare module 'react' {
 
 declare module '@inertiajs/core' {
     export interface InertiaConfig {
+        flashDataType: InertiaUIFlashData;
         sharedPageProps: {
             name: string;
             tenantId: string | null;

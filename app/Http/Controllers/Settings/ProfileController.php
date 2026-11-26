@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use InertiaUI\Notifications\Toast;
 
 class ProfileController extends Controller
 {
@@ -43,7 +44,7 @@ class ProfileController extends Controller
     ): RedirectResponse {
         $updateProfile->handle($user, UpdateProfileData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Profile updated.')]);
+        Toast::success('Profile updated.')->flash();
 
         return to_route('profile.edit');
     }

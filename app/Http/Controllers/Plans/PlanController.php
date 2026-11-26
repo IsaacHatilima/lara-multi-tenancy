@@ -19,6 +19,7 @@ use App\Models\Plan;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use InertiaUI\Notifications\Toast;
 
 final class PlanController extends Controller
 {
@@ -41,7 +42,7 @@ final class PlanController extends Controller
     {
         $plan = $createPlan->handle(CreatePlanData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan created.')]);
+        Toast::success('Plan created.')->flash();
 
         return to_route('plans.edit', $plan);
     }
@@ -58,7 +59,7 @@ final class PlanController extends Controller
     {
         $updatePlan->handle($plan, UpdatePlanData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan updated.')]);
+        Toast::success('Plan updated.')->flash();
 
         return to_route('plans.edit', $plan);
     }
@@ -67,7 +68,7 @@ final class PlanController extends Controller
     {
         $deletePlan->handle($plan);
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Plan deleted.')]);
+        Toast::success('Plan deleted.')->flash();
 
         return to_route('plans.index');
     }

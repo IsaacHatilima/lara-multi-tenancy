@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
+use InertiaUI\Notifications\Toast;
 
 class PasswordController extends Controller
 {
@@ -38,7 +39,7 @@ class PasswordController extends Controller
     ): RedirectResponse {
         $updatePassword->handle($user, UpdatePasswordData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Password updated.')]);
+        Toast::success('Password updated.')->flash();
 
         return back();
     }

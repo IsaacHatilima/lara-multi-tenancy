@@ -20,6 +20,7 @@ use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use InertiaUI\Notifications\Toast;
 
 final class TenantController extends Controller
 {
@@ -51,7 +52,7 @@ final class TenantController extends Controller
     {
         $tenant = $createTenant->handle(CreateTenantData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Company created.')]);
+        Toast::success('Company created.')->flash();
 
         return to_route('tenants.edit', $tenant);
     }
@@ -83,7 +84,7 @@ final class TenantController extends Controller
     {
         $updateTenant->handle($tenant, SaveTenantData::fromRequest($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Company updated.')]);
+        Toast::success('Company updated.')->flash();
 
         return to_route('tenants.edit', $tenant);
     }
