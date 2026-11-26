@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\AddFeaturesVersionHeader;
-use App\Http\Middleware\EnforceReadOnlyMode;
 use App\Http\Middleware\EnsureFeatureIsAvailable;
 use App\Http\Middleware\EnsureTenantManagementIsAvailable;
 use App\Http\Middleware\HandleAppearance;
@@ -35,17 +34,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withBroadcasting(
         __DIR__.'/../routes/channels.php',
-        [
-            'middleware' => [
-                'web',
-                InitializeTenancyByDomain::class,
-                'universal',
-                ScopeSessions::class,
-                'auth',
-            ],
-            // Real-time updates keep working for a read-only tenant.
-            'excluded_middleware' => [EnforceReadOnlyMode::class],
-        ],
+        ['middleware' => [
+            'web',
+            InitializeTenancyByDomain::class,
+            'universal',
+            ScopeSessions::class,
+            'auth',
+        ]],
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->preventRequestsDuringMaintenance(except: ['up']);
@@ -60,8 +55,6 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             AddFeaturesVersionHeader::class,
             HandleInertiaRequests::class,
-            // Inside HandleInertiaRequests, so a refused PUT or PATCH from Inertia is redirected with a 303.
-            EnforceReadOnlyMode::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
     })
