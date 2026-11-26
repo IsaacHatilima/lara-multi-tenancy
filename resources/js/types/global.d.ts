@@ -1,4 +1,5 @@
 import type { Auth } from '@/types/auth';
+import type { FeatureSet } from '@/types/features';
 
 declare module 'react' {
     interface InputHTMLAttributes<T> {
@@ -14,6 +15,7 @@ declare module '@inertiajs/core' {
             canManageTenants: boolean;
             auth: Auth;
             sidebarOpen: boolean;
+            features?: FeatureSet;
             [key: string]: unknown;
         };
     }
