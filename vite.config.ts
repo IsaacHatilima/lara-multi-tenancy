@@ -62,6 +62,14 @@ export default defineConfig({
             'composer.json',
             'resources/js/components/ui/*',
             'resources/views/mail/*',
+            // Generated or tool-owned: Laravel Boost and the skills installer
+            // rewrite these, and the factory scripts own factory/.
+            '.agents/**',
+            '.ai/**',
+            'AGENTS.md',
+            'CLAUDE.md',
+            'boost.json',
+            'factory/**',
         ],
         sortTailwindcss: {
             functions: ['clsx', 'cn', 'cva'],
