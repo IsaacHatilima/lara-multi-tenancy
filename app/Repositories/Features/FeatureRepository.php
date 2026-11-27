@@ -9,37 +9,33 @@ use App\Data\Features\UpdateFeatureData;
 use App\Models\Feature;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Entry file for all Feature persistence. Each operation lives in its own class in this folder; this class composes
+ * them so an action needs one import and one constructor parameter instead of one per operation.
+ */
 final readonly class FeatureRepository
 {
+    public function __construct(
+        private CreateFeature $createFeature,
+        private UpdateFeature $updateFeature,
+        private DeleteFeature $deleteFeature,
+        private ListFeatures $listFeatures,
+    ) {
+    }
+
     public function create(CreateFeatureData $data): Feature
     {
-        $feature = new Feature();
-
-        $feature->key = $data->key;
-        $feature->name = $data->name;
-        $feature->description = $data->description;
-        $feature->limit_unit = $data->limitUnit;
-        $feature->save();
-
-        return $feature;
+        return $this->createFeature->handle($data);
     }
 
     public function update(Feature $feature, UpdateFeatureData $data): Feature
     {
-        $feature->name = $data->name;
-        $feature->description = $data->description;
-        $feature->limit_unit = $data->limitUnit;
-        $feature->save();
-
-        return $feature;
+        return $this->updateFeature->handle($feature, $data);
     }
 
-    /**
-     * The database removes the feature from every plan that includes it.
-     */
     public function delete(Feature $feature): void
     {
-        $feature->delete();
+        $this->deleteFeature->handle($feature);
     }
 
     /**
@@ -47,9 +43,6 @@ final readonly class FeatureRepository
      */
     public function list(): Collection
     {
-        return Feature::query()
-            ->orderBy('name')
-            ->orderBy('key')
-            ->get(['id', 'key', 'name', 'description', 'limit_unit']);
+        return $this->listFeatures->handle();
     }
 }
