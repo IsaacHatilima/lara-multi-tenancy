@@ -46,7 +46,7 @@ These override the installed skills where they differ.
 
 **Repositories**
 
-- One repository per domain, such as `app/Repositories/Users/UserRepository.php` or `app/Repositories/Tenants/TenantRepository.php`, with one public method per purpose (`create`, `update`, `delete`, `list`, `emailTaken`). Don't add one class per query. Actions keep a single `handle()`.
+- Each persistence operation is its own small class with one `handle()`, named for what it does and without a `Repository` suffix (`app/Repositories/Users/CreateUser.php`, `UserEmailTaken.php`). The domain's entry file, such as `app/Repositories/Users/UserRepository.php`, composes those classes and exposes one method per operation (`create`, `emailTaken`) that delegates to `handle()`. Actions inject only the entry repository, so they need one import and one constructor parameter. Put a new query in a new operation class and add its method to the entry repository.
 - Write models by assigning each property from the Data object, then `save()`. Don't use `fill()`, `forceFill()`, `create([...])` or `update([...])` with an attribute array.
 - When create and update write the same columns, use one `save(Data $data, ?Model $model = null)` that starts with `$model ??= new Model();`. When they differ, as for users, write separate `create` and `update` methods.
 - A query that leaves a record out takes that record's id under a name that says what it is, such as `?string $userId = null`. Don't pass the model or call the parameter `$except`.
