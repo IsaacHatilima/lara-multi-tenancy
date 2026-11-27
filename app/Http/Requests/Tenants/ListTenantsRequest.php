@@ -14,7 +14,8 @@ final class ListTenantsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['nullable', 'string', 'max:255'],
+            'filter' => ['nullable', 'array:search'],
+            'filter.search' => ['nullable', 'string', 'max:255'],
             'page' => ['nullable', 'integer', 'min:1'],
         ];
     }

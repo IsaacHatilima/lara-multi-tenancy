@@ -61,7 +61,7 @@ export default function TenantsIndex({ tenants, filters }: Props) {
                         />
                         <Input
                             type="search"
-                            name="search"
+                            name="filter[search]"
                             aria-label="Search tenants"
                             placeholder="Search name, email or domain"
                             defaultValue={filters.search ?? ''}
