@@ -29,12 +29,12 @@ export type BillingIntervalOption = {
     label: string;
 };
 
-/** PlanFeatureResource */
+/** PlanFeatureResource: a feature the plan includes, with its limit there. */
 export type PlanFeature = {
     id: number;
     key: string;
     name: string;
     limitUnitLabel: string | null;
-    included: boolean;
+    /** Null means unlimited. */
     limit: number | null;
 };

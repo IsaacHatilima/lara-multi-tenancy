@@ -1,11 +1,10 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import PlanController from '@/actions/App/Http/Controllers/Plans/PlanController';
 import { ConfirmDeleteDialog } from '@/components/confirm-delete-dialog';
-import InputError from '@/components/input-error';
 import { SettingsSection } from '@/components/settings-section';
 import { Button } from '@/components/ui/button';
 import { index } from '@/routes/plans';
-import { PlanFeatureFields } from './components/plan-feature-fields';
+import { PlanFeatures } from './components/plan-features';
 import { PlanFields } from './components/plan-fields';
 import { PlanPricingFields } from './components/plan-pricing-fields';
 import type {
@@ -63,17 +62,6 @@ export default function EditPlan({
                                 />
                             </SettingsSection>
 
-                            <SettingsSection
-                                title="Features"
-                                description="What a company on this plan can use. An empty limit means unlimited."
-                            >
-                                <PlanFeatureFields
-                                    features={features}
-                                    errors={errors}
-                                />
-                                <InputError message={errors.features} />
-                            </SettingsSection>
-
                             <div className="flex justify-end gap-2">
                                 <Button
                                     nativeButton={false}
@@ -89,6 +77,13 @@ export default function EditPlan({
                         </>
                     )}
                 </Form>
+
+                <SettingsSection
+                    title="Features"
+                    description="What a company on this plan can use. An empty limit means unlimited."
+                >
+                    <PlanFeatures plan={plan} features={features} />
+                </SettingsSection>
 
                 <SettingsSection
                     title="Delete plan"
