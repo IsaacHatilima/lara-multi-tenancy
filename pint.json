@@ -4,10 +4,27 @@
         "single_line_empty_body": false,
         "phpdoc_separation": {
             "groups": [
-                ["deprecated", "link", "see", "since"],
-                ["author", "copyright", "license"],
-                ["category", "package", "subpackage"]
+                [
+                    "deprecated",
+                    "link",
+                    "see",
+                    "since"
+                ],
+                [
+                    "author",
+                    "copyright",
+                    "license"
+                ],
+                [
+                    "category",
+                    "package",
+                    "subpackage"
+                ]
             ]
+        },
+        "new_with_parentheses": {
+            "named_class": true,
+            "anonymous_class": false
         }
     }
 }

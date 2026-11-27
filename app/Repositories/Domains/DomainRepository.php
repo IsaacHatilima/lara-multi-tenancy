@@ -12,7 +12,7 @@ final readonly class DomainRepository
 {
     public function create(Tenant $tenant, string $hostname, DomainSlot $slot): Domain
     {
-        $domain = new Domain;
+        $domain = new Domain();
 
         $domain->tenant_id = (string) $tenant->getTenantKey();
         $domain->domain = $hostname;

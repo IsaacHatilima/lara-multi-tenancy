@@ -25,7 +25,7 @@ final readonly class TenantRepository
      */
     public function save(SaveTenantData $data, ?Tenant $tenant = null): Tenant
     {
-        $tenant ??= new Tenant;
+        $tenant ??= new Tenant();
 
         $tenant->name = $data->name;
         $tenant->legal_name = $data->legalName;

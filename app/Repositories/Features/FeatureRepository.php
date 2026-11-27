@@ -13,7 +13,7 @@ final readonly class FeatureRepository
 {
     public function create(CreateFeatureData $data): Feature
     {
-        $feature = new Feature;
+        $feature = new Feature();
 
         $feature->key = $data->key;
         $feature->name = $data->name;

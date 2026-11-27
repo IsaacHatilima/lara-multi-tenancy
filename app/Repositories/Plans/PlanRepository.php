@@ -13,7 +13,7 @@ final readonly class PlanRepository
 {
     public function create(CreatePlanData $data): Plan
     {
-        $plan = new Plan;
+        $plan = new Plan();
 
         $plan->name = $data->name;
         $plan->code = $data->code;
