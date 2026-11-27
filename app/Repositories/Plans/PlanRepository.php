@@ -7,7 +7,8 @@ namespace App\Repositories\Plans;
 use App\Data\Plans\CreatePlanData;
 use App\Data\Plans\UpdatePlanData;
 use App\Models\Plan;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Entry file for all Plan persistence. Each operation lives in its own class in this folder; this class composes
@@ -40,11 +41,11 @@ final readonly class PlanRepository
     }
 
     /**
-     * @return Collection<int, Plan>
+     * @return LengthAwarePaginator<int, Plan>
      */
-    public function list(): Collection
+    public function list(Request $request, int $perPage): LengthAwarePaginator
     {
-        return $this->listPlans->handle();
+        return $this->listPlans->handle($request, $perPage);
     }
 
     /**

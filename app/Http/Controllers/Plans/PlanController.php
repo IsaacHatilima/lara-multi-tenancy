@@ -11,11 +11,13 @@ use App\Actions\Plans\ListPlanFeaturesAction;
 use App\Actions\Plans\ListPlansAction;
 use App\Actions\Plans\UpdatePlanAction;
 use App\Data\Plans\CreatePlanData;
+use App\Data\Plans\ListPlansData;
 use App\Data\Plans\UpdatePlanData;
 use App\Enums\BillingInterval;
 use App\Enums\Currency;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Plans\CreatePlanRequest;
+use App\Http\Requests\Plans\ListPlansRequest;
 use App\Http\Requests\Plans\UpdatePlanRequest;
 use App\Models\Plan;
 use Illuminate\Http\RedirectResponse;
@@ -25,10 +27,11 @@ use InertiaUI\Notifications\Toast;
 
 final class PlanController extends Controller
 {
-    public function index(ListPlansAction $listPlans): Response
+    public function index(ListPlansRequest $request, ListPlansAction $listPlans): Response
     {
         return Inertia::render('plans/index', [
-            'plans' => $listPlans->handle(),
+            'plans' => $listPlans->handle($request),
+            'filters' => ['search' => ListPlansData::fromRequest($request)->search],
         ]);
     }
 

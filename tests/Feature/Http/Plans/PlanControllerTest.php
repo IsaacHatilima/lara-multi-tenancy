@@ -107,8 +107,9 @@ test('the list shows every plan by name', function () {
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('plans/index')
-            ->has('plans', 2)
-            ->where('plans.0', [
+            ->has('plans.data', 2)
+            ->where('filters.search', null)
+            ->where('plans.data.0', [
                 'id' => $basic->id,
                 'name' => 'Basic',
                 'code' => 'basic',
@@ -120,7 +121,24 @@ test('the list shows every plan by name', function () {
                 'intervalLabel' => 'Yearly',
                 'trialDays' => 14,
             ])
-            ->where('plans.1.name', 'Pro'));
+            ->where('plans.data.1.name', 'Pro'));
+});
+
+test('the list searches plan names and codes', function (string $search) {
+    Plan::factory()->create(['name' => 'Team', 'code' => 'team-monthly']);
+    Plan::factory()->create(['name' => 'Starter', 'code' => 'starter']);
+
+    $this->actingAs(planManager())->get(route('plans.index', ['filter' => ['search' => $search]]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('plans.data', 1)
+            ->where('plans.data.0.name', 'Team')
+            ->where('filters.search', $search));
+})->with(['name' => ['tea'], 'code' => ['monthly']]);
+
+test('the list rejects filters it does not offer', function () {
+    $this->actingAs(planManager())
+        ->get(route('plans.index', ['filter' => ['interval' => 'year']]))
+        ->assertSessionHasErrors('filter');
 });
 
 test('the create form opens', function () {

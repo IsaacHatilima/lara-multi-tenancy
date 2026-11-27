@@ -5,23 +5,26 @@ declare(strict_types=1);
 namespace App\Actions\Plans;
 
 use App\Data\Plans\PlanResource;
+use App\Http\Requests\Plans\ListPlansRequest;
 use App\Models\Plan;
 use App\Repositories\Plans\PlanRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 final readonly class ListPlansAction
 {
+    private const int PER_PAGE = 15;
+
     public function __construct(
         private PlanRepository $plans,
     ) {
     }
 
     /**
-     * @return list<PlanResource>
+     * @return LengthAwarePaginator<int, PlanResource>
      */
-    public function handle(): array
+    public function handle(ListPlansRequest $request): LengthAwarePaginator
     {
-        return array_values($this->plans->list()
-            ->map(fn (Plan $plan): PlanResource => PlanResource::fromModel($plan))
-            ->all());
+        return $this->plans->list($request, self::PER_PAGE)
+            ->through(fn (Plan $plan): PlanResource => PlanResource::fromModel($plan));
     }
 }

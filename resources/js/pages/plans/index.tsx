@@ -1,5 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
 import { LayersIcon, PlusIcon } from 'lucide-react';
+import PlanController from '@/actions/App/Http/Controllers/Plans/PlanController';
+import { ListPagination } from '@/components/list-pagination';
+import { ListSearch } from '@/components/list-search';
 import { Button } from '@/components/ui/button';
 import {
     Empty,
@@ -12,6 +15,7 @@ import {
 import {
     StackContent,
     StackedCard,
+    StackFooter,
     StackHeader,
 } from '@/components/ui/stacked-card';
 import {
@@ -24,27 +28,35 @@ import {
 } from '@/components/ui/table';
 import { EDGE_CELL_PADDING, STICKY_FIRST_CELL } from '@/lib/table-classes';
 import { cn } from '@/lib/utils';
-import { create, edit } from '@/routes/plans';
+import { create, edit, index } from '@/routes/plans';
+import type { Paginated } from '@/types';
 import type { Plan } from './types';
 
 type Props = {
-    plans: Plan[];
+    plans: Paginated<Plan>;
+    filters: { search: string | null };
 };
 
-export default function PlansIndex({ plans }: Props) {
+export default function PlansIndex({ plans, filters }: Props) {
     return (
         <>
             <Head title="Plans" />
             <h1 className="sr-only">Plans</h1>
 
-            <StackedCard top className="h-auto">
-                <StackHeader className="justify-end">
+            <StackedCard top bottom={plans.data.length > 0} className="h-auto">
+                <StackHeader className="justify-between">
+                    <ListSearch
+                        form={PlanController.index.form()}
+                        label="Search plans"
+                        placeholder="Search name or code"
+                        search={filters.search}
+                    />
                     <NewPlanButton />
                 </StackHeader>
 
                 <StackContent className="py-0">
-                    {plans.length === 0 ? (
-                        <PlansEmpty />
+                    {plans.data.length === 0 ? (
+                        <PlansEmpty search={filters.search} />
                     ) : (
                         <Table className={EDGE_CELL_PADDING}>
                             <TableHeader>
@@ -59,7 +71,7 @@ export default function PlansIndex({ plans }: Props) {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {plans.map((plan) => (
+                                {plans.data.map((plan) => (
                                     <TableRow key={plan.id}>
                                         <TableCell
                                             className={cn(
@@ -100,6 +112,10 @@ export default function PlansIndex({ plans }: Props) {
                         </Table>
                     )}
                 </StackContent>
+
+                <StackFooter>
+                    <ListPagination page={plans} noun="plans" />
+                </StackFooter>
             </StackedCard>
         </>
     );
@@ -114,20 +130,34 @@ function NewPlanButton() {
     );
 }
 
-function PlansEmpty() {
+function PlansEmpty({ search }: { search: string | null }) {
     return (
         <Empty>
             <EmptyHeader>
                 <EmptyMedia variant="icon">
                     <LayersIcon />
                 </EmptyMedia>
-                <EmptyTitle>No plans yet</EmptyTitle>
+                <EmptyTitle>
+                    {search ? 'No plans match your search' : 'No plans yet'}
+                </EmptyTitle>
                 <EmptyDescription>
-                    A plan sets the features a company can use.
+                    {search
+                        ? 'Try another name or code.'
+                        : 'A plan sets the features a company can use.'}
                 </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-                <NewPlanButton />
+                {search ? (
+                    <Button
+                        nativeButton={false}
+                        variant="outline"
+                        render={<Link href={index()} />}
+                    >
+                        Clear search
+                    </Button>
+                ) : (
+                    <NewPlanButton />
+                )}
             </EmptyContent>
         </Empty>
     );
