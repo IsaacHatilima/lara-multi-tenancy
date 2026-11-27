@@ -1,3 +1,20 @@
+## Project conventions
+
+These override the installed skills where they differ.
+
+**Repositories**
+
+- One repository per domain, such as `app/Repositories/Users/UserRepository.php` or `app/Repositories/Tenants/TenantRepository.php`, with one public method per purpose (`create`, `update`, `delete`, `list`, `emailTaken`). Don't add one class per query. Actions keep a single `handle()`.
+- Write models by assigning each property from the Data object, then `save()`. Don't use `fill()`, `forceFill()`, `create([...])` or `update([...])` with an attribute array.
+- When create and update write the same columns, use one `save(Data $data, ?Model $model = null)` that starts with `$model ??= new Model;`. When they differ, as for users, write separate `create` and `update` methods.
+- A query that leaves a record out takes that record's id under a name that says what it is, such as `?string $userId = null`. Don't pass the model or call the parameter `$except`.
+- Return the saved model without `refresh()`. Ids, UUIDs and timestamps are set in PHP. Refresh only when the database fills in a value the caller reads, such as a column default or a trigger, and prefer a model `$attributes` default over that.
+- Use plain Eloquent for simple lookups. Use `spatie/laravel-query-builder` for tables and lists with search, filters or sorts. Pass the validated FormRequest to `QueryBuilder::for($query, $request)` and allowlist every filter. This is the one case where a repository takes a request; never call `request()` in a repository.
+
+**Keys**
+
+- Users and other entity tables are keyed by UUID (`HasUuids`, `$table->uuid('id')->primary()`), and foreign keys to them use `foreignUuid()`.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
