@@ -14,6 +14,8 @@ final class TenantHostname implements ValidationRule
 
     private const int MAX_LENGTH = 253;
 
+    private const int MAX_LABEL_LENGTH = 63;
+
     /**
      * @param  list<string>  $centralDomains  Hostnames that belong to the central application.
      */
@@ -37,14 +39,26 @@ final class TenantHostname implements ValidationRule
     {
         $hostname = self::normalize((string) $value);
 
-        if (strlen($hostname) > self::MAX_LENGTH || preg_match(self::PATTERN, $hostname) !== 1) {
+        if (strlen($hostname) > self::MAX_LENGTH) {
+            $fail($attribute, __('The domain may not be longer than :max characters.', ['max' => self::MAX_LENGTH]));
+
+            return;
+        }
+
+        if (max(array_map(strlen(...), explode('.', $hostname))) > self::MAX_LABEL_LENGTH) {
+            $fail($attribute, __('Each part of the domain between dots may be at most :max characters.', ['max' => self::MAX_LABEL_LENGTH]));
+
+            return;
+        }
+
+        if (preg_match(self::PATTERN, $hostname) !== 1) {
             $fail($attribute, __('Enter a hostname without a scheme, port, or path.'));
 
             return;
         }
 
         if (in_array($hostname, $this->centralDomains, true)) {
-            $fail($attribute, __('The central application domain cannot be assigned to a tenant.'));
+            $fail($attribute, __('This domain is reserved.'));
         }
     }
 }

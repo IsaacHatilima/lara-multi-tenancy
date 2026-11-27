@@ -118,6 +118,20 @@ test('invalid hostnames are rejected before they are saved', function (string $h
     Event::assertDispatchedTimes(TenantCreated::class, 1);
 })->with(['https://customer.test', 'customer.test/path', 'customer.test:8080', '*.customer.test', '-invalid.test']);
 
+test('a hostname that is too long is rejected with its own message', function (string $hostname, string $message) {
+    Event::fake([TenantCreated::class]);
+    $tenant = Tenant::factory()->create();
+
+    $this->postJson('/_test/tenants/'.$tenant->id.'/domains', ['domain' => $hostname])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.domain.0', $message);
+
+    $this->assertDatabaseCount('domains', 0);
+})->with([
+    'over 253 characters' => [implode('.', array_fill(0, 5, str_repeat('a', 60))).'.test', 'The domain may not be longer than 253 characters.'],
+    'a part over 63 characters' => [str_repeat('a', 64).'.test', 'Each part of the domain between dots may be at most 63 characters.'],
+]);
+
 test('the central application hostname cannot be assigned to a company', function () {
     Event::fake([TenantCreated::class]);
     $tenant = Tenant::factory()->create();
@@ -125,7 +139,7 @@ test('the central application hostname cannot be assigned to a company', functio
     $this->postJson('/_test/tenants/'.$tenant->id.'/domains', ['domain' => config('tenancy.identification.central_domains')[0]])
         ->assertUnprocessable()
         ->assertJsonValidationErrors('domain')
-        ->assertJsonPath('errors.domain.0', 'The central application domain cannot be assigned to a tenant.');
+        ->assertJsonPath('errors.domain.0', 'This domain is reserved.');
 
     $this->assertDatabaseCount('domains', 0);
     Event::assertDispatchedTimes(TenantCreated::class, 1);

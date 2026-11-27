@@ -149,7 +149,7 @@ test('a company is not created when its domain is invalid or taken', function (s
     Event::assertNotDispatched(TenantCreated::class);
 })->with([
     'taken' => ['Taken.Example', 'This domain is already assigned to a company.'],
-    'central host' => [fn (): string => parse_url(config('app.url'), PHP_URL_HOST), 'The central application domain cannot be assigned to a tenant.'],
+    'central host' => [fn (): string => parse_url(config('app.url'), PHP_URL_HOST), 'This domain is reserved.'],
     'with a scheme' => ['https://acme.example', 'Enter a hostname without a scheme, port, or path.'],
 ]);
 
