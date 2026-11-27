@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace App\Repositories\Users;
 
 use App\Data\Users\CreateUserData;
-use App\Models\Profile;
 use App\Models\User;
+use App\Repositories\Profiles\ProfileRepository;
 
 final readonly class CreateUser
 {
+    public function __construct(
+        private ProfileRepository $profiles,
+    ) {
+    }
+
     /**
      * Creates the user with their profile, together.
      */
@@ -22,13 +27,7 @@ final readonly class CreateUser
             $user->password = $data->password;
             $user->save();
 
-            $profile = new Profile();
-            $profile->user_id = $user->id;
-            $profile->first_name = $data->firstName;
-            $profile->last_name = $data->lastName;
-            $profile->save();
-
-            return $user->setRelation('profile', $profile);
+            return $user->setRelation('profile', $this->profiles->create($user, $data->firstName, $data->lastName));
         });
     }
 }
