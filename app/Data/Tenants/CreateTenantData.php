@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Data\Tenants;
 
+use App\Data\Domains\DomainHostname;
 use App\Data\Domains\SaveDomainData;
 use App\Enums\DomainSlot;
 use App\Http\Requests\Tenants\CreateTenantRequest;
-use App\Rules\TenantHostname;
 use Spatie\LaravelData\Data;
 
 /**
@@ -26,7 +26,7 @@ final class CreateTenantData extends Data
         return new self(
             company: SaveTenantData::fromRequest($request),
             primaryDomain: new SaveDomainData(
-                hostname: TenantHostname::normalize($request->string('domain')->value()),
+                hostname: DomainHostname::normalize($request->string('domain')->value()),
                 slot: DomainSlot::Primary,
             ),
         );
