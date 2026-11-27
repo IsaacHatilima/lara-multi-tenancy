@@ -11,12 +11,12 @@ Applies to: the frame every screen shares, signed-in and auth. The reference imp
 
 The starter has four dashboard shells. Each takes only `children` (`ShellProps`) and reads the same navigation, so a project switches with one import in `src/layouts/dashboard-layout.tsx`:
 
-| Shell            | Frame                                                                                                                         |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Shell | Frame |
+|---|---|
 | `WorkspaceShell` | Full navigation, a toolbar with app-wide search, the page inset, and an assistant panel docked from 1280px and a drawer below |
-| `InsetShell`     | The page floats as a rounded inset panel beside collapsible navigation sections                                               |
-| `RailShell`      | A 52px icon rail picks a section and a 288px panel lists its pages                                                            |
-| `ClassicShell`   | A full-height sidebar with every section and page listed open                                                                 |
+| `InsetShell` | The page floats as a rounded inset panel beside collapsible navigation sections |
+| `RailShell` | A 52px icon rail picks a section and a 288px panel lists its pages |
+| `ClassicShell` | A full-height sidebar with every section and page listed open |
 
 Auth screens use one of four frames in `src/layouts/auth-layout.tsx`: `SplitAuthShell` (form beside a photo), `CardAuthShell`, `MinimalAuthShell` and `PhotoAuthShell` (form over a full-page photo). Forms sit in the shared `AuthCard`, which adapts to the frame so cards never nest.
 
@@ -41,16 +41,16 @@ Auth screens use one of four frames in `src/layouts/auth-layout.tsx`: `SplitAuth
 
 The tokens live in `src/index.css`; components use them through utilities. Never hard-code these values, so density changes in one place.
 
-| Token                                | Value                                                                                                                                                        |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--app-header-height`                | 46px, 50px under 640px                                                                                                                                       |
-| `--app-gutter`                       | 24px, 16px at or below 900px                                                                                                                                 |
-| `--app-page-top`                     | 28px, 20px at or below 900px                                                                                                                                 |
-| Text                                 | 13.5px body and navigation, 12.5px controls (`text-control`), 11px semibold group labels with 0.06em tracking (`text-label`), headings 14.5, 16, 19 and 23px |
-| `--control-height-xs/sm/-/lg`        | 22, 26, 30 and 36px                                                                                                                                          |
-| `--nav-row-height`, `--nav-item-gap` | 30px rows, 9px icon gap                                                                                                                                      |
-| `--field-gap`                        | 14px between fields; 6px label gap                                                                                                                           |
-| Icons                                | Lucide at 16px for primary, 14px supporting, 12px metadata, with the global 1.8 stroke                                                                       |
+| Token | Value |
+|---|---|
+| `--app-header-height` | 46px, 50px under 640px |
+| `--app-gutter` | 24px, 16px at or below 900px |
+| `--app-page-top` | 28px, 20px at or below 900px |
+| Text | 13.5px body and navigation, 12.5px controls (`text-control`), 11px semibold group labels with 0.06em tracking (`text-label`), headings 14.5, 16, 19 and 23px |
+| `--control-height-xs/sm/-/lg` | 22, 26, 30 and 36px |
+| `--nav-row-height`, `--nav-item-gap` | 30px rows, 9px icon gap |
+| `--field-gap` | 14px between fields; 6px label gap |
+| Icons | Lucide at 16px for primary, 14px supporting, 12px metadata, with the global 1.8 stroke |
 
 Fonts are Geist and Geist Mono, bundled locally. Phones keep 40px touch targets and 16px input text so iOS doesn't zoom. Tables, boards and calendars take the full width; forms cap near 640px and prose near 70 characters.
 

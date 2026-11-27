@@ -21,24 +21,24 @@ Validate, narrow and handle errors at system boundaries: HTTP handlers, server f
 
 ## Rules
 
-| Rule                  | Summary                                                                                                                                                   |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Discriminated unions  | Model variants with a `kind` literal discriminant so impossible states can't be represented. No bags of optional fields.                                  |
-| Branded types         | Brand primitives with `& { readonly __brand: "X" }`. A brand comes from a verifying type guard (`input is AgentId`) or parser, never from `as`.           |
-| Constructive modeling | Shape the type so the illegal value can't be built: `[T, ...T[]]` for non-empty, `start` plus `duration` for a range.                                     |
-| Simplest total type   | Keep `T[]` while every operation stays total. Strengthen to `NonEmpty<T>` only where the loose type forces `!`, a cast, or a "should never happen" throw. |
-| `unknown` over `any`  | External data is `unknown`. `any` is not allowed in new code.                                                                                             |
-| Schemas before guards | Before hand-writing a property-by-property guard, use the project's schema library and infer the type from the schema (`z.infer`).                        |
-| No `as` casts         | Every `as` is a runtime crash waiting. Cast only after validation; `as const` is fine.                                                                    |
-| Narrowing hierarchy   | Discriminant switch, then `in`, then `typeof`/`instanceof`, then a user-defined guard, and `as` last.                                                     |
-| Type guards           | A guard must verify its claim; a lying guard is worse than `as`. Name them `isX` or `hasX`.                                                               |
-| Exhaustiveness        | `const _exhaustive: never = x;` in the default arm, so adding a variant is a compile error.                                                               |
-| `satisfies` over `as` | Validates a value without widening its literal types.                                                                                                     |
-| Boundary validation   | Parse where data enters into a named domain type. `Record<string, unknown>` stops at that parse.                                                          |
-| Derived types         | Reach for `Pick`, `Omit`, `Parameters`, `ReturnType`, `Awaited` and `typeof` before declaring a new interface.                                            |
-| Object arguments      | Pass an object, not positional arguments, so order documents itself. Skip on hot paths such as render loops and parsers.                                  |
-| Real tests            | Don't mock what you can run. Use the framework's real test primitives; mock only what can't run locally.                                                  |
-| Structured logging    | Use the project's logger with enough context to debug from an id. No `console.log` in shipped code.                                                       |
+| Rule | Summary |
+|------|---------|
+| Discriminated unions | Model variants with a `kind` literal discriminant so impossible states can't be represented. No bags of optional fields. |
+| Branded types | Brand primitives with `& { readonly __brand: "X" }`. A brand comes from a verifying type guard (`input is AgentId`) or parser, never from `as`. |
+| Constructive modeling | Shape the type so the illegal value can't be built: `[T, ...T[]]` for non-empty, `start` plus `duration` for a range. |
+| Simplest total type | Keep `T[]` while every operation stays total. Strengthen to `NonEmpty<T>` only where the loose type forces `!`, a cast, or a "should never happen" throw. |
+| `unknown` over `any` | External data is `unknown`. `any` is not allowed in new code. |
+| Schemas before guards | Before hand-writing a property-by-property guard, use the project's schema library and infer the type from the schema (`z.infer`). |
+| No `as` casts | Every `as` is a runtime crash waiting. Cast only after validation; `as const` is fine. |
+| Narrowing hierarchy | Discriminant switch, then `in`, then `typeof`/`instanceof`, then a user-defined guard, and `as` last. |
+| Type guards | A guard must verify its claim; a lying guard is worse than `as`. Name them `isX` or `hasX`. |
+| Exhaustiveness | `const _exhaustive: never = x;` in the default arm, so adding a variant is a compile error. |
+| `satisfies` over `as` | Validates a value without widening its literal types. |
+| Boundary validation | Parse where data enters into a named domain type. `Record<string, unknown>` stops at that parse. |
+| Derived types | Reach for `Pick`, `Omit`, `Parameters`, `ReturnType`, `Awaited` and `typeof` before declaring a new interface. |
+| Object arguments | Pass an object, not positional arguments, so order documents itself. Skip on hot paths such as render loops and parsers. |
+| Real tests | Don't mock what you can run. Use the framework's real test primitives; mock only what can't run locally. |
+| Structured logging | Use the project's logger with enough context to debug from an id. No `console.log` in shipped code. |
 
 ## Reviewing TypeScript
 

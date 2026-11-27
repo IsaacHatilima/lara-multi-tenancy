@@ -23,7 +23,7 @@ Agent skills live in `.ai/skills/`, one folder per skill with a `SKILL.md`. Befo
 | `laravel-migrations` | adding or changing a Laravel migration, table, column, index, foreign key, or schema backfill. |
 | `laravel-models` | creating or changing an Eloquent model, or its casts, relationships, scopes, fillable columns, or PHPDoc properties. |
 | `laravel-phpstan` | adding, configuring, or running PHPStan or Larastan static analysis in a Laravel application, or when PHPStan reports an error. |
-| `laravel-repositories` | adding or changing Laravel database queries, writes, relation loads, pagination, locks or transaction boundaries, or moving persistence out of an action or service. |
+| `laravel-repositories` | adding or changing Laravel database queries, writes, relation loads, list search and filters, pagination, locks or transaction boundaries, or moving persistence out of an action or service. |
 | `laravel-requests` | adding or changing a Laravel FormRequest, validation rules, request authorization, or query parameters such as filters, sorting, and pagination. |
 | `laravel-security` | adding or reviewing Laravel authorization, policies, authentication, API tokens, CORS, CSRF exceptions, file uploads, raw queries, HTML output, rate limits, or production configuration, or before deploying a Laravel application. |
 | `laravel-tests` | writing, choosing, or running tests for a Laravel application, including Pest unit, feature, action, HTTP, and browser tests, or when deciding which tests a change needs. |

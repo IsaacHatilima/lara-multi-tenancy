@@ -25,13 +25,13 @@ The two brand colours plus two that exist only for the logo and icon. Bright Gol
 
 ### Which colours work on which ground (3:1 minimum for graphics)
 
-| Mark             | Paper  | Eigengrau | Fuchsia Blue | Enchanted Forest |
-| ---------------- | ------ | --------- | ------------ | ---------------- |
-| Fuchsia Blue     | ✓ 4.9  | ✓ 3.5     | same         | ✗ 1.2            |
-| Enchanted Forest | ✓ 4.2  | ✓ 4.1     | ✗ 1.2        | same             |
-| Bright Gold      | ✗ 1.4  | ✓ 12.6    | ✓ 3.6        | ✓ 3.1            |
-| Eigengrau        | ✓ 17.2 | same      | ✓ 3.5        | ✓ 4.1            |
-| Paper            | same   | ✓ 17.2    | ✓ 4.9        | ✓ 4.2            |
+| Mark | Paper | Eigengrau | Fuchsia Blue | Enchanted Forest |
+|---|---|---|---|---|
+| Fuchsia Blue | ✓ 4.9 | ✓ 3.5 | same | ✗ 1.2 |
+| Enchanted Forest | ✓ 4.2 | ✓ 4.1 | ✗ 1.2 | same |
+| Bright Gold | ✗ 1.4 | ✓ 12.6 | ✓ 3.6 | ✓ 3.1 |
+| Eigengrau | ✓ 17.2 | same | ✓ 3.5 | ✓ 4.1 |
+| Paper | same | ✓ 17.2 | ✓ 4.9 | ✓ 4.2 |
 
 - On Paper: Fuchsia Blue, Enchanted Forest, Eigengrau.
 - On Eigengrau: Fuchsia Blue, Enchanted Forest, Bright Gold, Paper.
@@ -46,68 +46,68 @@ Ultraviolet and fern green sit far apart on the wheel, so the accent pops agains
 
 Light is the default; dark follows the system setting or `data-theme="dark"`. Use the semantic tokens in UI code, never raw scale steps.
 
-| Token          | Light   | Dark    | Use                                                                                                                                                                               |
-| -------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| bg             | #FAFAFA | #17161C | Page background: a plain off-white in light, the Eigengrau ink in dark. Text on it uses `text` (17.2:1) and `text-muted` (5.5:1 light, 7.6:1 dark).                               |
-| surface        | #FFFFFF | #222127 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`.                                                                                  |
-| surface-raised | #FFFFFF | #2C2B32 | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`.                                                                       |
-| surface-sunken | #F2F2F4 | #1C1B21 | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`.                                                                          |
-| border         | #E3E3E5 | #37363C | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that.                                                                            |
-| border-strong  | #858587 | #76747C | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface).                                 |
-| text           | #17161C | #FAFAFA | Primary text and icons on every surface. Eigengrau in light; the paper off-white in dark.                                                                                         |
-| text-muted     | #666668 | #A8A8AA | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`.                                                                                   |
-| primary        | #8654C9 | #B89EE7 | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Fuchsia Blue (primary-500 light, primary-300 dark). Label text on it uses `on-primary`.      |
-| primary-hover  | #6B3FA4 | #D2C3EF | Hover and pressed fill of `primary`.                                                                                                                                              |
-| primary-soft   | #F6F3FC | #3C265B | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`.                                                                    |
-| on-primary     | #FFFFFF | #17161C | Text and icons on `primary` and `primary-hover` (5.1:1 light, 7.8:1 dark). Dark mode uses ink, not white.                                                                         |
-| link           | #6B3FA4 | #D2C3EF | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text.                                                                     |
-| link-hover     | #53347F | #E8E2F7 | Hover state of `link`.                                                                                                                                                            |
-| accent         | #496802 | #A0B87F | The single secondary hue, Enchanted Forest: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`.                        |
-| accent-soft    | #F3F6F0 | #1D270B | Tinted background for accent badges and callouts. Text on it uses `accent`.                                                                                                       |
-| on-accent      | #FFFFFF | #17161C | Text and icons on `accent` (6.4:1 light, 8.3:1 dark).                                                                                                                             |
-| focus          | #496802 | #A0B87F | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 6.2:1 on `bg` in light, 8.3:1 in dark. It uses the accent so it never blends into Fuchsia Blue controls.                   |
-| selection      | #E8E2F7 | #3C265B | Text selection background. Text keeps `text`.                                                                                                                                     |
-| disabled-bg    | #F2F2F4 | #2C2B32 | Fill of disabled buttons and inputs.                                                                                                                                              |
-| disabled-text  | #858587 | #666668 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here.                                                                              |
-| success        | #13794A | #1BA766 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.4:1 light, 5.1:1 dark on `surface`). Always paired with a check icon and a word.                           |
-| success-soft   | #E4F3EB | #0F2A1E | Background of success banners and badges. Text on it uses `success`.                                                                                                              |
-| on-success     | #FFFFFF | #17161C | Text on solid `success` fills.                                                                                                                                                    |
-| warning        | #915608 | #F4A134 | Warning text, icons and fills (5.9:1 light, 7.6:1 dark on `surface`). Always paired with a triangle icon and a word.                                                              |
-| warning-soft   | #FBEFD9 | #2B1F0A | Background of warning banners and badges. Text on it uses `warning`.                                                                                                              |
-| on-warning     | #FFFFFF | #17161C | Text on solid `warning` fills.                                                                                                                                                    |
-| danger         | #B8331E | #E57361 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.3:1 dark on `surface`). Always paired with an icon and a word.                                                 |
-| danger-soft    | #FBE9E5 | #2E1612 | Background of error banners and field errors. Text on it uses `danger`.                                                                                                           |
-| on-danger      | #FFFFFF | #17161C | Text on solid `danger` fills.                                                                                                                                                     |
-| info           | #6B3FA4 | #D2C3EF | Informational text and icons. Deliberately the brand hue, so there is no separate blue.                                                                                           |
-| info-soft      | #F6F3FC | #3C265B | Background of info banners. Text on it uses `info`.                                                                                                                               |
-| chart-1        | #496802 | #A0B87F | Chart series 1, the anchor shade of Enchanted Forest. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
-| chart-2        | #2A3B0E | #E2E9D9 | Chart series 2, a darker Enchanted Forest in light and a lighter Enchanted Forest in dark.                                                                                        |
-| chart-3        | #7DA045 | #5F8316 | Chart series 3, a lighter Enchanted Forest in light and a deeper Enchanted Forest in dark.                                                                                        |
-| chart-4        | #3A510D | #C3D3B0 | Chart series 4, a mid shade of Enchanted Forest.                                                                                                                                  |
-| chart-5        | #5F8316 | #7DA045 | Chart series 5, the remaining Enchanted Forest shade that still holds 3:1.                                                                                                        |
-| chart-alt      | #8654C9 | #B89EE7 | The one contrasting chart series: Fuchsia Blue, the primary brand colour. Chart colours are only Enchanted Forest shades and Fuchsia Blue, never status or logo colours.          |
-| chart-grid     | #E3E3E5 | #37363C | Gridlines and axis rules inside charts. Axis labels use `text-muted`.                                                                                                             |
-| ink            | #17161C | #17161C | Raw near-black, Eigengrau: the light theme's text and the dark theme's page background. Use the semantic tokens in UI.                                                            |
-| logo-spark     | #F4D80E | #F4D80E | Logo and icon only: Bright Gold, the highlight or signal dot. Never a UI colour.                                                                                                  |
-| logo-ink       | #17161C | #17161C | Logo and icon only: wordmark and one-colour versions, Eigengrau.                                                                                                                  |
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| bg | #FAFAFA | #17161C | Page background: a plain off-white in light, the Eigengrau ink in dark. Text on it uses `text` (17.2:1) and `text-muted` (5.5:1 light, 7.6:1 dark). |
+| surface | #FFFFFF | #222127 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`. |
+| surface-raised | #FFFFFF | #2C2B32 | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`. |
+| surface-sunken | #F2F2F4 | #1C1B21 | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`. |
+| border | #E3E3E5 | #37363C | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that. |
+| border-strong | #858587 | #76747C | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface). |
+| text | #17161C | #FAFAFA | Primary text and icons on every surface. Eigengrau in light; the paper off-white in dark. |
+| text-muted | #666668 | #A8A8AA | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`. |
+| primary | #8654C9 | #B89EE7 | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Fuchsia Blue (primary-500 light, primary-300 dark). Label text on it uses `on-primary`. |
+| primary-hover | #6B3FA4 | #D2C3EF | Hover and pressed fill of `primary`. |
+| primary-soft | #F6F3FC | #3C265B | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`. |
+| on-primary | #FFFFFF | #17161C | Text and icons on `primary` and `primary-hover` (5.1:1 light, 7.8:1 dark). Dark mode uses ink, not white. |
+| link | #6B3FA4 | #D2C3EF | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text. |
+| link-hover | #53347F | #E8E2F7 | Hover state of `link`. |
+| accent | #496802 | #A0B87F | The single secondary hue, Enchanted Forest: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`. |
+| accent-soft | #F3F6F0 | #1D270B | Tinted background for accent badges and callouts. Text on it uses `accent`. |
+| on-accent | #FFFFFF | #17161C | Text and icons on `accent` (6.4:1 light, 8.3:1 dark). |
+| focus | #496802 | #A0B87F | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 6.2:1 on `bg` in light, 8.3:1 in dark. It uses the accent so it never blends into Fuchsia Blue controls. |
+| selection | #E8E2F7 | #3C265B | Text selection background. Text keeps `text`. |
+| disabled-bg | #F2F2F4 | #2C2B32 | Fill of disabled buttons and inputs. |
+| disabled-text | #858587 | #666668 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here. |
+| success | #13794A | #1BA766 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.4:1 light, 5.1:1 dark on `surface`). Always paired with a check icon and a word. |
+| success-soft | #E4F3EB | #0F2A1E | Background of success banners and badges. Text on it uses `success`. |
+| on-success | #FFFFFF | #17161C | Text on solid `success` fills. |
+| warning | #915608 | #F4A134 | Warning text, icons and fills (5.9:1 light, 7.6:1 dark on `surface`). Always paired with a triangle icon and a word. |
+| warning-soft | #FBEFD9 | #2B1F0A | Background of warning banners and badges. Text on it uses `warning`. |
+| on-warning | #FFFFFF | #17161C | Text on solid `warning` fills. |
+| danger | #B8331E | #E57361 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.3:1 dark on `surface`). Always paired with an icon and a word. |
+| danger-soft | #FBE9E5 | #2E1612 | Background of error banners and field errors. Text on it uses `danger`. |
+| on-danger | #FFFFFF | #17161C | Text on solid `danger` fills. |
+| info | #6B3FA4 | #D2C3EF | Informational text and icons. Deliberately the brand hue, so there is no separate blue. |
+| info-soft | #F6F3FC | #3C265B | Background of info banners. Text on it uses `info`. |
+| chart-1 | #496802 | #A0B87F | Chart series 1, the anchor shade of Enchanted Forest. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
+| chart-2 | #2A3B0E | #E2E9D9 | Chart series 2, a darker Enchanted Forest in light and a lighter Enchanted Forest in dark. |
+| chart-3 | #7DA045 | #5F8316 | Chart series 3, a lighter Enchanted Forest in light and a deeper Enchanted Forest in dark. |
+| chart-4 | #3A510D | #C3D3B0 | Chart series 4, a mid shade of Enchanted Forest. |
+| chart-5 | #5F8316 | #7DA045 | Chart series 5, the remaining Enchanted Forest shade that still holds 3:1. |
+| chart-alt | #8654C9 | #B89EE7 | The one contrasting chart series: Fuchsia Blue, the primary brand colour. Chart colours are only Enchanted Forest shades and Fuchsia Blue, never status or logo colours. |
+| chart-grid | #E3E3E5 | #37363C | Gridlines and axis rules inside charts. Axis labels use `text-muted`. |
+| ink | #17161C | #17161C | Raw near-black, Eigengrau: the light theme's text and the dark theme's page background. Use the semantic tokens in UI. |
+| logo-spark | #F4D80E | #F4D80E | Logo and icon only: Bright Gold, the highlight or signal dot. Never a UI colour. |
+| logo-ink | #17161C | #17161C | Logo and icon only: wordmark and one-colour versions, Eigengrau. |
 
 ## Scales
 
 Each brand scale is generated from its library anchor. The anchor keeps its exact value at the step nearest its lightness: Fuchsia Blue at primary-500, Enchanted Forest at accent-500. Identical in both themes.
 
-| Step | Primary (Fuchsia Blue) | Primary roles                      | Accent (Enchanted Forest) | Accent roles                                | Neutral |
-| ---- | ---------------------- | ---------------------------------- | ------------------------- | ------------------------------------------- | ------- |
-| 50   | #F6F3FC                | light: primary-soft                | #F3F6F0                   | light: accent-soft                          | #F9F9FB |
-| 100  | #E8E2F7                | light: selection; dark: link-hover | #E2E9D9                   | dark: chart-2                               | #F2F2F4 |
-| 200  | #D2C3EF                | dark: primary-hover, link          | #C3D3B0                   | dark: chart-4                               | #E3E3E5 |
-| 300  | #B89EE7                | dark: primary                      | #A0B87F                   | dark: accent, chart-1                       | #CCCCCE |
-| 400  | #A276E3                |                                    | #7DA045                   | light: chart-3; dark: chart-5               | #A8A8AA |
-| 500  | #8654C9                | brand anchor; light: primary       | #5F8316                   | brand anchor; light: chart-5; dark: chart-3 | #858587 |
-| 600  | #6B3FA4                | light: primary-hover, link         | #496802                   | light: accent, chart-1                      | #666668 |
-| 700  | #53347F                | light: link-hover                  | #3A510D                   | light: chart-4                              | #474749 |
-| 800  | #3C265B                | dark: primary-soft, selection      | #2A3B0E                   | light: chart-2                              | #303032 |
-| 900  | #281B3C                |                                    | #1D270B                   | dark: accent-soft                           | #1C1C1D |
-| 950  | #171023                |                                    | #111708                   |                                             | #121213 |
+| Step | Primary (Fuchsia Blue) | Primary roles | Accent (Enchanted Forest) | Accent roles | Neutral |
+|---|---|---|---|---|---|
+| 50 | #F6F3FC | light: primary-soft | #F3F6F0 | light: accent-soft | #F9F9FB |
+| 100 | #E8E2F7 | light: selection; dark: link-hover | #E2E9D9 | dark: chart-2 | #F2F2F4 |
+| 200 | #D2C3EF | dark: primary-hover, link | #C3D3B0 | dark: chart-4 | #E3E3E5 |
+| 300 | #B89EE7 | dark: primary | #A0B87F | dark: accent, chart-1 | #CCCCCE |
+| 400 | #A276E3 |  | #7DA045 | light: chart-3; dark: chart-5 | #A8A8AA |
+| 500 | #8654C9 | brand anchor; light: primary | #5F8316 | brand anchor; light: chart-5; dark: chart-3 | #858587 |
+| 600 | #6B3FA4 | light: primary-hover, link | #496802 | light: accent, chart-1 | #666668 |
+| 700 | #53347F | light: link-hover | #3A510D | light: chart-4 | #474749 |
+| 800 | #3C265B | dark: primary-soft, selection | #2A3B0E | light: chart-2 | #303032 |
+| 900 | #281B3C |  | #1D270B | dark: accent-soft | #1C1C1D |
+| 950 | #171023 |  | #111708 |  | #121213 |
 
 ## Accessible pairings
 

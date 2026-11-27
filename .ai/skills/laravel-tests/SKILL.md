@@ -1,6 +1,6 @@
 ---
 name: laravel-tests
-description: 'Use when writing, choosing, or running tests for a Laravel application, including Pest unit, feature, action, HTTP, and browser tests, or when deciding which tests a change needs.'
+description: "Use when writing, choosing, or running tests for a Laravel application, including Pest unit, feature, action, HTTP, and browser tests, or when deciding which tests a change needs."
 ---
 
 # Tests
@@ -11,10 +11,10 @@ Applies to: `tests/**`, `phpunit.xml*`, `playwright.config.*`.
 
 - **`tests/Unit/`:** isolated logic, with no Laravel boot and no database.
 - **`tests/Feature/`:**
-    - Action tests in `tests/Feature/Actions/{Domain}/` call `handle()` with real typed input and models.
-    - Repository tests in `tests/Feature/Repositories/{Domain}/` verify database selection, scopes, writes, locking and transaction behaviour.
-    - HTTP tests live in `tests/Feature/Http/{Domain}/`.
-    - Scope `RefreshDatabase` to the Feature tests that need it.
+  - Action tests in `tests/Feature/Actions/{Domain}/` call `handle()` with real typed input and models.
+  - Repository tests in `tests/Feature/Repositories/{Domain}/` verify database selection, scopes, writes, locking and transaction behaviour.
+  - HTTP tests live in `tests/Feature/Http/{Domain}/`.
+  - Scope `RefreshDatabase` to the Feature tests that need it.
 - **`tests/Browser/`:** changed user journeys in applications with a frontend, using Pest Browser or the existing Playwright runner. API-only applications don't need browser tests.
 - Test files mirror the class they cover: `CreateUserAction` is tested in `CreateUserActionTest.php`.
 - Use Pest 5 conventions: behaviour-named `test()` cases, named datasets, factories, and states. Pest 5 needs PHP 8.4; if the project can't run it, keep the working runner and report the gap.
@@ -23,8 +23,8 @@ Applies to: `tests/**`, `phpunit.xml*`, `playwright.config.*`.
 
 - Repository tests own persistence details: selected and persisted columns, record/tenant scopes, eager loading, pagination, rollback and locking. Action tests own business decisions and orchestration, the returned model or Resource, side effects and failures; keep database-backed coverage of the combined action/repository flow.
 - HTTP tests own the wiring: authorization, validation, the action call, and the response.
-    - API tests assert the `api-responses` contract.
-    - Web tests assert the Inertia component and props, redirects, session errors, and intended flash.
+  - API tests assert the `api-responses` contract.
+  - Web tests assert the Inertia component and props, redirects, session errors, and intended flash.
 - Browser tests cover what HTTP assertions can't see: client rendering, form errors, navigation, pending states, and JavaScript errors.
 - Fake external boundaries: the HTTP client, mail, notifications, storage, and the queue. Keep owned actions, repositories, models, and policies real in feature tests. Queued work is tested as `jobs` describes.
 - Every test must be able to catch a real regression. Don't test getters, framework behaviour, or documentation wording.

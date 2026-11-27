@@ -36,18 +36,18 @@ Treat comments such as "validated upstream" or "internal only" as claims to veri
 
 Read the matching reference for each surface the diff changes. Use its **Core discipline**, its attack classes, and its **Validation rules**; ignore its notes about sub-agents, coverage ledgers and audit phases, which belong to the full audit workflow these were taken from.
 
-| The diff changes                                                                                                                   | Read                                                                                          |
-| ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Any entry point (start here)                                                                                                       | [ATTACK-CLASSES.md](references/ATTACK-CLASSES.md)                                             |
-| HTTP handlers, sessions, cookies, CSRF, JWT, OAuth/OIDC, MFA, passkeys, account recovery, API keys, caching headers                | [WEB-PROTOCOL-AND-AUTH.md](references/WEB-PROTOCOL-AND-AUTH.md)                               |
-| React/Vue/Inertia pages, DOM rendering, `postMessage`, CORS, WebSockets, service workers, browser storage, redirects in the client | [CLIENT-SIDE.md](references/CLIENT-SIDE.md)                                                   |
-| Multi-tenant queries, caches, search, exports, backups, imports, deletion, retention, shared links                                 | [DATA-ISOLATION-AND-LIFECYCLE.md](references/DATA-ISOLATION-AND-LIFECYCLE.md)                 |
-| Queues and jobs, webhooks, GraphQL, RPC, pub/sub, event handlers                                                                   | [PROTOCOLS-RPC-AND-MESSAGING.md](references/PROTOCOLS-RPC-AND-MESSAGING.md)                   |
-| LLM prompts, RAG, agent tools, MCP servers or clients, model output that drives actions                                            | [AI-AND-LLM.md](references/AI-AND-LLM.md)                                                     |
-| Expo/React Native or desktop apps: deep links, webviews and bridges, local storage, app state                                      | [DESKTOP-MOBILE-AND-LOCAL-IPC.md](references/DESKTOP-MOBILE-AND-LOCAL-IPC.md)                 |
-| Uploads, heavy queries, loops over user input, fan-out, paid APIs, quotas, retries                                                 | [RESOURCE-EXHAUSTION-AND-AVAILABILITY.md](references/RESOURCE-EXHAUSTION-AND-AVAILABILITY.md) |
-| Dependencies, lockfiles, CI workflows, build scripts, release or update paths                                                      | [SUPPLY-CHAIN-AND-RELEASE.md](references/SUPPLY-CHAIN-AND-RELEASE.md)                         |
-| Infrastructure as code, IAM, containers, serverless or edge config, runtime secrets                                                | [CLOUD-AND-DEPLOYMENT.md](references/CLOUD-AND-DEPLOYMENT.md)                                 |
+| The diff changes | Read |
+|---|---|
+| Any entry point (start here) | [ATTACK-CLASSES.md](references/ATTACK-CLASSES.md) |
+| HTTP handlers, sessions, cookies, CSRF, JWT, OAuth/OIDC, MFA, passkeys, account recovery, API keys, caching headers | [WEB-PROTOCOL-AND-AUTH.md](references/WEB-PROTOCOL-AND-AUTH.md) |
+| React/Vue/Inertia pages, DOM rendering, `postMessage`, CORS, WebSockets, service workers, browser storage, redirects in the client | [CLIENT-SIDE.md](references/CLIENT-SIDE.md) |
+| Multi-tenant queries, caches, search, exports, backups, imports, deletion, retention, shared links | [DATA-ISOLATION-AND-LIFECYCLE.md](references/DATA-ISOLATION-AND-LIFECYCLE.md) |
+| Queues and jobs, webhooks, GraphQL, RPC, pub/sub, event handlers | [PROTOCOLS-RPC-AND-MESSAGING.md](references/PROTOCOLS-RPC-AND-MESSAGING.md) |
+| LLM prompts, RAG, agent tools, MCP servers or clients, model output that drives actions | [AI-AND-LLM.md](references/AI-AND-LLM.md) |
+| Expo/React Native or desktop apps: deep links, webviews and bridges, local storage, app state | [DESKTOP-MOBILE-AND-LOCAL-IPC.md](references/DESKTOP-MOBILE-AND-LOCAL-IPC.md) |
+| Uploads, heavy queries, loops over user input, fan-out, paid APIs, quotas, retries | [RESOURCE-EXHAUSTION-AND-AVAILABILITY.md](references/RESOURCE-EXHAUSTION-AND-AVAILABILITY.md) |
+| Dependencies, lockfiles, CI workflows, build scripts, release or update paths | [SUPPLY-CHAIN-AND-RELEASE.md](references/SUPPLY-CHAIN-AND-RELEASE.md) |
+| Infrastructure as code, IAM, containers, serverless or edge config, runtime secrets | [CLOUD-AND-DEPLOYMENT.md](references/CLOUD-AND-DEPLOYMENT.md) |
 
 ## High-miss patterns
 

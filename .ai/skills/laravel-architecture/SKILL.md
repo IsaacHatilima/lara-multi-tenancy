@@ -1,6 +1,6 @@
 ---
 name: laravel-architecture
-description: 'Use when placing new Laravel behaviour, naming a new class, planning a feature or refactor, or reviewing where queries, validation, authorization, and responses belong.'
+description: "Use when placing new Laravel behaviour, naming a new class, planning a feature or refactor, or reviewing where queries, validation, authorization, and responses belong."
 ---
 
 # Architecture
@@ -9,21 +9,21 @@ Applies to: `app/**`. The Laravel skills target Laravel 13. Project guidance (`A
 
 ## Boundaries
 
-| Concern                                                                    | Lives in                                                                  | Skill                          |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------ |
-| Authorization and validation                                               | FormRequest, using the project's permission API or Gate/policy            | `requests`, `security`         |
-| Input normalization                                                        | Data `fromRequest()`                                                      | `data`                         |
-| Business decisions and operation orchestration                             | Action in `app/Actions/{Domain}/`, or service in `app/Services/{Domain}/` | `actions`                      |
-| Database queries, writes, relation loads, locks and transaction boundaries | Repository in `app/Repositories/{Domain}/`, following project layout      | `repositories`                 |
-| Output representation and formatting                                       | Resource `fromModel()`, returned by the action                            | `data`                         |
-| HTTP response: API envelope, Inertia page, redirect                        | Controller                                                                | `controllers`, `api-responses` |
-| Background work                                                            | Job calling an action                                                     | `jobs`                         |
+| Concern | Lives in | Skill |
+|---|---|---|
+| Authorization and validation | FormRequest, using the project's permission API or Gate/policy | `requests`, `security` |
+| Input normalization | Data `fromRequest()` | `data` |
+| Business decisions and operation orchestration | Action in `app/Actions/{Domain}/`, or service in `app/Services/{Domain}/` | `actions` |
+| Database queries, writes, relation loads, locks and transaction boundaries | Repository in `app/Repositories/{Domain}/`, following project layout | `repositories` |
+| Output representation and formatting | Resource `fromModel()`, returned by the action | `data` |
+| HTTP response: API envelope, Inertia page, redirect | Controller | `controllers`, `api-responses` |
+| Background work | Job calling an action | `jobs` |
 
 The flow is FormRequest → `Data::fromRequest()` → action → repository → action result (Resource or model) → controller response. Web, API, job, and command callers reuse the same actions; controllers do not call repositories directly.
 
 ## Naming
 
-Without a project convention, a class name ends with its type: `CreateUserAction` (or `CreateUserService`), `CreateUserRepository`, `CreateUserController`, `CreateUserRequest`, `CreateUserData`, `UserResource`, `UserPolicy`, `DetectCommitLanguageJob`, `UserCreatedEvent`, `SendWelcomeEmailListener`, `InvoicePaidNotification`, `WelcomeMail`. Models and enums are plain nouns: `User`, `UserStatus`. Test files mirror the class: `CreateUserActionTest.php`.
+Without a project convention, a class name ends with its type: `CreateUserAction` (or `CreateUserService`), `CreateUserController`, `CreateUserRequest`, `CreateUserData`, `UserResource`, `UserPolicy`, `DetectCommitLanguageJob`, `UserCreatedEvent`, `SendWelcomeEmailListener`, `InvoicePaidNotification`, `WelcomeMail`. Repositories are the exception: each operation is named for what it does (`CreateUser`, `UserEmailTaken`), and only the domain's entry file carries the suffix (`UserRepository`; see `repositories`). Models and enums are plain nouns: `User`, `UserStatus`. Test files mirror the class: `CreateUserActionTest.php`.
 
 ## Attributes
 

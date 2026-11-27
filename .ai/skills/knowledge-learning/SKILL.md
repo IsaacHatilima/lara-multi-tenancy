@@ -45,32 +45,25 @@ Verified: <YYYY-MM-DD>
 Status: verified-on-branch
 
 ## Use when
-
 <the behaviour and prerequisites that make this relevant>
 
 ## Problem
-
 <the concrete failure and who or what it affected>
 
 ## Cause
-
 <why the failure occurred, with relevant code paths>
 
 ## Solution
-
 <the accepted fix and why it works, or why the finding was dismissed>
 
 ## Prevention
-
 <what to check before implementation and the regression check to preserve>
 
 ## Evidence
-
 <repository and PR or source reference, original finding ID, fix commit,
 reviewed commit, code and test paths, the checks and their observed results>
 
 ## Limits
-
 <when this does not apply and what the evidence did not verify>
 ```
 
@@ -87,8 +80,8 @@ Create or update `<knowledge root>/index.md` with a heading for each populated t
 
 ## <technical area>
 
-| Lesson                                     | Use when                 | Tags   |
-| ------------------------------------------ | ------------------------ | ------ |
+| Lesson | Use when | Tags |
+|---|---|---|
 | <title linked to the relative lesson path> | <one-line applicability> | <tags> |
 ```
 

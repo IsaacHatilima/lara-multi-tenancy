@@ -1,6 +1,6 @@
 ---
 name: laravel-phpstan
-description: 'Use when adding, configuring, or running PHPStan or Larastan static analysis in a Laravel application, or when PHPStan reports an error.'
+description: "Use when adding, configuring, or running PHPStan or Larastan static analysis in a Laravel application, or when PHPStan reports an error."
 ---
 
 # PHPStan

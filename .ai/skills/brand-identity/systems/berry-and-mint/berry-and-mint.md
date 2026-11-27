@@ -25,13 +25,13 @@ The two brand colours plus two that exist only for the logo and icon. Lemon Meri
 
 ### Which colours work on which ground (3:1 minimum for graphics)
 
-| Mark             | Paper  | Dark Moon | Holly Fern | Cranberry Splash |
-| ---------------- | ------ | --------- | ---------- | ---------------- |
-| Holly Fern       | ✗ 2.3  | ✓ 7.4     | same       | ✗ 1.7            |
-| Cranberry Splash | ✓ 3.9  | ✓ 4.3     | ✗ 1.7      | same             |
-| Lemon Meringue   | ✗ 1.2  | ✓ 13.6    | ✗ 1.8      | ✓ 3.1            |
-| Dark Moon        | ✓ 16.8 | same      | ✓ 7.4      | ✓ 4.3            |
-| Paper            | same   | ✓ 16.8    | ✗ 2.3      | ✓ 3.9            |
+| Mark | Paper | Dark Moon | Holly Fern | Cranberry Splash |
+|---|---|---|---|---|
+| Holly Fern | ✗ 2.3 | ✓ 7.4 | same | ✗ 1.7 |
+| Cranberry Splash | ✓ 3.9 | ✓ 4.3 | ✗ 1.7 | same |
+| Lemon Meringue | ✗ 1.2 | ✓ 13.6 | ✗ 1.8 | ✓ 3.1 |
+| Dark Moon | ✓ 16.8 | same | ✓ 7.4 | ✓ 4.3 |
+| Paper | same | ✓ 16.8 | ✗ 2.3 | ✓ 3.9 |
 
 - On Paper: Cranberry Splash, Dark Moon.
 - On Dark Moon: Holly Fern, Cranberry Splash, Lemon Meringue, Paper.
@@ -46,68 +46,68 @@ A cool sage carries the interface while a ripe cranberry marks what matters. The
 
 Light is the default; dark follows the system setting or `data-theme="dark"`. Use the semantic tokens in UI code, never raw scale steps.
 
-| Token          | Light   | Dark    | Use                                                                                                                                                                               |
-| -------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| bg             | #FAFAFA | #141B17 | Page background: a plain off-white in light, the Dark Moon ink in dark. Text on it uses `text` (16.8:1) and `text-muted` (5.5:1 light, 7.4:1 dark).                               |
-| surface        | #FFFFFF | #1F2622 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`.                                                                                  |
-| surface-raised | #FFFFFF | #29302C | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`.                                                                       |
-| surface-sunken | #F0F3F1 | #1A201C | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`.                                                                          |
-| border         | #E1E4E2 | #343B37 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that.                                                                            |
-| border-strong  | #838684 | #727A75 | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface).                                 |
-| text           | #141B17 | #FAFAFA | Primary text and icons on every surface. Dark Moon in light; the paper off-white in dark.                                                                                         |
-| text-muted     | #646765 | #A6A9A7 | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`.                                                                                   |
-| primary        | #33684C | #89B199 | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Holly Fern (primary-600 light, primary-300 dark). Label text on it uses `on-primary`.        |
-| primary-hover  | #2A523C | #B8CEC0 | Hover and pressed fill of `primary`.                                                                                                                                              |
-| primary-soft   | #F2F6F4 | #203B2C | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`.                                                                    |
-| on-primary     | #FFFFFF | #141B17 | Text and icons on `primary` and `primary-hover` (6.5:1 light, 7.4:1 dark). Dark mode uses ink, not white.                                                                         |
-| link           | #2A523C | #B8CEC0 | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text.                                                                     |
-| link-hover     | #203B2C | #DDE7E1 | Hover state of `link`.                                                                                                                                                            |
-| accent         | #AC384E | #F19BA4 | The single secondary hue, Cranberry Splash: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`.                        |
-| accent-soft    | #FDF2F3 | #3E171D | Tinted background for accent badges and callouts. Text on it uses `accent`.                                                                                                       |
-| on-accent      | #FFFFFF | #141B17 | Text and icons on `accent` (6.1:1 light, 8.3:1 dark).                                                                                                                             |
-| focus          | #AC384E | #F19BA4 | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 5.9:1 on `bg` in light, 8.3:1 in dark. It uses the accent so it never blends into Holly Fern controls.                     |
-| selection      | #DDE7E1 | #203B2C | Text selection background. Text keeps `text`.                                                                                                                                     |
-| disabled-bg    | #F0F3F1 | #29302C | Fill of disabled buttons and inputs.                                                                                                                                              |
-| disabled-text  | #838684 | #646765 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here.                                                                              |
-| success        | #3F7532 | #5EA749 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.5:1 light, 5.2:1 dark on `surface`). Always paired with a check icon and a word.                           |
-| success-soft   | #E7F2E7 | #172918 | Background of success banners and badges. Text on it uses `success`.                                                                                                              |
-| on-success     | #FFFFFF | #141B17 | Text on solid `success` fills.                                                                                                                                                    |
-| warning        | #915608 | #F4A134 | Warning text, icons and fills (5.9:1 light, 7.4:1 dark on `surface`). Always paired with a triangle icon and a word.                                                              |
-| warning-soft   | #FBEFD9 | #2B1F0A | Background of warning banners and badges. Text on it uses `warning`.                                                                                                              |
-| on-warning     | #FFFFFF | #141B17 | Text on solid `warning` fills.                                                                                                                                                    |
-| danger         | #B33C00 | #E57855 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.3:1 dark on `surface`). Always paired with an icon and a word.                                                 |
-| danger-soft    | #FBE9E3 | #2E170F | Background of error banners and field errors. Text on it uses `danger`.                                                                                                           |
-| on-danger      | #FFFFFF | #141B17 | Text on solid `danger` fills.                                                                                                                                                     |
-| info           | #2A523C | #B8CEC0 | Informational text and icons. Deliberately the brand hue, so there is no separate blue.                                                                                           |
-| info-soft      | #F2F6F4 | #203B2C | Background of info banners. Text on it uses `info`.                                                                                                                               |
-| chart-1        | #AC384E | #F19BA4 | Chart series 1, the anchor shade of Cranberry Splash. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
-| chart-2        | #5E222C | #FAE1E2 | Chart series 2, a darker Cranberry Splash in light and a lighter Cranberry Splash in dark.                                                                                        |
-| chart-3        | #852E3E | #D64F67 | Chart series 3, a lighter Cranberry Splash in light and a deeper Cranberry Splash in dark.                                                                                        |
-| chart-4        | #D64F67 | #F7C2C6 | Chart series 4, a mid shade of Cranberry Splash.                                                                                                                                  |
-| chart-5        | #3E171D | #EE7082 | Chart series 5, the remaining Cranberry Splash shade that still holds 3:1.                                                                                                        |
-| chart-alt      | #33684C | #89B199 | The one contrasting chart series: Holly Fern, the primary brand colour. Chart colours are only Cranberry Splash shades and Holly Fern, never status or logo colours.              |
-| chart-grid     | #E1E4E2 | #343B37 | Gridlines and axis rules inside charts. Axis labels use `text-muted`.                                                                                                             |
-| ink            | #141B17 | #141B17 | Raw near-black, Dark Moon: the light theme's text and the dark theme's page background. Use the semantic tokens in UI.                                                            |
-| logo-spark     | #F4E397 | #F4E397 | Logo and icon only: Lemon Meringue, the highlight or signal dot. Never a UI colour.                                                                                               |
-| logo-ink       | #141B17 | #141B17 | Logo and icon only: wordmark and one-colour versions, Dark Moon.                                                                                                                  |
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| bg | #FAFAFA | #141B17 | Page background: a plain off-white in light, the Dark Moon ink in dark. Text on it uses `text` (16.8:1) and `text-muted` (5.5:1 light, 7.4:1 dark). |
+| surface | #FFFFFF | #1F2622 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`. |
+| surface-raised | #FFFFFF | #29302C | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`. |
+| surface-sunken | #F0F3F1 | #1A201C | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`. |
+| border | #E1E4E2 | #343B37 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that. |
+| border-strong | #838684 | #727A75 | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface). |
+| text | #141B17 | #FAFAFA | Primary text and icons on every surface. Dark Moon in light; the paper off-white in dark. |
+| text-muted | #646765 | #A6A9A7 | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`. |
+| primary | #33684C | #89B199 | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Holly Fern (primary-600 light, primary-300 dark). Label text on it uses `on-primary`. |
+| primary-hover | #2A523C | #B8CEC0 | Hover and pressed fill of `primary`. |
+| primary-soft | #F2F6F4 | #203B2C | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`. |
+| on-primary | #FFFFFF | #141B17 | Text and icons on `primary` and `primary-hover` (6.5:1 light, 7.4:1 dark). Dark mode uses ink, not white. |
+| link | #2A523C | #B8CEC0 | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text. |
+| link-hover | #203B2C | #DDE7E1 | Hover state of `link`. |
+| accent | #AC384E | #F19BA4 | The single secondary hue, Cranberry Splash: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`. |
+| accent-soft | #FDF2F3 | #3E171D | Tinted background for accent badges and callouts. Text on it uses `accent`. |
+| on-accent | #FFFFFF | #141B17 | Text and icons on `accent` (6.1:1 light, 8.3:1 dark). |
+| focus | #AC384E | #F19BA4 | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 5.9:1 on `bg` in light, 8.3:1 in dark. It uses the accent so it never blends into Holly Fern controls. |
+| selection | #DDE7E1 | #203B2C | Text selection background. Text keeps `text`. |
+| disabled-bg | #F0F3F1 | #29302C | Fill of disabled buttons and inputs. |
+| disabled-text | #838684 | #646765 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here. |
+| success | #3F7532 | #5EA749 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.5:1 light, 5.2:1 dark on `surface`). Always paired with a check icon and a word. |
+| success-soft | #E7F2E7 | #172918 | Background of success banners and badges. Text on it uses `success`. |
+| on-success | #FFFFFF | #141B17 | Text on solid `success` fills. |
+| warning | #915608 | #F4A134 | Warning text, icons and fills (5.9:1 light, 7.4:1 dark on `surface`). Always paired with a triangle icon and a word. |
+| warning-soft | #FBEFD9 | #2B1F0A | Background of warning banners and badges. Text on it uses `warning`. |
+| on-warning | #FFFFFF | #141B17 | Text on solid `warning` fills. |
+| danger | #B33C00 | #E57855 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.3:1 dark on `surface`). Always paired with an icon and a word. |
+| danger-soft | #FBE9E3 | #2E170F | Background of error banners and field errors. Text on it uses `danger`. |
+| on-danger | #FFFFFF | #141B17 | Text on solid `danger` fills. |
+| info | #2A523C | #B8CEC0 | Informational text and icons. Deliberately the brand hue, so there is no separate blue. |
+| info-soft | #F2F6F4 | #203B2C | Background of info banners. Text on it uses `info`. |
+| chart-1 | #AC384E | #F19BA4 | Chart series 1, the anchor shade of Cranberry Splash. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
+| chart-2 | #5E222C | #FAE1E2 | Chart series 2, a darker Cranberry Splash in light and a lighter Cranberry Splash in dark. |
+| chart-3 | #852E3E | #D64F67 | Chart series 3, a lighter Cranberry Splash in light and a deeper Cranberry Splash in dark. |
+| chart-4 | #D64F67 | #F7C2C6 | Chart series 4, a mid shade of Cranberry Splash. |
+| chart-5 | #3E171D | #EE7082 | Chart series 5, the remaining Cranberry Splash shade that still holds 3:1. |
+| chart-alt | #33684C | #89B199 | The one contrasting chart series: Holly Fern, the primary brand colour. Chart colours are only Cranberry Splash shades and Holly Fern, never status or logo colours. |
+| chart-grid | #E1E4E2 | #343B37 | Gridlines and axis rules inside charts. Axis labels use `text-muted`. |
+| ink | #141B17 | #141B17 | Raw near-black, Dark Moon: the light theme's text and the dark theme's page background. Use the semantic tokens in UI. |
+| logo-spark | #F4E397 | #F4E397 | Logo and icon only: Lemon Meringue, the highlight or signal dot. Never a UI colour. |
+| logo-ink | #141B17 | #141B17 | Logo and icon only: wordmark and one-colour versions, Dark Moon. |
 
 ## Scales
 
 Each brand scale is generated from its library anchor. The anchor keeps its exact value at the step nearest its lightness: Holly Fern at primary-300, Cranberry Splash at accent-500. Identical in both themes.
 
-| Step | Primary (Holly Fern) | Primary roles                                    | Accent (Cranberry Splash) | Accent roles                                | Neutral |
-| ---- | -------------------- | ------------------------------------------------ | ------------------------- | ------------------------------------------- | ------- |
-| 50   | #F2F6F4              | light: primary-soft                              | #FDF2F3                   | light: accent-soft                          | #F7FAF8 |
-| 100  | #DDE7E1              | light: selection; dark: link-hover               | #FAE1E2                   | dark: chart-2                               | #F0F3F1 |
-| 200  | #B8CEC0              | dark: primary-hover, link                        | #F7C2C6                   | dark: chart-4                               | #E1E4E2 |
-| 300  | #89B199              | brand anchor; dark: primary                      | #F19BA4                   | dark: accent, chart-1                       | #CACDCB |
-| 400  | #649C7C              |                                                  | #EE7082                   | dark: chart-5                               | #A6A9A7 |
-| 500  | #468462              |                                                  | #D64F67                   | brand anchor; light: chart-4; dark: chart-3 | #838684 |
-| 600  | #33684C              | light: primary                                   | #AC384E                   | light: accent, chart-1                      | #646765 |
-| 700  | #2A523C              | light: primary-hover, link                       | #852E3E                   | light: chart-3                              | #464846 |
-| 800  | #203B2C              | light: link-hover; dark: primary-soft, selection | #5E222C                   | light: chart-2                              | #2F312F |
-| 900  | #16281E              |                                                  | #3E171D                   | light: chart-5; dark: accent-soft           | #1B1C1B |
-| 950  | #0E1711              |                                                  | #220D10                   |                                             | #111211 |
+| Step | Primary (Holly Fern) | Primary roles | Accent (Cranberry Splash) | Accent roles | Neutral |
+|---|---|---|---|---|---|
+| 50 | #F2F6F4 | light: primary-soft | #FDF2F3 | light: accent-soft | #F7FAF8 |
+| 100 | #DDE7E1 | light: selection; dark: link-hover | #FAE1E2 | dark: chart-2 | #F0F3F1 |
+| 200 | #B8CEC0 | dark: primary-hover, link | #F7C2C6 | dark: chart-4 | #E1E4E2 |
+| 300 | #89B199 | brand anchor; dark: primary | #F19BA4 | dark: accent, chart-1 | #CACDCB |
+| 400 | #649C7C |  | #EE7082 | dark: chart-5 | #A6A9A7 |
+| 500 | #468462 |  | #D64F67 | brand anchor; light: chart-4; dark: chart-3 | #838684 |
+| 600 | #33684C | light: primary | #AC384E | light: accent, chart-1 | #646765 |
+| 700 | #2A523C | light: primary-hover, link | #852E3E | light: chart-3 | #464846 |
+| 800 | #203B2C | light: link-hover; dark: primary-soft, selection | #5E222C | light: chart-2 | #2F312F |
+| 900 | #16281E |  | #3E171D | light: chart-5; dark: accent-soft | #1B1C1B |
+| 950 | #0E1711 |  | #220D10 |  | #111211 |
 
 ## Accessible pairings
 
