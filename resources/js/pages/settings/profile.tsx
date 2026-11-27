@@ -42,22 +42,46 @@ export default function Profile({
                 >
                     {({ processing, errors }) => (
                         <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                            <div className="grid gap-6 sm:grid-cols-2">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="first_name">
+                                        First name
+                                    </Label>
 
-                                <Input
-                                    id="name"
-                                    defaultValue={auth.user.name}
-                                    name="name"
-                                    required
-                                    autoComplete="name"
-                                    placeholder="Full name"
-                                />
+                                    <Input
+                                        id="first_name"
+                                        defaultValue={
+                                            auth.user.profile.first_name
+                                        }
+                                        name="first_name"
+                                        required
+                                        autoComplete="given-name"
+                                    />
 
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.name}
-                                />
+                                    <InputError
+                                        className="mt-2"
+                                        message={errors.first_name}
+                                    />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="last_name">Last name</Label>
+
+                                    <Input
+                                        id="last_name"
+                                        defaultValue={
+                                            auth.user.profile.last_name
+                                        }
+                                        name="last_name"
+                                        required
+                                        autoComplete="family-name"
+                                    />
+
+                                    <InputError
+                                        className="mt-2"
+                                        message={errors.last_name}
+                                    />
+                                </div>
                             </div>
 
                             <div className="grid gap-2">

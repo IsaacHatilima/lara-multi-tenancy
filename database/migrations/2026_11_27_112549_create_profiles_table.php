@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * A user's personal details, kept apart from the sign-in columns on users. Each user has exactly one.
+     */
+    public function up(): void
+    {
+        Schema::create('profiles', function (Blueprint $table): void {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->unique()->constrained()->cascadeOnDelete();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('profiles');
+    }
+};

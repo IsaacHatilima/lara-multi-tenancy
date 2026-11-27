@@ -71,8 +71,7 @@ class TenantSeeder extends Seeder
 
         $this->createDomain->handle($tenant, new SaveDomainData(self::hostname($handle), null));
 
-        $tenant->run(fn () => User::factory()->create([
-            'name' => $tenant->name.' Admin',
+        $tenant->run(fn () => User::factory()->named($tenant->name, 'Admin')->create([
             'email' => self::email($handle),
             'password' => self::PASSWORD,
         ]));
@@ -85,7 +84,7 @@ class TenantSeeder extends Seeder
      */
     protected function dropLeftoverDatabase(string $tenantId): void
     {
-        $tenant = new Tenant;
+        $tenant = new Tenant();
         $tenant->id = $tenantId;
 
         $database = $tenant->database();

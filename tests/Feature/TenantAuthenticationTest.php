@@ -59,7 +59,8 @@ test('tenant registration creates an account only in the tenant database and req
     Notification::fake();
 
     $response = $this->post('https://auth-tenant.example.test/register', [
-        'name' => 'Tenant Member',
+        'first_name' => 'Tenant',
+        'last_name' => 'Member',
         'email' => 'member@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
@@ -68,11 +69,9 @@ test('tenant registration creates an account only in the tenant database and req
     $response->assertSessionHasNoErrors()
         ->assertRedirect('https://auth-tenant.example.test/dashboard');
     $this->assertAuthenticated();
-    $this->assertDatabaseHas('users', [
-        'name' => 'Tenant Member',
-        'email' => 'member@example.com',
-    ], 'tenant_fixture');
-    $this->assertDatabaseMissing('users', ['name' => 'Tenant Member'], 'sqlite');
+    $this->assertDatabaseHas('users', ['email' => 'member@example.com'], 'tenant_fixture');
+    $this->assertDatabaseHas('profiles', ['first_name' => 'Tenant', 'last_name' => 'Member'], 'tenant_fixture');
+    $this->assertDatabaseMissing('profiles', ['first_name' => 'Tenant', 'last_name' => 'Member'], 'sqlite');
     $this->assertDatabaseCount('users', 1, 'sqlite');
 
     $user = User::on('tenant_fixture')->where('email', 'member@example.com')->firstOrFail();
@@ -89,7 +88,8 @@ test('new tenant accounts ignore a previous accounts intended verification URL',
     $response = $this->withSession([
         'url.intended' => 'https://auth-tenant.example.test/email/verify/1/old-verification-link',
     ])->post('https://auth-tenant.example.test/register', [
-        'name' => 'New Tenant Member',
+        'first_name' => 'New Tenant',
+        'last_name' => 'Member',
         'email' => 'new-member@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
@@ -138,7 +138,8 @@ test('tenant registration returns 403 for a session from another tenant', functi
 
     $response = $this->withSession([ScopeSessions::$tenantIdKey => 'other-tenant'])
         ->post('https://auth-tenant.example.test/register', [
-            'name' => 'Tenant Member',
+            'first_name' => 'Tenant',
+            'last_name' => 'Member',
             'email' => 'member@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',

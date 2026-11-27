@@ -68,14 +68,19 @@ function UserIdentity({ user }: { user: User }) {
         <>
             <Avatar className="rounded-lg">
                 {user.avatar && (
-                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarImage
+                        src={user.avatar}
+                        alt={user.profile.full_name}
+                    />
                 )}
                 <AvatarFallback className="rounded-lg">
-                    {initials(user.name)}
+                    {initials(user.profile.full_name)}
                 </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">
+                    {user.profile.full_name}
+                </span>
                 <span className="truncate text-xs">{user.email}</span>
             </div>
         </>
@@ -93,7 +98,7 @@ function RailAvatar({ user }: { user: User }) {
     return (
         <Avatar size="sm">
             {user.avatar && <AvatarImage src={user.avatar} alt="" />}
-            <AvatarFallback>{initials(user.name)}</AvatarFallback>
+            <AvatarFallback>{initials(user.profile.full_name)}</AvatarFallback>
         </Avatar>
     );
 }
@@ -115,7 +120,7 @@ export function ShellUserMenu({
                         <Button
                             variant="ghost"
                             size="icon-lg"
-                            aria-label={`Account menu for ${user.name}`}
+                            aria-label={`Account menu for ${user.profile.full_name}`}
                         />
                     ) : (
                         <SidebarMenuButton

@@ -18,13 +18,13 @@ test('a managed deployment seeds the central user holding plans.manage', functio
 });
 
 test('an existing central user is kept and given plans.manage', function () {
-    $user = User::factory()->create(['email' => CentralUserSeeder::EMAIL, 'name' => 'Existing']);
+    $user = User::factory()->named('Existing', 'Admin')->create(['email' => CentralUserSeeder::EMAIL]);
 
     $this->seed([PermissionSeeder::class, CentralUserSeeder::class]);
 
     expect(User::query()->sole())
         ->id->toBe($user->id)
-        ->name->toBe('Existing')
+        ->profile->first_name->toBe('Existing')
         ->and($user->fresh()->checkPermissionTo(CentralPermission::ManagePlans))->toBeTrue();
 });
 
