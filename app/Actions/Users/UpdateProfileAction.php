@@ -5,25 +5,21 @@ declare(strict_types=1);
 namespace App\Actions\Users;
 
 use App\Data\Users\UpdateProfileData;
+use App\Models\Profile;
 use App\Models\User;
+use App\Repositories\Profiles\ProfileRepository;
 use App\Repositories\Users\UserRepository;
-use Illuminate\Validation\ValidationException;
 
 final readonly class UpdateProfileAction
 {
     public function __construct(
         private UserRepository $users,
+        private ProfileRepository $profiles,
     ) {
     }
 
-    public function handle(User $user, UpdateProfileData $data): User
+    public function handle(User $user, UpdateProfileData $data): Profile
     {
-        if ($this->users->emailTaken($data->email, $user->id)) {
-            throw ValidationException::withMessages([
-                'email' => __('The email has already been taken.'),
-            ]);
-        }
-
-        return $this->users->updateProfile($user, $data);
+        return $this->profiles->update($this->users->loadProfile($user)->profile, $data);
     }
 }

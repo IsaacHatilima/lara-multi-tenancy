@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Users;
 
 use App\Data\Users\CreateUserData;
-use App\Data\Users\UpdateProfileData;
+use App\Data\Users\UpdateUserData;
 use App\Models\User;
 
 /**
@@ -16,7 +16,7 @@ final readonly class UserRepository
 {
     public function __construct(
         private CreateUser $createUser,
-        private UpdateUserProfile $updateUserProfile,
+        private UpdateUser $updateUser,
         private LoadUserProfile $loadUserProfile,
         private UpdateUserPassword $updateUserPassword,
         private DeleteUser $deleteUser,
@@ -29,9 +29,9 @@ final readonly class UserRepository
         return $this->createUser->handle($data);
     }
 
-    public function updateProfile(User $user, UpdateProfileData $data): User
+    public function update(User $user, UpdateUserData $data): User
     {
-        return $this->updateUserProfile->handle($user, $data);
+        return $this->updateUser->handle($user, $data);
     }
 
     public function loadProfile(User $user): User
