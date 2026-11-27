@@ -28,7 +28,6 @@ afterEach(function () {
 
 dataset('plan routes', [
     'list' => ['get', 'plans.index', fn (): array => []],
-    'create form' => ['get', 'plans.create', fn (): array => []],
     'store' => ['post', 'plans.store', fn (): array => []],
     'edit' => ['get', 'plans.edit', fn (): array => [Plan::factory()->create()->id]],
     'update' => ['put', 'plans.update', fn (): array => [Plan::factory()->create()->id]],
@@ -141,11 +140,11 @@ test('the list rejects filters it does not offer', function () {
         ->assertSessionHasErrors('filter');
 });
 
-test('the create form opens', function () {
-    $this->actingAs(planManager())->get(route('plans.create'))
+test('the list offers the currencies and intervals for its create dialog', function () {
+    $this->actingAs(planManager())->get(route('plans.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('plans/create')
+            ->component('plans/index')
             ->where('currencies.0', ['value' => 'EUR', 'label' => 'EUR'])
             ->where('intervals', [['value' => 'month', 'label' => 'Monthly'], ['value' => 'year', 'label' => 'Yearly']]));
 });
@@ -171,6 +170,17 @@ test('a plan is created as typed and opened to choose its features', function ()
         ->interval->toBe(BillingInterval::Year)
         ->trial_days->toBe(14)
         ->and(planLimits($plan))->toBe([]);
+});
+
+test('creating with create more goes back to the list instead of opening the plan', function () {
+    $this->actingAs(planManager())
+        ->from(route('plans.index', ['page' => 2]))
+        ->post(route('plans.store'), planForm(['create_more' => '1']))
+        ->assertRedirect(route('plans.index', ['page' => 2]))
+        ->assertToast(fn (array $toast): bool => $toast['title'] === 'Plan created.'
+            && ! array_key_exists('description', $toast));
+
+    expect(Plan::query()->sole()->code)->toBe('team');
 });
 
 test('a blank description is stored as null', function () {

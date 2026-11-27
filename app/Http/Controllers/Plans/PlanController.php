@@ -32,23 +32,24 @@ final class PlanController extends Controller
         return Inertia::render('plans/index', [
             'plans' => $listPlans->handle($request),
             'filters' => ['search' => ListPlansData::fromRequest($request)->search],
-        ]);
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('plans/create', [
             'currencies' => Currency::options(),
             'intervals' => BillingInterval::options(),
         ]);
     }
 
     /**
-     * Creates the plan and opens it, where its features are chosen.
+     * Creates the plan and opens it, where its features are chosen. With `create_more` the list stays open for the
+     * next one instead.
      */
     public function store(CreatePlanRequest $request, CreatePlanAction $createPlan): RedirectResponse
     {
         $plan = $createPlan->handle(CreatePlanData::fromRequest($request));
+
+        if ($request->boolean('create_more')) {
+            Toast::success('Plan created.')->flash();
+
+            return back();
+        }
 
         Toast::success('Plan created.')
             ->description('Choose its features below.')

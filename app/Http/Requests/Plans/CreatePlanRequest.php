@@ -38,6 +38,7 @@ final class CreatePlanRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:255', Rule::unique(Plan::class, 'code')],
             'description' => ['nullable', 'string'],
+            'create_more' => ['sometimes', 'boolean'],
             'price' => ['required', 'decimal:0,2', 'min:0', 'max:'.self::MAX_PRICE],
             'currency' => ['required', Rule::enum(Currency::class)],
             'interval' => ['required', Rule::enum(BillingInterval::class)],

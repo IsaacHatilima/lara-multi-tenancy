@@ -14,7 +14,7 @@ Route::middleware([
     'verified',
     PermissionMiddleware::using(CentralPermission::ManagePlans),
 ])->group(function () {
-    Route::resource('plans', PlanController::class)->except(['show']);
+    Route::resource('plans', PlanController::class)->except(['show', 'create']);
     Route::get('plans/{plan}/features/search', [PlanFeatureController::class, 'search'])->name('plans.features.search');
     Route::post('plans/{plan}/features', [PlanFeatureController::class, 'store'])->name('plans.features.store');
     Route::patch('plans/{plan}/features/{feature}', [PlanFeatureController::class, 'update'])->name('plans.features.update');

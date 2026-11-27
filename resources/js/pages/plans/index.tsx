@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { LayersIcon, PlusIcon } from 'lucide-react';
+import { useState } from 'react';
 import PlanController from '@/actions/App/Http/Controllers/Plans/PlanController';
 import { ListPagination } from '@/components/list-pagination';
 import { ListSearch } from '@/components/list-search';
@@ -28,16 +29,27 @@ import {
 } from '@/components/ui/table';
 import { EDGE_CELL_PADDING, STICKY_FIRST_CELL } from '@/lib/table-classes';
 import { cn } from '@/lib/utils';
-import { create, edit, index } from '@/routes/plans';
+import { edit, index } from '@/routes/plans';
 import type { Paginated } from '@/types';
-import type { Plan } from './types';
+import { CreatePlanDialog } from './components/create-plan-dialog';
+import type { BillingIntervalOption, CurrencyOption, Plan } from './types';
 
 type Props = {
     plans: Paginated<Plan>;
     filters: { search: string | null };
+    currencies: CurrencyOption[];
+    intervals: BillingIntervalOption[];
 };
 
-export default function PlansIndex({ plans, filters }: Props) {
+export default function PlansIndex({
+    plans,
+    filters,
+    currencies,
+    intervals,
+}: Props) {
+    const [creating, setCreating] = useState(false);
+    const openCreate = () => setCreating(true);
+
     return (
         <>
             <Head title="Plans" />
@@ -51,12 +63,15 @@ export default function PlansIndex({ plans, filters }: Props) {
                         placeholder="Search name or code"
                         search={filters.search}
                     />
-                    <NewPlanButton />
+                    <NewPlanButton onClick={openCreate} />
                 </StackHeader>
 
                 <StackContent className="py-0">
                     {plans.data.length === 0 ? (
-                        <PlansEmpty search={filters.search} />
+                        <PlansEmpty
+                            search={filters.search}
+                            onCreate={openCreate}
+                        />
                     ) : (
                         <Table className={EDGE_CELL_PADDING}>
                             <TableHeader>
@@ -117,20 +132,33 @@ export default function PlansIndex({ plans, filters }: Props) {
                     <ListPagination page={plans} noun="plans" />
                 </StackFooter>
             </StackedCard>
+
+            <CreatePlanDialog
+                currencies={currencies}
+                intervals={intervals}
+                open={creating}
+                onOpenChange={setCreating}
+            />
         </>
     );
 }
 
-function NewPlanButton() {
+function NewPlanButton({ onClick }: { onClick: () => void }) {
     return (
-        <Button nativeButton={false} render={<Link href={create()} />}>
+        <Button onClick={onClick}>
             <PlusIcon />
             New plan
         </Button>
     );
 }
 
-function PlansEmpty({ search }: { search: string | null }) {
+function PlansEmpty({
+    search,
+    onCreate,
+}: {
+    search: string | null;
+    onCreate: () => void;
+}) {
     return (
         <Empty>
             <EmptyHeader>
@@ -156,7 +184,7 @@ function PlansEmpty({ search }: { search: string | null }) {
                         Clear search
                     </Button>
                 ) : (
-                    <NewPlanButton />
+                    <NewPlanButton onClick={onCreate} />
                 )}
             </EmptyContent>
         </Empty>
