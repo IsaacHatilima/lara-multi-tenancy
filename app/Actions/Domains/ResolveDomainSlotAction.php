@@ -7,7 +7,7 @@ namespace App\Actions\Domains;
 use App\Enums\DomainSlot;
 use App\Models\Domain;
 use App\Models\Tenant;
-use App\Repositories\Domains\ListOccupiedDomainSlotsRepository;
+use App\Repositories\Domains\DomainRepository;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -16,13 +16,13 @@ use Illuminate\Validation\ValidationException;
 final readonly class ResolveDomainSlotAction
 {
     public function __construct(
-        private ListOccupiedDomainSlotsRepository $occupiedSlots,
+        private DomainRepository $domains,
     ) {
     }
 
     public function handle(Tenant $tenant, ?DomainSlot $requested, ?Domain $current = null): DomainSlot
     {
-        $occupied = $this->occupiedSlots->handle($tenant, $current);
+        $occupied = $this->domains->occupiedSlots($tenant, $current?->id);
         $available = array_values(array_filter(
             DomainSlot::cases(),
             fn (DomainSlot $slot): bool => ! in_array($slot, $occupied, true),

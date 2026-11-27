@@ -6,13 +6,13 @@ namespace App\Actions\Domains;
 
 use App\Models\Domain;
 use App\Models\Tenant;
-use App\Repositories\Domains\MoveDomainRepository;
+use App\Repositories\Domains\DomainRepository;
 
 final readonly class MoveDomainAction
 {
     public function __construct(
         private ResolveDomainSlotAction $resolveSlot,
-        private MoveDomainRepository $moveDomain,
+        private DomainRepository $domains,
     ) {
     }
 
@@ -20,6 +20,6 @@ final readonly class MoveDomainAction
     {
         $slot = $this->resolveSlot->handle($destination, requested: null);
 
-        return $this->moveDomain->handle($domain, $destination, $slot);
+        return $this->domains->move($domain, $destination, $slot);
     }
 }

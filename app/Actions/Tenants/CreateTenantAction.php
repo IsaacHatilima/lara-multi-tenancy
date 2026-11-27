@@ -7,14 +7,14 @@ namespace App\Actions\Tenants;
 use App\Actions\Domains\CreateDomainAction;
 use App\Data\Tenants\CreateTenantData;
 use App\Models\Tenant;
-use App\Repositories\Domains\DomainHostnameTakenRepository;
+use App\Repositories\Domains\DomainRepository;
 use App\Repositories\Tenants\TenantRepository;
 use Illuminate\Validation\ValidationException;
 
 final readonly class CreateTenantAction
 {
     public function __construct(
-        private DomainHostnameTakenRepository $hostnameTaken,
+        private DomainRepository $domains,
         private TenantRepository $tenants,
         private CreateDomainAction $createDomain,
     ) {
@@ -25,7 +25,7 @@ final readonly class CreateTenantAction
      */
     public function handle(CreateTenantData $data): Tenant
     {
-        if ($this->hostnameTaken->handle($data->primaryDomain->hostname)) {
+        if ($this->domains->hostnameTaken($data->primaryDomain->hostname)) {
             throw ValidationException::withMessages([
                 'domain' => __('This domain is already assigned to a company.'),
             ]);
