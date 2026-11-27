@@ -12,6 +12,8 @@ use App\Actions\Plans\ListPlansAction;
 use App\Actions\Plans\UpdatePlanAction;
 use App\Data\Plans\CreatePlanData;
 use App\Data\Plans\UpdatePlanData;
+use App\Enums\BillingInterval;
+use App\Enums\Currency;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Plans\CreatePlanRequest;
 use App\Http\Requests\Plans\UpdatePlanRequest;
@@ -32,7 +34,10 @@ final class PlanController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('plans/create');
+        return Inertia::render('plans/create', [
+            'currencies' => Currency::options(),
+            'intervals' => BillingInterval::options(),
+        ]);
     }
 
     /**
@@ -54,6 +59,8 @@ final class PlanController extends Controller
         return Inertia::render('plans/edit', [
             'plan' => $getPlan->handle($plan),
             'features' => $listPlanFeatures->handle($plan),
+            'currencies' => Currency::options(),
+            'intervals' => BillingInterval::options(),
         ]);
     }
 

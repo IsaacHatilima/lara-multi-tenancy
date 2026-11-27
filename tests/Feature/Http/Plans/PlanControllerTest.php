@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\BillingInterval;
 use App\Enums\CentralPermission;
+use App\Enums\Currency;
 use App\Enums\LimitUnit;
 use App\Models\Domain;
 use App\Models\Feature;
@@ -47,6 +49,10 @@ function planForm(array $overrides = []): array
         'name' => 'Team',
         'code' => 'team',
         'description' => 'For growing teams',
+        'price' => '49.00',
+        'currency' => 'EUR',
+        'interval' => 'month',
+        'trial_days' => '0',
         ...$overrides,
     ];
 }
@@ -95,25 +101,45 @@ test('users without plans.manage are forbidden and change nothing', function (st
 
 test('the list shows every plan by name', function () {
     Plan::factory()->create(['name' => 'Pro']);
-    $basic = Plan::factory()->create(['name' => 'Basic', 'code' => 'basic', 'description' => null]);
+    $basic = Plan::factory()->create(['name' => 'Basic', 'code' => 'basic', 'description' => null, 'price_minor' => 1900, 'interval' => BillingInterval::Year, 'trial_days' => 14]);
 
     $this->actingAs(planManager())->get(route('plans.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('plans/index')
             ->has('plans', 2)
-            ->where('plans.0', ['id' => $basic->id, 'name' => 'Basic', 'code' => 'basic', 'description' => null])
+            ->where('plans.0', [
+                'id' => $basic->id,
+                'name' => 'Basic',
+                'code' => 'basic',
+                'description' => null,
+                'priceMinor' => 1900,
+                'price' => '€19.00',
+                'currency' => 'EUR',
+                'interval' => 'year',
+                'intervalLabel' => 'Yearly',
+                'trialDays' => 14,
+            ])
             ->where('plans.1.name', 'Pro'));
 });
 
 test('the create form opens', function () {
     $this->actingAs(planManager())->get(route('plans.create'))
         ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page->component('plans/create'));
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('plans/create')
+            ->where('currencies.0', ['value' => 'EUR', 'label' => 'EUR'])
+            ->where('intervals', [['value' => 'month', 'label' => 'Monthly'], ['value' => 'year', 'label' => 'Yearly']]));
 });
 
 test('a plan is created as typed and opened to choose its features', function () {
-    $response = $this->actingAs(planManager())->post(route('plans.store'), planForm(['name' => '  Team  ']));
+    $response = $this->actingAs(planManager())->post(route('plans.store'), planForm([
+        'name' => '  Team  ',
+        'price' => '19.99',
+        'currency' => 'USD',
+        'interval' => 'year',
+        'trial_days' => '14',
+    ]));
 
     $plan = Plan::query()->sole();
     $response->assertRedirect(route('plans.edit', $plan))
@@ -122,6 +148,10 @@ test('a plan is created as typed and opened to choose its features', function ()
         ->name->toBe('Team')
         ->code->toBe('team')
         ->description->toBe('For growing teams')
+        ->price_minor->toBe(1999)
+        ->currency->toBe(Currency::Usd)
+        ->interval->toBe(BillingInterval::Year)
+        ->trial_days->toBe(14)
         ->and(planLimits($plan))->toBe([]);
 });
 
@@ -146,6 +176,14 @@ test('an invalid new plan is refused', function (array $overrides, string $field
     'code too long' => [['code' => str_repeat('a', 256)], 'code'],
     'code taken' => [['code' => 'pro'], 'code'],
     'description not a string' => [['description' => ['text']], 'description'],
+    'missing price' => [['price' => ''], 'price'],
+    'negative price' => [['price' => '-1'], 'price'],
+    'price with three decimals' => [['price' => '9.999'], 'price'],
+    'price too high' => [['price' => '1000000.01'], 'price'],
+    'unsupported currency' => [['currency' => 'XYZ'], 'currency'],
+    'unknown interval' => [['interval' => 'week'], 'interval'],
+    'negative trial' => [['trial_days' => '-1'], 'trial_days'],
+    'trial too long' => [['trial_days' => '366'], 'trial_days'],
 ]);
 
 test('the edit form lists every feature with whether the plan includes it', function () {
@@ -159,7 +197,11 @@ test('the edit form lists every feature with whether the plan includes it', func
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('plans/edit')
-            ->where('plan', ['id' => $plan->id, 'name' => $plan->name, 'code' => $plan->code, 'description' => $plan->description])
+            ->where('plan.id', $plan->id)
+            ->where('plan.name', $plan->name)
+            ->where('plan.priceMinor', $plan->price_minor)
+            ->has('currencies')
+            ->has('intervals')
             ->where('features', [
                 ['id' => $crm->id, 'key' => 'crm', 'name' => 'CRM', 'limitUnitLabel' => null, 'included' => true, 'limit' => null],
                 ['id' => $messaging->id, 'key' => 'messaging', 'name' => 'Messaging', 'limitUnitLabel' => null, 'included' => false, 'limit' => null],
@@ -176,6 +218,10 @@ test('saving a plan updates its fields and maps the ticked features with their l
         'name' => 'Team Plus',
         'code' => 'team',
         'description' => '',
+        'price' => '0',
+        'currency' => 'GBP',
+        'interval' => 'year',
+        'trial_days' => '30',
         'features' => [
             ['id' => (string) $kept->id, 'limit' => '8'],
             ['id' => (string) $added->id, 'limit' => '0'],
@@ -189,6 +235,10 @@ test('saving a plan updates its fields and maps the ticked features with their l
         ->name->toBe('Team Plus')
         ->code->toBe('team')
         ->description->toBeNull()
+        ->price_minor->toBe(0)
+        ->currency->toBe(Currency::Gbp)
+        ->interval->toBe(BillingInterval::Year)
+        ->trial_days->toBe(30)
         ->and(planLimits($plan))->toBe([$kept->id => 8, $added->id => 0, $unlimited->id => null]);
 });
 

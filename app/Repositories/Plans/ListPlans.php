@@ -17,6 +17,6 @@ final readonly class ListPlans
         return Plan::query()
             ->orderBy('name')
             ->orderBy('code')
-            ->get(['id', 'name', 'code', 'description']);
+            ->get(['id', 'name', 'code', 'description', 'price_minor', 'currency', 'interval', 'trial_days']);
     }
 }
