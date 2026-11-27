@@ -17,7 +17,8 @@ final readonly class ListOccupiedDomainSlots
      */
     public function handle(Tenant $tenant, ?int $domainId = null): array
     {
-        $query = Domain::query()->where('tenant_id', $tenant->getTenantKey());
+        $query = Domain::query();
+        $query->where('tenant_id', $tenant->getTenantKey());
 
         if ($domainId !== null) {
             $query->whereKeyNot($domainId);

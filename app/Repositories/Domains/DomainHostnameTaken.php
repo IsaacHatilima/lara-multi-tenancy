@@ -13,7 +13,8 @@ final readonly class DomainHostnameTaken
      */
     public function handle(string $hostname, ?int $domainId = null): bool
     {
-        $query = Domain::query()->where('domain', $hostname);
+        $query = Domain::query();
+        $query->where('domain', $hostname);
 
         if ($domainId !== null) {
             $query->whereKeyNot($domainId);

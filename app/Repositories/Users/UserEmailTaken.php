@@ -13,7 +13,8 @@ final readonly class UserEmailTaken
      */
     public function handle(string $email, ?string $userId = null): bool
     {
-        $query = User::query()->where('email', $email);
+        $query = User::query();
+        $query->where('email', $email);
 
         if ($userId !== null) {
             $query->whereKeyNot($userId);
