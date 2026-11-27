@@ -56,11 +56,12 @@ class Plan extends Model
     /**
      * The pivot's limit caps the feature on this plan; null means unlimited.
      *
-     * @return BelongsToMany<Feature, $this>
+     * @return BelongsToMany<Feature, $this, PlanFeature>
      */
     public function features(): BelongsToMany
     {
         return $this->belongsToMany(Feature::class, 'plan_feature')
+            ->using(PlanFeature::class)
             ->withPivot('limit')
             ->withTimestamps();
     }
