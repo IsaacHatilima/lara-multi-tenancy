@@ -6,17 +6,17 @@ namespace App\Actions\Users;
 
 use App\Data\Users\UpdatePasswordData;
 use App\Models\User;
-use App\Repositories\Users\UpdateUserPasswordRepository;
+use App\Repositories\Users\UserRepository;
 
 final readonly class UpdateUserPasswordAction
 {
     public function __construct(
-        private UpdateUserPasswordRepository $updatePassword,
+        private UserRepository $users,
     ) {
     }
 
     public function handle(User $user, UpdatePasswordData $data): void
     {
-        $this->updatePassword->handle($user, $data->password);
+        $this->users->updatePassword($user, $data->password);
     }
 }

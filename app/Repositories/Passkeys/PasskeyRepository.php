@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Users;
+namespace App\Repositories\Passkeys;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Passkeys\Passkey;
 
-final readonly class ListPasskeysRepository
+final readonly class PasskeyRepository
 {
     /**
      * @return Collection<int, Passkey>
      */
-    public function handle(User $user): Collection
+    public function listForUser(User $user): Collection
     {
         return Passkey::query()
             ->whereBelongsTo($user)

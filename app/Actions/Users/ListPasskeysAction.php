@@ -6,13 +6,13 @@ namespace App\Actions\Users;
 
 use App\Data\Users\PasskeyResource;
 use App\Models\User;
-use App\Repositories\Users\ListPasskeysRepository;
+use App\Repositories\Passkeys\PasskeyRepository;
 use Laravel\Passkeys\Passkey;
 
 final readonly class ListPasskeysAction
 {
     public function __construct(
-        private ListPasskeysRepository $listPasskeys,
+        private PasskeyRepository $passkeys,
     ) {
     }
 
@@ -21,7 +21,7 @@ final readonly class ListPasskeysAction
      */
     public function handle(User $user): array
     {
-        return array_values($this->listPasskeys->handle($user)
+        return array_values($this->passkeys->listForUser($user)
             ->map(fn (Passkey $passkey): PasskeyResource => PasskeyResource::fromModel($passkey))
             ->all());
     }
