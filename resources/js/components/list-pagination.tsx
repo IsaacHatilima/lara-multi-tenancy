@@ -2,7 +2,7 @@ import { Link } from '@inertiajs/react';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import type { Paginated } from '../types';
+import type { Paginated } from '@/types';
 
 type Props<T> = {
     page: Paginated<T>;
@@ -10,7 +10,7 @@ type Props<T> = {
 };
 
 /** The visible range, with previous and next links once there is more than one page. */
-export function TenantPagination<T>({ page, noun }: Props<T>) {
+export function ListPagination<T>({ page, noun }: Props<T>) {
     return (
         <nav
             aria-label="Pagination"

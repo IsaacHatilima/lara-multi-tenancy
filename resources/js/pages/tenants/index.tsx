@@ -1,6 +1,8 @@
-import { Form, Head, Link } from '@inertiajs/react';
-import { Building2Icon, PlusIcon, SearchIcon } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { Building2Icon, PlusIcon } from 'lucide-react';
 import TenantController from '@/actions/App/Http/Controllers/Tenants/TenantController';
+import { ListPagination } from '@/components/list-pagination';
+import { ListSearch } from '@/components/list-search';
 import { Button } from '@/components/ui/button';
 import {
     Empty,
@@ -10,7 +12,6 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from '@/components/ui/empty';
-import { Input } from '@/components/ui/input';
 import {
     StackContent,
     StackedCard,
@@ -30,8 +31,8 @@ import { cn } from '@/lib/utils';
 import { create, index, show } from '@/routes/tenants';
 import { DomainChips } from './components/domain-chips';
 import { formatDate } from './format';
-import { TenantPagination } from './components/tenant-pagination';
-import type { Paginated, Tenant } from './types';
+import type { Paginated } from '@/types';
+import type { Tenant } from './types';
 
 type Props = {
     tenants: Paginated<Tenant>;
@@ -50,24 +51,12 @@ export default function TenantsIndex({ tenants, filters }: Props) {
                 className="h-auto"
             >
                 <StackHeader className="justify-between">
-                    <Form
-                        {...TenantController.index.form()}
-                        className="relative w-full max-w-72"
-                        role="search"
-                    >
-                        <SearchIcon
-                            aria-hidden
-                            className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
-                        />
-                        <Input
-                            type="search"
-                            name="filter[search]"
-                            aria-label="Search tenants"
-                            placeholder="Search name, email or domain"
-                            defaultValue={filters.search ?? ''}
-                            className="pl-8"
-                        />
-                    </Form>
+                    <ListSearch
+                        form={TenantController.index.form()}
+                        label="Search tenants"
+                        placeholder="Search name, email or domain"
+                        search={filters.search}
+                    />
 
                     <Button
                         nativeButton={false}
@@ -136,7 +125,7 @@ export default function TenantsIndex({ tenants, filters }: Props) {
                 </StackContent>
 
                 <StackFooter>
-                    <TenantPagination page={tenants} noun="tenants" />
+                    <ListPagination page={tenants} noun="tenants" />
                 </StackFooter>
             </StackedCard>
         </>
