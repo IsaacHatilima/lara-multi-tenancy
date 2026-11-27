@@ -7,14 +7,27 @@ import { Button } from '@/components/ui/button';
 import { index } from '@/routes/plans';
 import { PlanFeatureFields } from './components/plan-feature-fields';
 import { PlanFields } from './components/plan-fields';
-import type { Plan, PlanFeature } from './types';
+import { PlanPricingFields } from './components/plan-pricing-fields';
+import type {
+    BillingIntervalOption,
+    CurrencyOption,
+    Plan,
+    PlanFeature,
+} from './types';
 
 type Props = {
     plan: Plan;
     features: PlanFeature[];
+    currencies: CurrencyOption[];
+    intervals: BillingIntervalOption[];
 };
 
-export default function EditPlan({ plan, features }: Props) {
+export default function EditPlan({
+    plan,
+    features,
+    currencies,
+    intervals,
+}: Props) {
     return (
         <>
             <Head title={plan.name} />
@@ -36,6 +49,18 @@ export default function EditPlan({ plan, features }: Props) {
                         <>
                             <SettingsSection title="Plan">
                                 <PlanFields defaults={plan} errors={errors} />
+                            </SettingsSection>
+
+                            <SettingsSection
+                                title="Pricing"
+                                description="Set the price to 0 for a free plan."
+                            >
+                                <PlanPricingFields
+                                    defaults={plan}
+                                    currencies={currencies}
+                                    intervals={intervals}
+                                    errors={errors}
+                                />
                             </SettingsSection>
 
                             <SettingsSection

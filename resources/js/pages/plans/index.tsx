@@ -52,6 +52,9 @@ export default function PlansIndex({ plans }: Props) {
                                     <TableHead className={STICKY_FIRST_CELL}>
                                         Plan
                                     </TableHead>
+                                    <TableHead className="text-right">
+                                        Price
+                                    </TableHead>
                                     <TableHead>Description</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -73,6 +76,20 @@ export default function PlansIndex({ plans }: Props) {
                                             <span className="block truncate font-mono text-muted-foreground">
                                                 {plan.code}
                                             </span>
+                                        </TableCell>
+                                        <TableCell className="text-right tabular-nums">
+                                            <span className="block">
+                                                {plan.price}
+                                                <span className="text-muted-foreground">
+                                                    {' / '}
+                                                    {plan.interval}
+                                                </span>
+                                            </span>
+                                            {plan.trialDays > 0 && (
+                                                <span className="block text-muted-foreground">
+                                                    {plan.trialDays}-day trial
+                                                </span>
+                                            )}
                                         </TableCell>
                                         <TableCell className="max-w-96 truncate text-muted-foreground">
                                             {plan.description}

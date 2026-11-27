@@ -4,8 +4,15 @@ import { SettingsSection } from '@/components/settings-section';
 import { Button } from '@/components/ui/button';
 import { index } from '@/routes/plans';
 import { PlanFields } from './components/plan-fields';
+import { PlanPricingFields } from './components/plan-pricing-fields';
+import type { BillingIntervalOption, CurrencyOption } from './types';
 
-export default function CreatePlan() {
+type Props = {
+    currencies: CurrencyOption[];
+    intervals: BillingIntervalOption[];
+};
+
+export default function CreatePlan({ currencies, intervals }: Props) {
     return (
         <>
             <Head title="New plan" />
@@ -27,6 +34,23 @@ export default function CreatePlan() {
                                     code: '',
                                     description: null,
                                 }}
+                                errors={errors}
+                            />
+                        </SettingsSection>
+
+                        <SettingsSection
+                            title="Pricing"
+                            description="Set the price to 0 for a free plan."
+                        >
+                            <PlanPricingFields
+                                defaults={{
+                                    priceMinor: 0,
+                                    currency: currencies[0].value,
+                                    interval: intervals[0].value,
+                                    trialDays: 0,
+                                }}
+                                currencies={currencies}
+                                intervals={intervals}
                                 errors={errors}
                             />
                         </SettingsSection>
