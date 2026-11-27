@@ -6,40 +6,37 @@ namespace App\Repositories\Billing;
 
 use App\Data\Billing\PaymentRecord;
 use App\Data\Billing\SubscriptionRecord;
-use App\Enums\PaymentStatus;
 use App\Models\Tenant;
 
 /**
- * Reads sample data until subscriptions and payments have tables.
+ * Entry file for all billing persistence. Each operation lives in its own class in this folder; this class composes
+ * them so an action needs one import and one constructor parameter instead of one per operation. The operations read
+ * sample data until subscriptions and payments have tables.
  */
 final readonly class BillingRepository
 {
-    /**
-     * Null means the company never subscribed.
-     */
+    public function __construct(
+        private GetTenantSubscription $getTenantSubscription,
+        private ListRecentTenantPayments $listRecentTenantPayments,
+        private SumTenantPaidPayments $sumTenantPaidPayments,
+    ) {
+    }
+
     public function subscription(Tenant $tenant): ?SubscriptionRecord
     {
-        return SampleBillingRecords::subscription($tenant);
+        return $this->getTenantSubscription->handle($tenant);
     }
 
     /**
-     * A company's most recent payments, newest first.
-     *
      * @return list<PaymentRecord>
      */
     public function recentPayments(Tenant $tenant, int $limit): array
     {
-        return array_slice(SampleBillingRecords::payments($tenant), 0, $limit);
+        return $this->listRecentTenantPayments->handle($tenant, $limit);
     }
 
-    /**
-     * Everything a company has paid, in minor units.
-     */
     public function sumPaidPayments(Tenant $tenant): int
     {
-        return array_sum(array_map(
-            fn (PaymentRecord $payment): int => $payment->status === PaymentStatus::Paid ? $payment->amountMinor : 0,
-            SampleBillingRecords::payments($tenant),
-        ));
+        return $this->sumTenantPaidPayments->handle($tenant);
     }
 }
