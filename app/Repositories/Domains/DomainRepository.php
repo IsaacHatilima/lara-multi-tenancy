@@ -8,73 +8,52 @@ use App\Enums\DomainSlot;
 use App\Models\Domain;
 use App\Models\Tenant;
 
+/**
+ * Entry file for all Domain persistence. Each operation lives in its own class in this folder; this class composes
+ * them so an action needs one import and one constructor parameter instead of one per operation.
+ */
 final readonly class DomainRepository
 {
+    public function __construct(
+        private CreateDomain $createDomain,
+        private UpdateDomain $updateDomain,
+        private MoveDomain $moveDomain,
+        private DeleteDomain $deleteDomain,
+        private DomainHostnameTaken $domainHostnameTaken,
+        private ListOccupiedDomainSlots $listOccupiedDomainSlots,
+    ) {
+    }
+
     public function create(Tenant $tenant, string $hostname, DomainSlot $slot): Domain
     {
-        $domain = new Domain();
-
-        $domain->tenant_id = (string) $tenant->getTenantKey();
-        $domain->domain = $hostname;
-        $domain->slot = $slot;
-        $domain->save();
-
-        return $domain;
+        return $this->createDomain->handle($tenant, $hostname, $slot);
     }
 
     public function update(Domain $domain, string $hostname, DomainSlot $slot): Domain
     {
-        $domain->domain = $hostname;
-        $domain->slot = $slot;
-        $domain->save();
-
-        return $domain;
+        return $this->updateDomain->handle($domain, $hostname, $slot);
     }
 
     public function move(Domain $domain, Tenant $destination, DomainSlot $slot): Domain
     {
-        $domain->tenant_id = (string) $destination->getTenantKey();
-        $domain->slot = $slot;
-        $domain->save();
-
-        return $domain;
+        return $this->moveDomain->handle($domain, $destination, $slot);
     }
 
     public function delete(Domain $domain): void
     {
-        $domain->delete();
+        $this->deleteDomain->handle($domain);
     }
 
-    /**
-     * Whether a domain already uses this hostname; the domain with `$domainId` doesn't count.
-     */
     public function hostnameTaken(string $hostname, ?int $domainId = null): bool
     {
-        $query = Domain::query()->where('domain', $hostname);
-
-        if ($domainId !== null) {
-            $query->whereKeyNot($domainId);
-        }
-
-        return $query->exists();
+        return $this->domainHostnameTaken->handle($hostname, $domainId);
     }
 
     /**
-     * The slots the company's domains take; the domain with `$domainId` doesn't count.
-     *
      * @return list<DomainSlot>
      */
     public function occupiedSlots(Tenant $tenant, ?int $domainId = null): array
     {
-        $query = Domain::query()->where('tenant_id', $tenant->getTenantKey());
-
-        if ($domainId !== null) {
-            $query->whereKeyNot($domainId);
-        }
-
-        return array_values($query
-            ->get(['id', 'slot'])
-            ->map(fn (Domain $domain): DomainSlot => $domain->slot)
-            ->all());
+        return $this->listOccupiedDomainSlots->handle($tenant, $domainId);
     }
 }
