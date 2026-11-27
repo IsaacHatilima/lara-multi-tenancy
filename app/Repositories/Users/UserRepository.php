@@ -6,86 +6,51 @@ namespace App\Repositories\Users;
 
 use App\Data\Users\CreateUserData;
 use App\Data\Users\UpdateProfileData;
-use App\Models\Profile;
 use App\Models\User;
 
+/**
+ * Entry file for all User persistence. Each operation lives in its own class in this folder; this class composes
+ * them so an action needs one import and one constructor parameter instead of one per operation.
+ */
 final readonly class UserRepository
 {
-    /**
-     * Creates the user with their profile, together.
-     */
+    public function __construct(
+        private CreateUser $createUser,
+        private UpdateUserProfile $updateUserProfile,
+        private LoadUserProfile $loadUserProfile,
+        private UpdateUserPassword $updateUserPassword,
+        private DeleteUser $deleteUser,
+        private UserEmailTaken $userEmailTaken,
+    ) {
+    }
+
     public function create(CreateUserData $data): User
     {
-        $user = new User();
-
-        return $user->getConnection()->transaction(function () use ($user, $data): User {
-            $user->email = $data->email;
-            $user->password = $data->password;
-            $user->save();
-
-            $profile = new Profile();
-            $profile->user_id = $user->id;
-            $profile->first_name = $data->firstName;
-            $profile->last_name = $data->lastName;
-            $profile->save();
-
-            return $user->setRelation('profile', $profile);
-        });
+        return $this->createUser->handle($data);
     }
 
-    /**
-     * Saves the email and the profile's names together. A changed email address has to be verified again.
-     */
     public function updateProfile(User $user, UpdateProfileData $data): User
     {
-        return $user->getConnection()->transaction(function () use ($user, $data): User {
-            $user->email = $data->email;
-
-            if ($user->isDirty('email')) {
-                $user->email_verified_at = null;
-            }
-
-            $user->save();
-
-            $profile = $user->loadMissing('profile')->profile;
-            $profile->first_name = $data->firstName;
-            $profile->last_name = $data->lastName;
-            $profile->save();
-
-            return $user;
-        });
+        return $this->updateUserProfile->handle($user, $data);
     }
 
-    /**
-     * The user with the profile columns the app shows.
-     */
     public function loadProfile(User $user): User
     {
-        return $user->load(['profile' => fn ($query) => $query->select(['id', 'user_id', 'first_name', 'last_name'])]);
+        return $this->loadUserProfile->handle($user);
     }
 
     public function updatePassword(User $user, string $password): void
     {
-        $user->password = $password;
-        $user->save();
+        $this->updateUserPassword->handle($user, $password);
     }
 
     public function delete(User $user): void
     {
-        $user->delete();
+        $this->deleteUser->handle($user);
     }
 
-    /**
-     * Whether another user already has this email; the user with `$userId` doesn't count.
-     */
     public function emailTaken(string $email, ?string $userId = null): bool
     {
-        $query = User::query()->where('email', $email);
-
-        if ($userId !== null) {
-            $query->whereKeyNot($userId);
-        }
-
-        return $query->exists();
+        return $this->userEmailTaken->handle($email, $userId);
     }
 }
