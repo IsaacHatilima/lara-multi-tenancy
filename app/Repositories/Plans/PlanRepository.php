@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repositories\Plans;
 
+use App\Data\Plans\AddPlanFeatureData;
 use App\Data\Plans\CreatePlanData;
 use App\Data\Plans\UpdatePlanData;
+use App\Models\Feature;
 use App\Models\Plan;
+use App\Models\PlanFeature;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -21,7 +25,11 @@ final readonly class PlanRepository
         private UpdatePlan $updatePlan,
         private DeletePlan $deletePlan,
         private ListPlans $listPlans,
-        private ListPlanFeatureLimits $listPlanFeatureLimits,
+        private ListPlanFeatures $listPlanFeatures,
+        private PlanIncludesFeature $planIncludesFeature,
+        private AddPlanFeature $addPlanFeature,
+        private UpdatePlanFeatureLimit $updatePlanFeatureLimit,
+        private RemovePlanFeature $removePlanFeature,
     ) {
     }
 
@@ -49,10 +57,30 @@ final readonly class PlanRepository
     }
 
     /**
-     * @return array<int, int|null>
+     * @return Collection<int, PlanFeature>
      */
-    public function featureLimits(Plan $plan): array
+    public function features(Plan $plan): Collection
     {
-        return $this->listPlanFeatureLimits->handle($plan);
+        return $this->listPlanFeatures->handle($plan);
+    }
+
+    public function includesFeature(Plan $plan, Feature $feature): bool
+    {
+        return $this->planIncludesFeature->handle($plan, $feature);
+    }
+
+    public function addFeature(Plan $plan, AddPlanFeatureData $data): void
+    {
+        $this->addPlanFeature->handle($plan, $data);
+    }
+
+    public function updateFeatureLimit(Plan $plan, Feature $feature, ?int $limit): void
+    {
+        $this->updatePlanFeatureLimit->handle($plan, $feature, $limit);
+    }
+
+    public function removeFeature(Plan $plan, Feature $feature): void
+    {
+        $this->removePlanFeature->handle($plan, $feature);
     }
 }

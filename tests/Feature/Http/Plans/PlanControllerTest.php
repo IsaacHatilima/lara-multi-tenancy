@@ -204,11 +204,11 @@ test('an invalid new plan is refused', function (array $overrides, string $field
     'trial too long' => [['trial_days' => '366'], 'trial_days'],
 ]);
 
-test('the edit form lists every feature with whether the plan includes it', function () {
+test('the edit form lists only the features the plan includes, by name, with their limits', function () {
     $plan = Plan::factory()->create();
     $storage = Feature::factory()->create(['key' => 'storage', 'name' => 'Storage', 'limit_unit' => LimitUnit::Megabytes]);
     $crm = Feature::factory()->create(['key' => 'crm', 'name' => 'CRM']);
-    $messaging = Feature::factory()->create(['key' => 'messaging', 'name' => 'Messaging']);
+    Feature::factory()->create(['key' => 'messaging', 'name' => 'Messaging']);
     $plan->features()->attach([$storage->id => ['limit' => 500], $crm->id => ['limit' => null]]);
 
     $this->actingAs(planManager())->get(route('plans.edit', $plan))
@@ -221,16 +221,15 @@ test('the edit form lists every feature with whether the plan includes it', func
             ->has('currencies')
             ->has('intervals')
             ->where('features', [
-                ['id' => $crm->id, 'key' => 'crm', 'name' => 'CRM', 'limitUnitLabel' => null, 'included' => true, 'limit' => null],
-                ['id' => $messaging->id, 'key' => 'messaging', 'name' => 'Messaging', 'limitUnitLabel' => null, 'included' => false, 'limit' => null],
-                ['id' => $storage->id, 'key' => 'storage', 'name' => 'Storage', 'limitUnitLabel' => 'Megabytes', 'included' => true, 'limit' => 500],
+                ['id' => $crm->id, 'key' => 'crm', 'name' => 'CRM', 'limitUnitLabel' => null, 'limit' => null],
+                ['id' => $storage->id, 'key' => 'storage', 'name' => 'Storage', 'limitUnitLabel' => 'Megabytes', 'limit' => 500],
             ]));
 });
 
-test('saving a plan updates its fields and maps the ticked features with their limits', function () {
+test('saving a plan updates its fields and leaves its features alone', function () {
     $plan = Plan::factory()->create(['code' => 'team']);
-    [$kept, $added, $removed, $unlimited] = Feature::factory()->count(4)->create();
-    $plan->features()->attach([$kept->id => ['limit' => 5], $removed->id => ['limit' => 10]]);
+    $feature = Feature::factory()->create();
+    $plan->features()->attach($feature->id, ['limit' => 5]);
 
     $response = $this->actingAs(planManager())->put(route('plans.update', $plan), planForm([
         'name' => 'Team Plus',
@@ -240,11 +239,7 @@ test('saving a plan updates its fields and maps the ticked features with their l
         'currency' => 'GBP',
         'interval' => 'year',
         'trial_days' => '30',
-        'features' => [
-            ['id' => (string) $kept->id, 'limit' => '8'],
-            ['id' => (string) $added->id, 'limit' => '0'],
-            ['id' => (string) $unlimited->id, 'limit' => ''],
-        ],
+        'features' => [],
     ]));
 
     $response->assertRedirect(route('plans.edit', $plan))
@@ -257,16 +252,7 @@ test('saving a plan updates its fields and maps the ticked features with their l
         ->currency->toBe(Currency::Gbp)
         ->interval->toBe(BillingInterval::Year)
         ->trial_days->toBe(30)
-        ->and(planLimits($plan))->toBe([$kept->id => 8, $added->id => 0, $unlimited->id => null]);
-});
-
-test('saving a plan with no feature ticked removes all its features', function () {
-    $plan = Plan::factory()->create();
-    $plan->features()->attach(Feature::factory()->create()->id, ['limit' => 3]);
-
-    $this->actingAs(planManager())->put(route('plans.update', $plan), planForm())->assertSessionHasNoErrors();
-
-    expect(planLimits($plan))->toBe([]);
+        ->and(planLimits($plan))->toBe([$feature->id => 5]);
 });
 
 test('an invalid plan update is refused and changes nothing', function (Closure $overrides, string $field) {
@@ -290,17 +276,6 @@ test('an invalid plan update is refused and changes nothing', function (Closure 
     'code too long' => [fn (): array => ['code' => str_repeat('a', 256)], 'code'],
     'code of another plan' => [fn (): array => ['code' => 'pro'], 'code'],
     'description not a string' => [fn (): array => ['description' => ['text']], 'description'],
-    'features not a list' => [fn (): array => ['features' => 'all'], 'features'],
-    'feature without an id' => [fn (): array => ['features' => [['limit' => '1']]], 'features.0.id'],
-    'feature id not a number' => [fn (): array => ['features' => [['id' => 'crm']]], 'features.0.id'],
-    'unknown feature' => [fn (): array => ['features' => [['id' => '999999']]], 'features.0.id'],
-    'feature listed twice' => [fn (Feature $feature): array => ['features' => [
-        ['id' => (string) $feature->id, 'limit' => '1'],
-        ['id' => (string) $feature->id, 'limit' => '2'],
-    ]], 'features.1.id'],
-    'limit not a number' => [fn (Feature $feature): array => ['features' => [['id' => (string) $feature->id, 'limit' => 'many']]], 'features.0.limit'],
-    'negative limit' => [fn (Feature $feature): array => ['features' => [['id' => (string) $feature->id, 'limit' => '-1']]], 'features.0.limit'],
-    'limit too large' => [fn (Feature $feature): array => ['features' => [['id' => (string) $feature->id, 'limit' => '2147483648']]], 'features.0.limit'],
 ]);
 
 test('deleting a plan removes it and its feature mappings but keeps the features', function () {

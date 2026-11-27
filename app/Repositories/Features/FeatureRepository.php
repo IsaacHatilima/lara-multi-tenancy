@@ -7,6 +7,7 @@ namespace App\Repositories\Features;
 use App\Data\Features\CreateFeatureData;
 use App\Data\Features\UpdateFeatureData;
 use App\Models\Feature;
+use App\Models\Plan;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -20,6 +21,7 @@ final readonly class FeatureRepository
         private UpdateFeature $updateFeature,
         private DeleteFeature $deleteFeature,
         private ListFeatures $listFeatures,
+        private ListFeaturesNotOnPlan $listFeaturesNotOnPlan,
     ) {
     }
 
@@ -44,5 +46,13 @@ final readonly class FeatureRepository
     public function list(): Collection
     {
         return $this->listFeatures->handle();
+    }
+
+    /**
+     * @return Collection<int, Feature>
+     */
+    public function notOnPlan(Plan $plan, ?string $search, int $limit): Collection
+    {
+        return $this->listFeaturesNotOnPlan->handle($plan, $search, $limit);
     }
 }

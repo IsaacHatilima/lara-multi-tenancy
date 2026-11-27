@@ -11,9 +11,6 @@ use Spatie\LaravelData\Data;
 
 final class UpdatePlanData extends Data
 {
-    /**
-     * @param  array<int, int|null>  $featureLimits  the features the plan includes, keyed by feature id, each with its limit or null for unlimited
-     */
     public function __construct(
         public readonly string $name,
         public readonly string $code,
@@ -22,7 +19,6 @@ final class UpdatePlanData extends Data
         public readonly Currency $currency,
         public readonly BillingInterval $interval,
         public readonly int $trialDays,
-        public readonly array $featureLimits,
     ) {
     }
 
@@ -38,11 +34,6 @@ final class UpdatePlanData extends Data
             currency: Currency::from($request->string('currency')->value()),
             interval: BillingInterval::from($request->string('interval')->value()),
             trialDays: $request->integer('trial_days'),
-            featureLimits: $request->collect('features')
-                ->mapWithKeys(fn (array $feature): array => [
-                    (int) $feature['id'] => isset($feature['limit']) ? (int) $feature['limit'] : null,
-                ])
-                ->all(),
         );
     }
 }
