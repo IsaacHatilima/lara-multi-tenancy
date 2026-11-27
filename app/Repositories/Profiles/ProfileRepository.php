@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Profiles;
 
+use App\Data\Users\CreateUserData;
 use App\Data\Users\UpdateProfileData;
 use App\Models\Profile;
 use App\Models\User;
@@ -20,9 +21,9 @@ final readonly class ProfileRepository
     ) {
     }
 
-    public function create(User $user, string $firstName, string $lastName): Profile
+    public function create(User $user, CreateUserData $data): Profile
     {
-        return $this->createProfile->handle($user, $firstName, $lastName);
+        return $this->createProfile->handle($user, $data);
     }
 
     public function update(Profile $profile, UpdateProfileData $data): Profile

@@ -27,7 +27,7 @@ final readonly class CreateUser
             $user->password = $data->password;
             $user->save();
 
-            return $user->setRelation('profile', $this->profiles->create($user, $data->firstName, $data->lastName));
+            return $user->setRelation('profile', $this->profiles->create($user, $data));
         });
     }
 }
