@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Subjects and causers include tenants, whose keys are strings, as well as integer-keyed models such as users.
+     * Subjects and causers include tenants and users, whose keys are strings, as well as integer-keyed models such as domains.
      */
     public function up(): void
     {
@@ -19,7 +19,7 @@ return new class extends Migration
     }
 
     /**
-     * Rolling back deletes activity rows whose subject or causer has a non-numeric key, such as a tenant,
+     * Rolling back deletes activity rows whose subject or causer has a non-numeric key, such as a tenant or user,
      * because integer columns cannot hold them.
      */
     public function down(): void

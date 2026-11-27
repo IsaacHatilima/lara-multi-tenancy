@@ -53,7 +53,7 @@ final readonly class UserRepository
     /**
      * Whether another user already has this email; the user with `$userId` doesn't count.
      */
-    public function emailTaken(string $email, ?int $userId = null): bool
+    public function emailTaken(string $email, ?string $userId = null): bool
     {
         $query = User::query()->where('email', $email);
 
