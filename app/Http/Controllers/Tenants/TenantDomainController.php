@@ -22,9 +22,12 @@ final class TenantDomainController extends Controller
      */
     public function store(SaveDomainRequest $request, Tenant $tenant, CreateDomainAction $createDomain): RedirectResponse
     {
-        $createDomain->handle($tenant, SaveDomainData::fromRequest($request));
+        $data = SaveDomainData::fromRequest($request);
+        $createDomain->handle($tenant, $data);
 
-        Toast::success('Domain added.')->flash();
+        Toast::success('Domain added.')
+            ->description(':hostname now opens this company.', ['hostname' => $data->hostname])
+            ->flash();
 
         return to_route('tenants.edit', $tenant);
     }
@@ -48,7 +51,9 @@ final class TenantDomainController extends Controller
     {
         $deleteDomain->handle($tenant, $domain);
 
-        Toast::success('Domain removed.')->flash();
+        Toast::success('Domain removed.')
+            ->description(':hostname no longer opens this company.', ['hostname' => $domain->domain])
+            ->flash();
 
         return to_route('tenants.edit', $tenant);
     }

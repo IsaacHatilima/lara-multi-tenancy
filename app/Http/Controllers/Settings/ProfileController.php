@@ -42,9 +42,15 @@ class ProfileController extends Controller
         User $user,
         UpdateProfileAction $updateProfile,
     ): RedirectResponse {
-        $updateProfile->handle($user, UpdateProfileData::fromRequest($request));
+        $user = $updateProfile->handle($user, UpdateProfileData::fromRequest($request));
 
-        Toast::success('Profile updated.')->flash();
+        $toast = Toast::success('Profile updated.');
+
+        if (! $user->hasVerifiedEmail()) {
+            $toast->description('Verify your new email address to keep full access.');
+        }
+
+        $toast->flash();
 
         return to_route('profile.edit');
     }
