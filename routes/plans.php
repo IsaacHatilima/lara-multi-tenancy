@@ -19,5 +19,5 @@ Route::middleware([
     Route::post('plans/{plan}/features', [PlanFeatureController::class, 'store'])->name('plans.features.store');
     Route::patch('plans/{plan}/features/{feature}', [PlanFeatureController::class, 'update'])->name('plans.features.update');
     Route::delete('plans/{plan}/features/{feature}', [PlanFeatureController::class, 'destroy'])->name('plans.features.destroy');
-    Route::resource('features', FeatureController::class)->except(['show']);
+    Route::resource('features', FeatureController::class)->except(['show', 'create']);
 });

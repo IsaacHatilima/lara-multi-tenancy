@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { PlusIcon, PuzzleIcon } from 'lucide-react';
+import { useState } from 'react';
 import FeatureController from '@/actions/App/Http/Controllers/Features/FeatureController';
 import { ListPagination } from '@/components/list-pagination';
 import { ListSearch } from '@/components/list-search';
@@ -28,16 +29,25 @@ import {
 } from '@/components/ui/table';
 import { EDGE_CELL_PADDING, STICKY_FIRST_CELL } from '@/lib/table-classes';
 import { cn } from '@/lib/utils';
-import { create, edit, index } from '@/routes/features';
+import { edit, index } from '@/routes/features';
 import type { Paginated } from '@/types';
-import type { Feature } from './types';
+import { CreateFeatureDialog } from './components/create-feature-dialog';
+import type { Feature, LimitUnitOption } from './types';
 
 type Props = {
     features: Paginated<Feature>;
     filters: { search: string | null };
+    limitUnits: LimitUnitOption[];
 };
 
-export default function FeaturesIndex({ features, filters }: Props) {
+export default function FeaturesIndex({
+    features,
+    filters,
+    limitUnits,
+}: Props) {
+    const [creating, setCreating] = useState(false);
+    const openCreate = () => setCreating(true);
+
     return (
         <>
             <Head title="Features" />
@@ -55,12 +65,15 @@ export default function FeaturesIndex({ features, filters }: Props) {
                         placeholder="Search name or key"
                         search={filters.search}
                     />
-                    <NewFeatureButton />
+                    <NewFeatureButton onClick={openCreate} />
                 </StackHeader>
 
                 <StackContent className="py-0">
                     {features.data.length === 0 ? (
-                        <FeaturesEmpty search={filters.search} />
+                        <FeaturesEmpty
+                            search={filters.search}
+                            onCreate={openCreate}
+                        />
                     ) : (
                         <Table className={EDGE_CELL_PADDING}>
                             <TableHeader>
@@ -110,20 +123,32 @@ export default function FeaturesIndex({ features, filters }: Props) {
                     <ListPagination page={features} noun="features" />
                 </StackFooter>
             </StackedCard>
+
+            <CreateFeatureDialog
+                limitUnits={limitUnits}
+                open={creating}
+                onOpenChange={setCreating}
+            />
         </>
     );
 }
 
-function NewFeatureButton() {
+function NewFeatureButton({ onClick }: { onClick: () => void }) {
     return (
-        <Button nativeButton={false} render={<Link href={create()} />}>
+        <Button onClick={onClick}>
             <PlusIcon />
             New feature
         </Button>
     );
 }
 
-function FeaturesEmpty({ search }: { search: string | null }) {
+function FeaturesEmpty({
+    search,
+    onCreate,
+}: {
+    search: string | null;
+    onCreate: () => void;
+}) {
     return (
         <Empty>
             <EmptyHeader>
@@ -151,7 +176,7 @@ function FeaturesEmpty({ search }: { search: string | null }) {
                         Clear search
                     </Button>
                 ) : (
-                    <NewFeatureButton />
+                    <NewFeatureButton onClick={onCreate} />
                 )}
             </EmptyContent>
         </Empty>

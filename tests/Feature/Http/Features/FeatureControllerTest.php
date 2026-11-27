@@ -25,7 +25,6 @@ afterEach(function () {
 
 dataset('feature routes', [
     'list' => ['get', 'features.index', fn (): array => []],
-    'create form' => ['get', 'features.create', fn (): array => []],
     'store' => ['post', 'features.store', fn (): array => []],
     'edit' => ['get', 'features.edit', fn (): array => [Feature::factory()->create()->id]],
     'update' => ['put', 'features.update', fn (): array => [Feature::factory()->create()->id]],
@@ -122,11 +121,11 @@ test('the list rejects filters it does not offer', function () {
         ->assertSessionHasErrors('filter');
 });
 
-test('the create form offers the limit units', function () {
-    $this->actingAs(featureManager())->get(route('features.create'))
+test('the list offers the limit units for its create dialog', function () {
+    $this->actingAs(featureManager())->get(route('features.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('features/create')
+            ->component('features/index')
             ->where('limitUnits', [
                 ['value' => 'megabytes', 'label' => 'Megabytes'],
                 ['value' => 'count', 'label' => 'Count'],

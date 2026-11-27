@@ -30,12 +30,6 @@ final class FeatureController extends Controller
         return Inertia::render('features/index', [
             'features' => $listFeatures->handle($request),
             'filters' => ['search' => ListFeaturesData::fromRequest($request)->search],
-        ]);
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('features/create', [
             'limitUnits' => LimitUnit::options(),
         ]);
     }
