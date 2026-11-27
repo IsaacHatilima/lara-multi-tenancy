@@ -9,46 +9,34 @@ use App\Data\Plans\UpdatePlanData;
 use App\Models\Plan;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Entry file for all Plan persistence. Each operation lives in its own class in this folder; this class composes
+ * them so an action needs one import and one constructor parameter instead of one per operation.
+ */
 final readonly class PlanRepository
 {
+    public function __construct(
+        private CreatePlan $createPlan,
+        private UpdatePlan $updatePlan,
+        private DeletePlan $deletePlan,
+        private ListPlans $listPlans,
+        private ListPlanFeatureLimits $listPlanFeatureLimits,
+    ) {
+    }
+
     public function create(CreatePlanData $data): Plan
     {
-        $plan = new Plan();
-
-        $plan->name = $data->name;
-        $plan->code = $data->code;
-        $plan->description = $data->description;
-        $plan->save();
-
-        return $plan;
+        return $this->createPlan->handle($data);
     }
 
-    /**
-     * Saves the plan's fields and the features it includes together: a feature left out of the data is removed.
-     */
     public function update(Plan $plan, UpdatePlanData $data): Plan
     {
-        return $plan->getConnection()->transaction(function () use ($plan, $data): Plan {
-            $plan->name = $data->name;
-            $plan->code = $data->code;
-            $plan->description = $data->description;
-            $plan->save();
-
-            $plan->features()->sync(array_map(
-                fn (?int $limit): array => ['limit' => $limit],
-                $data->featureLimits,
-            ));
-
-            return $plan;
-        });
+        return $this->updatePlan->handle($plan, $data);
     }
 
-    /**
-     * The database removes the plan's feature mappings with it.
-     */
     public function delete(Plan $plan): void
     {
-        $plan->delete();
+        $this->deletePlan->handle($plan);
     }
 
     /**
@@ -56,19 +44,14 @@ final readonly class PlanRepository
      */
     public function list(): Collection
     {
-        return Plan::query()
-            ->orderBy('name')
-            ->orderBy('code')
-            ->get(['id', 'name', 'code', 'description']);
+        return $this->listPlans->handle();
     }
 
     /**
-     * The features the plan includes, keyed by feature id, each with its limit or null for unlimited.
-     *
      * @return array<int, int|null>
      */
     public function featureLimits(Plan $plan): array
     {
-        return $plan->features()->pluck('plan_feature.limit', 'features.id')->all();
+        return $this->listPlanFeatureLimits->handle($plan);
     }
 }
