@@ -73,7 +73,7 @@ test('the company list searches names, emails and domains', function (string $se
     Tenant::factory()->create(['name' => 'Beta', 'email' => 'hello@beta.example']);
 
     $this->actingAs(User::factory()->create())
-        ->get(route('tenants.index', ['search' => $search]))
+        ->get(route('tenants.index', ['filter' => ['search' => $search]]))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->has('tenants.data', 1)
@@ -89,6 +89,23 @@ test('the company list rejects an invalid page', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('tenants.index', ['page' => 0]))
         ->assertSessionHasErrors('page');
+});
+
+test('the company list rejects filters it does not offer', function () {
+    $this->actingAs(User::factory()->create())
+        ->get(route('tenants.index', ['filter' => ['plan' => 'pro']]))
+        ->assertSessionHasErrors('filter');
+});
+
+test('the company list searches a term with a comma as one value', function () {
+    Tenant::factory()->create(['name' => 'Acme, Inc.']);
+    Tenant::factory()->create(['name' => 'Inc Holdings']);
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('tenants.index', ['filter' => ['search' => 'Acme, Inc']]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('tenants.data', 1)
+            ->where('tenants.data.0.name', 'Acme, Inc.'));
 });
 
 test('tenant management is hidden on a self-hosted deployment', function () {
@@ -149,7 +166,7 @@ test('a company is not created when its domain is invalid or taken', function (s
     Event::assertNotDispatched(TenantCreated::class);
 })->with([
     'taken' => ['Taken.Example', 'This domain is already assigned to a company.'],
-    'central host' => [fn (): string => parse_url(config('app.url'), PHP_URL_HOST), 'The central application domain cannot be assigned to a tenant.'],
+    'central host' => [fn (): string => parse_url(config('app.url'), PHP_URL_HOST), 'This domain is reserved.'],
     'with a scheme' => ['https://acme.example', 'Enter a hostname without a scheme, port, or path.'],
 ]);
 

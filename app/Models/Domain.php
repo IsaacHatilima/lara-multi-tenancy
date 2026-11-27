@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Data\Domains\DomainHostname;
 use App\Enums\DomainSlot;
-use App\Rules\TenantHostname;
 use Database\Factories\DomainFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -56,7 +56,7 @@ class Domain extends BaseDomain
     protected function domain(): Attribute
     {
         return Attribute::make(
-            set: fn (?string $value): ?string => $value === null ? null : TenantHostname::normalize($value),
+            set: fn (?string $value): ?string => $value === null ? null : DomainHostname::normalize($value),
         );
     }
 }

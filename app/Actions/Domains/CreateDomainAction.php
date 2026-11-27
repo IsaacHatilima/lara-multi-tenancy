@@ -7,22 +7,20 @@ namespace App\Actions\Domains;
 use App\Data\Domains\DomainResource;
 use App\Data\Domains\SaveDomainData;
 use App\Models\Tenant;
-use App\Repositories\Domains\CreateDomainRepository;
-use App\Repositories\Domains\DomainHostnameTakenRepository;
+use App\Repositories\Domains\DomainRepository;
 use Illuminate\Validation\ValidationException;
 
 final readonly class CreateDomainAction
 {
     public function __construct(
-        private DomainHostnameTakenRepository $hostnameTaken,
+        private DomainRepository $domains,
         private ResolveDomainSlotAction $resolveSlot,
-        private CreateDomainRepository $createDomain,
     ) {
     }
 
     public function handle(Tenant $tenant, SaveDomainData $data): DomainResource
     {
-        if ($this->hostnameTaken->handle($data->hostname)) {
+        if ($this->domains->hostnameTaken($data->hostname)) {
             throw ValidationException::withMessages([
                 'domain' => __('This domain is already assigned to a company.'),
             ]);
@@ -30,6 +28,6 @@ final readonly class CreateDomainAction
 
         $slot = $this->resolveSlot->handle($tenant, $data->slot);
 
-        return DomainResource::fromModel($this->createDomain->handle($tenant, $data->hostname, $slot));
+        return DomainResource::fromModel($this->domains->create($tenant, $data->hostname, $slot));
     }
 }

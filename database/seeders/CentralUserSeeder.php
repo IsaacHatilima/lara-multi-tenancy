@@ -25,8 +25,7 @@ class CentralUserSeeder extends Seeder
 
     public function run(): void
     {
-        $user = User::query()->where('email', self::EMAIL)->first() ?? User::factory()->create([
-            'name' => 'Central Admin',
+        $user = User::query()->where('email', self::EMAIL)->first() ?? User::factory()->named('Central', 'Admin')->create([
             'email' => self::EMAIL,
             'password' => self::PASSWORD,
         ]);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Actions\Tenants\IsTenantManagementAvailableAction;
+use App\Actions\Users\LoadUserProfileAction;
 use App\Enums\CentralPermission;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -22,6 +23,7 @@ class HandleInertiaRequests extends Middleware
 
     public function __construct(
         private readonly IsTenantManagementAvailableAction $isTenantManagementAvailable,
+        private readonly LoadUserProfileAction $loadProfile,
     ) {
     }
 
@@ -36,8 +38,8 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Define the props that are shared by default. The user is shared without relations, because permission checks
-     * later in the request load its roles and permissions onto the same model.
+     * Define the props that are shared by default. The user is shared with only its profile, on a copy, because permission
+     * checks later in the request load its roles and permissions onto the original model.
      *
      * @see https://inertiajs.com/shared-data
      *
@@ -50,7 +52,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'tenantId' => tenancy()->initialized ? (string) tenant()->getTenantKey() : null,
             'auth' => [
-                'user' => $request->user()?->withoutRelations(),
+                'user' => $request->user() === null ? null : $this->loadProfile->handle($request->user()->withoutRelations()),
             ],
             'canManageTenants' => $request->user() !== null
                 && $this->isTenantManagementAvailable->handle($request->getHost()),

@@ -1,5 +1,6 @@
 import { Form, Head, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
+import EmailController from '@/actions/App/Http/Controllers/Settings/EmailController';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/delete-user';
 import { SettingsSection } from '@/components/settings-section';
@@ -29,10 +30,7 @@ export default function Profile({
 
             <h1 className="sr-only">Profile settings</h1>
 
-            <SettingsSection
-                title="Profile"
-                description="Update your name and email address"
-            >
+            <SettingsSection title="Profile" description="Update your name">
                 <Form
                     {...ProfileController.update.form()}
                     options={{
@@ -42,24 +40,75 @@ export default function Profile({
                 >
                     {({ processing, errors }) => (
                         <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                            <div className="grid gap-6 sm:grid-cols-2">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="first_name">
+                                        First name
+                                    </Label>
 
-                                <Input
-                                    id="name"
-                                    defaultValue={auth.user.name}
-                                    name="name"
-                                    required
-                                    autoComplete="name"
-                                    placeholder="Full name"
-                                />
+                                    <Input
+                                        id="first_name"
+                                        defaultValue={
+                                            auth.user.profile.first_name
+                                        }
+                                        name="first_name"
+                                        required
+                                        autoComplete="given-name"
+                                    />
 
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.name}
-                                />
+                                    <InputError
+                                        className="mt-2"
+                                        message={errors.first_name}
+                                    />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="last_name">Last name</Label>
+
+                                    <Input
+                                        id="last_name"
+                                        defaultValue={
+                                            auth.user.profile.last_name
+                                        }
+                                        name="last_name"
+                                        required
+                                        autoComplete="family-name"
+                                    />
+
+                                    <InputError
+                                        className="mt-2"
+                                        message={errors.last_name}
+                                    />
+                                </div>
                             </div>
 
+                            <div className="flex justify-end">
+                                <Button
+                                    type="submit"
+                                    disabled={processing}
+                                    data-test="update-profile-button"
+                                >
+                                    Save
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </Form>
+            </SettingsSection>
+
+            <SettingsSection
+                title="Email address"
+                description="Changing it asks you to verify the new address"
+            >
+                <Form
+                    {...EmailController.update.form()}
+                    options={{
+                        preserveScroll: true,
+                    }}
+                    className="space-y-6"
+                >
+                    {({ processing, errors }) => (
+                        <>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
 
@@ -108,7 +157,7 @@ export default function Profile({
                                 <Button
                                     type="submit"
                                     disabled={processing}
-                                    data-test="update-profile-button"
+                                    data-test="update-email-button"
                                 >
                                     Save
                                 </Button>

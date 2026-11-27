@@ -40,6 +40,27 @@ The software factory runs as `/factory` in Claude Code and `$factory` in Codex; 
 Installed by the skills repository's `./install`; edit outside this block.
 <!-- skills:end -->
 
+## Project conventions
+
+These override the installed skills where they differ.
+
+**Repositories**
+
+- Each persistence operation is its own small class with one `handle()`, named for what it does and without a `Repository` suffix (`app/Repositories/Users/CreateUser.php`, `UserEmailTaken.php`). The domain's entry file, such as `app/Repositories/Users/UserRepository.php`, composes those classes and exposes one method per operation (`create`, `emailTaken`) that delegates to `handle()`. Actions inject only the entry repository, so they need one import and one constructor parameter. Put a new query in a new operation class and add its method to the entry repository.
+- Write models by assigning each property from the Data object, then `save()`. Don't use `fill()`, `forceFill()`, `create([...])` or `update([...])` with an attribute array.
+- When create and update write the same columns, use one `save(Data $data, ?Model $model = null)` that starts with `$model ??= new Model();`. When they differ, as for users, write separate `create` and `update` methods.
+- A query that leaves a record out takes that record's id under a name that says what it is, such as `?string $userId = null`. Don't pass the model or call the parameter `$except`.
+- Return the saved model without `refresh()`. Ids, UUIDs and timestamps are set in PHP. Refresh only when the database fills in a value the caller reads, such as a column default or a trigger, and prefer a model `$attributes` default over that.
+- Use plain Eloquent for simple lookups. Use `spatie/laravel-query-builder` for tables and lists with search, filters or sorts. Pass the validated FormRequest to `QueryBuilder::for($query, $request)` and allowlist every filter. This is the one case where a repository takes a request; never call `request()` in a repository.
+
+**Models**
+
+- Every model uses `LogsActivity` unless told otherwise. Its `getActivitylogOptions()` returns `LogOptions::defaults()->logFillable()->logOnlyDirty()->dontLogEmptyChanges()`, or an explicit `logOnly([...])` when the fillable list would include a secret such as a password or token.
+
+**Keys**
+
+- Users and other entity tables are keyed by UUID (`HasUuids`, `$table->uuid('id')->primary()`), and foreign keys to them use `foreignUuid()`.
+
 ===
 
 <laravel-boost-guidelines>

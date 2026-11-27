@@ -6,17 +6,17 @@ namespace App\Actions\Tenants;
 
 use App\Data\Tenants\SaveTenantData;
 use App\Models\Tenant;
-use App\Repositories\Tenants\UpdateTenantRepository;
+use App\Repositories\Tenants\TenantRepository;
 
 final readonly class UpdateTenantAction
 {
     public function __construct(
-        private UpdateTenantRepository $updateTenant,
+        private TenantRepository $tenants,
     ) {
     }
 
     public function handle(Tenant $tenant, SaveTenantData $data): Tenant
     {
-        return $this->updateTenant->handle($tenant, $data);
+        return $this->tenants->save($data, $tenant);
     }
 }

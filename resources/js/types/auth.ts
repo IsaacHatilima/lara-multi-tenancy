@@ -1,6 +1,13 @@
+export type Profile = {
+    id: string;
+    first_name: string;
+    last_name: string;
+    full_name: string;
+};
+
 export type User = {
-    id: number;
-    name: string;
+    id: string;
+    profile: Profile;
     email: string;
     avatar?: string;
     email_verified_at: string | null;

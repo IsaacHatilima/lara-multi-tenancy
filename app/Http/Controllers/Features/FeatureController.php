@@ -10,10 +10,12 @@ use App\Actions\Features\GetFeatureAction;
 use App\Actions\Features\ListFeaturesAction;
 use App\Actions\Features\UpdateFeatureAction;
 use App\Data\Features\CreateFeatureData;
+use App\Data\Features\ListFeaturesData;
 use App\Data\Features\UpdateFeatureData;
 use App\Enums\LimitUnit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Features\CreateFeatureRequest;
+use App\Http\Requests\Features\ListFeaturesRequest;
 use App\Http\Requests\Features\UpdateFeatureRequest;
 use App\Models\Feature;
 use Illuminate\Http\RedirectResponse;
@@ -23,16 +25,11 @@ use InertiaUI\Notifications\Toast;
 
 final class FeatureController extends Controller
 {
-    public function index(ListFeaturesAction $listFeatures): Response
+    public function index(ListFeaturesRequest $request, ListFeaturesAction $listFeatures): Response
     {
         return Inertia::render('features/index', [
-            'features' => $listFeatures->handle(),
-        ]);
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('features/create', [
+            'features' => $listFeatures->handle($request),
+            'filters' => ['search' => ListFeaturesData::fromRequest($request)->search],
             'limitUnits' => LimitUnit::options(),
         ]);
     }

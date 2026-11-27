@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Actions\Features;
 
 use App\Models\Feature;
-use App\Repositories\Features\DeleteFeatureRepository;
+use App\Repositories\Features\FeatureRepository;
 
 final readonly class DeleteFeatureAction
 {
     public function __construct(
-        private DeleteFeatureRepository $deleteFeature,
+        private FeatureRepository $features,
     ) {
     }
 
     public function handle(Feature $feature): void
     {
-        $this->deleteFeature->handle($feature);
+        $this->features->delete($feature);
     }
 }

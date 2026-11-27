@@ -1,20 +1,32 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import PlanController from '@/actions/App/Http/Controllers/Plans/PlanController';
 import { ConfirmDeleteDialog } from '@/components/confirm-delete-dialog';
-import InputError from '@/components/input-error';
 import { SettingsSection } from '@/components/settings-section';
 import { Button } from '@/components/ui/button';
 import { index } from '@/routes/plans';
-import { PlanFeatureFields } from './components/plan-feature-fields';
+import { PlanFeatures } from './components/plan-features';
 import { PlanFields } from './components/plan-fields';
-import type { Plan, PlanFeature } from './types';
+import { PlanPricingFields } from './components/plan-pricing-fields';
+import type {
+    BillingIntervalOption,
+    CurrencyOption,
+    Plan,
+    PlanFeature,
+} from './types';
 
 type Props = {
     plan: Plan;
     features: PlanFeature[];
+    currencies: CurrencyOption[];
+    intervals: BillingIntervalOption[];
 };
 
-export default function EditPlan({ plan, features }: Props) {
+export default function EditPlan({
+    plan,
+    features,
+    currencies,
+    intervals,
+}: Props) {
     return (
         <>
             <Head title={plan.name} />
@@ -39,14 +51,15 @@ export default function EditPlan({ plan, features }: Props) {
                             </SettingsSection>
 
                             <SettingsSection
-                                title="Features"
-                                description="What a company on this plan can use. An empty limit means unlimited."
+                                title="Pricing"
+                                description="Set the price to 0 for a free plan."
                             >
-                                <PlanFeatureFields
-                                    features={features}
+                                <PlanPricingFields
+                                    defaults={plan}
+                                    currencies={currencies}
+                                    intervals={intervals}
                                     errors={errors}
                                 />
-                                <InputError message={errors.features} />
                             </SettingsSection>
 
                             <div className="flex justify-end gap-2">
@@ -64,6 +77,13 @@ export default function EditPlan({ plan, features }: Props) {
                         </>
                     )}
                 </Form>
+
+                <SettingsSection
+                    title="Features"
+                    description="What a company on this plan can use. An empty limit means unlimited."
+                >
+                    <PlanFeatures plan={plan} features={features} />
+                </SettingsSection>
 
                 <SettingsSection
                     title="Delete plan"

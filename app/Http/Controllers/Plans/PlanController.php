@@ -11,9 +11,13 @@ use App\Actions\Plans\ListPlanFeaturesAction;
 use App\Actions\Plans\ListPlansAction;
 use App\Actions\Plans\UpdatePlanAction;
 use App\Data\Plans\CreatePlanData;
+use App\Data\Plans\ListPlansData;
 use App\Data\Plans\UpdatePlanData;
+use App\Enums\BillingInterval;
+use App\Enums\Currency;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Plans\CreatePlanRequest;
+use App\Http\Requests\Plans\ListPlansRequest;
 use App\Http\Requests\Plans\UpdatePlanRequest;
 use App\Models\Plan;
 use Illuminate\Http\RedirectResponse;
@@ -23,24 +27,29 @@ use InertiaUI\Notifications\Toast;
 
 final class PlanController extends Controller
 {
-    public function index(ListPlansAction $listPlans): Response
+    public function index(ListPlansRequest $request, ListPlansAction $listPlans): Response
     {
         return Inertia::render('plans/index', [
-            'plans' => $listPlans->handle(),
+            'plans' => $listPlans->handle($request),
+            'filters' => ['search' => ListPlansData::fromRequest($request)->search],
+            'currencies' => Currency::options(),
+            'intervals' => BillingInterval::options(),
         ]);
     }
 
-    public function create(): Response
-    {
-        return Inertia::render('plans/create');
-    }
-
     /**
-     * Creates the plan and opens it, where its features are chosen.
+     * Creates the plan and opens it, where its features are chosen. With `create_more` the list stays open for the
+     * next one instead.
      */
     public function store(CreatePlanRequest $request, CreatePlanAction $createPlan): RedirectResponse
     {
         $plan = $createPlan->handle(CreatePlanData::fromRequest($request));
+
+        if ($request->boolean('create_more')) {
+            Toast::success('Plan created.')->flash();
+
+            return back();
+        }
 
         Toast::success('Plan created.')
             ->description('Choose its features below.')
@@ -54,6 +63,8 @@ final class PlanController extends Controller
         return Inertia::render('plans/edit', [
             'plan' => $getPlan->handle($plan),
             'features' => $listPlanFeatures->handle($plan),
+            'currencies' => Currency::options(),
+            'intervals' => BillingInterval::options(),
         ]);
     }
 

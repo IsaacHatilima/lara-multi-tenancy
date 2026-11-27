@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Data\Plans;
 
-use App\Models\Feature;
+use App\Models\PlanFeature;
 use Spatie\LaravelData\Resource;
 
 /**
- * A feature as it stands on one plan: whether the plan includes it, and its limit, where null means unlimited.
+ * A feature a plan includes, with its limit on that plan, where null means unlimited.
  */
 final class PlanFeatureResource extends Resource
 {
@@ -17,23 +17,21 @@ final class PlanFeatureResource extends Resource
         public readonly string $key,
         public readonly string $name,
         public readonly ?string $limitUnitLabel,
-        public readonly bool $included,
         public readonly ?int $limit,
     ) {
     }
 
     /**
-     * @param  array<int, int|null>  $planLimits  the features the plan includes, keyed by feature id
+     * The id is the feature's, which the plan page's routes take.
      */
-    public static function fromModel(Feature $feature, array $planLimits): self
+    public static function fromModel(PlanFeature $planFeature): self
     {
         return new self(
-            id: $feature->id,
-            key: $feature->key,
-            name: $feature->name,
-            limitUnitLabel: $feature->limit_unit?->label(),
-            included: array_key_exists($feature->id, $planLimits),
-            limit: $planLimits[$feature->id] ?? null,
+            id: $planFeature->feature->id,
+            key: $planFeature->feature->key,
+            name: $planFeature->feature->name,
+            limitUnitLabel: $planFeature->feature->limit_unit?->label(),
+            limit: $planFeature->limit,
         );
     }
 }

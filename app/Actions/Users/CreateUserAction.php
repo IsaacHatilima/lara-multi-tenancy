@@ -6,26 +6,24 @@ namespace App\Actions\Users;
 
 use App\Data\Users\CreateUserData;
 use App\Models\User;
-use App\Repositories\Users\CreateUserRepository;
-use App\Repositories\Users\UserEmailTakenRepository;
+use App\Repositories\Users\UserRepository;
 use Illuminate\Validation\ValidationException;
 
 final readonly class CreateUserAction
 {
     public function __construct(
-        private UserEmailTakenRepository $emailTaken,
-        private CreateUserRepository $createUser,
+        private UserRepository $users,
     ) {
     }
 
     public function handle(CreateUserData $data): User
     {
-        if ($this->emailTaken->handle($data->email)) {
+        if ($this->users->emailTaken($data->email)) {
             throw ValidationException::withMessages([
                 'email' => __('The email has already been taken.'),
             ]);
         }
 
-        return $this->createUser->handle($data);
+        return $this->users->create($data);
     }
 }

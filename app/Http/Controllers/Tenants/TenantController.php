@@ -29,11 +29,9 @@ final class TenantController extends Controller
      */
     public function index(ListTenantsRequest $request, ListTenantsAction $listTenants): Response
     {
-        $data = ListTenantsData::fromRequest($request);
-
         return Inertia::render('tenants/index', [
-            'tenants' => $listTenants->handle($data),
-            'filters' => ['search' => $data->search],
+            'tenants' => $listTenants->handle($request),
+            'filters' => ['search' => ListTenantsData::fromRequest($request)->search],
         ]);
     }
 

@@ -6,17 +6,17 @@ namespace App\Actions\Tenants;
 
 use App\Data\Tenants\TenantResource;
 use App\Models\Tenant;
-use App\Repositories\Tenants\LoadTenantDomainsRepository;
+use App\Repositories\Tenants\TenantRepository;
 
 final readonly class GetTenantAction
 {
     public function __construct(
-        private LoadTenantDomainsRepository $loadDomains,
+        private TenantRepository $tenants,
     ) {
     }
 
     public function handle(Tenant $tenant): TenantResource
     {
-        return TenantResource::fromModel($this->loadDomains->handle($tenant));
+        return TenantResource::fromModel($this->tenants->loadDomains($tenant));
     }
 }

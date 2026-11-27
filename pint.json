@@ -8,6 +8,10 @@
                 ["author", "copyright", "license"],
                 ["category", "package", "subpackage"]
             ]
+        },
+        "new_with_parentheses": {
+            "named_class": true,
+            "anonymous_class": false
         }
     }
 }

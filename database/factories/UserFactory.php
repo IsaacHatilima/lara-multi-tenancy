@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +26,6 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -34,6 +34,26 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ];
+    }
+
+    /**
+     * Every user has a profile. One created through `has(Profile::factory(), 'profile')` is kept.
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            if (! $user->profile()->exists()) {
+                Profile::factory()->for($user)->create();
+            }
+        });
+    }
+
+    /**
+     * Give the user's profile these names.
+     */
+    public function named(string $firstName, string $lastName): static
+    {
+        return $this->has(Profile::factory()->state(['first_name' => $firstName, 'last_name' => $lastName]), 'profile');
     }
 
     /**

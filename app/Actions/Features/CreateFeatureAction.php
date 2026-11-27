@@ -6,17 +6,17 @@ namespace App\Actions\Features;
 
 use App\Data\Features\CreateFeatureData;
 use App\Models\Feature;
-use App\Repositories\Features\CreateFeatureRepository;
+use App\Repositories\Features\FeatureRepository;
 
 final readonly class CreateFeatureAction
 {
     public function __construct(
-        private CreateFeatureRepository $createFeature,
+        private FeatureRepository $features,
     ) {
     }
 
     public function handle(CreateFeatureData $data): Feature
     {
-        return $this->createFeature->handle($data);
+        return $this->features->create($data);
     }
 }

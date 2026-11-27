@@ -9,7 +9,8 @@ use Spatie\LaravelData\Data;
 final class CreateUserData extends Data
 {
     public function __construct(
-        public readonly string $name,
+        public readonly string $firstName,
+        public readonly string $lastName,
         public readonly string $email,
         public readonly string $password,
     ) {
@@ -18,12 +19,13 @@ final class CreateUserData extends Data
     /**
      * Build the data from Fortify's validated registration input.
      *
-     * @param  array{name: string, email: string, password: string}  $input
+     * @param  array{first_name: string, last_name: string, email: string, password: string}  $input
      */
     public static function fromValidated(array $input): self
     {
         return new self(
-            name: trim($input['name']),
+            firstName: trim($input['first_name']),
+            lastName: trim($input['last_name']),
             email: UserEmail::normalize($input['email']),
             password: $input['password'],
         );

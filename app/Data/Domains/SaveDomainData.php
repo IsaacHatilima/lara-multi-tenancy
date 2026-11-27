@@ -6,7 +6,6 @@ namespace App\Data\Domains;
 
 use App\Enums\DomainSlot;
 use App\Http\Requests\Domains\SaveDomainRequest;
-use App\Rules\TenantHostname;
 use Spatie\LaravelData\Data;
 
 final class SaveDomainData extends Data
@@ -20,7 +19,7 @@ final class SaveDomainData extends Data
     public static function fromRequest(SaveDomainRequest $request): self
     {
         return new self(
-            hostname: TenantHostname::normalize($request->string('domain')->value()),
+            hostname: DomainHostname::normalize($request->string('domain')->value()),
             slot: $request->enum('slot', DomainSlot::class),
         );
     }

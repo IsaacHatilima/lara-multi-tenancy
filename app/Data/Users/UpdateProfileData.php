@@ -10,16 +10,16 @@ use Spatie\LaravelData\Data;
 final class UpdateProfileData extends Data
 {
     public function __construct(
-        public readonly string $name,
-        public readonly string $email,
+        public readonly string $firstName,
+        public readonly string $lastName,
     ) {
     }
 
     public static function fromRequest(ProfileUpdateRequest $request): self
     {
         return new self(
-            name: trim($request->string('name')->value()),
-            email: UserEmail::normalize($request->string('email')->value()),
+            firstName: trim($request->string('first_name')->value()),
+            lastName: trim($request->string('last_name')->value()),
         );
     }
 }

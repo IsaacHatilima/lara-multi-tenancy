@@ -28,9 +28,10 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        /** @var array{name: string, email: string, password: string} $validated */
+        /** @var array{first_name: string, last_name: string, email: string, password: string} $validated */
         $validated = Validator::make($input, [
             ...$this->profileRules(),
+            'email' => $this->emailRules(),
             'password' => $this->passwordRules(),
         ])->validate();
 

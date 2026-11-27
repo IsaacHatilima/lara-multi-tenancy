@@ -1,5 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
 import { PlusIcon, PuzzleIcon } from 'lucide-react';
+import { useState } from 'react';
+import FeatureController from '@/actions/App/Http/Controllers/Features/FeatureController';
+import { ListPagination } from '@/components/list-pagination';
+import { ListSearch } from '@/components/list-search';
 import { Button } from '@/components/ui/button';
 import {
     Empty,
@@ -12,6 +16,7 @@ import {
 import {
     StackContent,
     StackedCard,
+    StackFooter,
     StackHeader,
 } from '@/components/ui/stacked-card';
 import {
@@ -24,27 +29,51 @@ import {
 } from '@/components/ui/table';
 import { EDGE_CELL_PADDING, STICKY_FIRST_CELL } from '@/lib/table-classes';
 import { cn } from '@/lib/utils';
-import { create, edit } from '@/routes/features';
-import type { Feature } from './types';
+import { edit, index } from '@/routes/features';
+import type { Paginated } from '@/types';
+import { CreateFeatureDialog } from './components/create-feature-dialog';
+import type { Feature, LimitUnitOption } from './types';
 
 type Props = {
-    features: Feature[];
+    features: Paginated<Feature>;
+    filters: { search: string | null };
+    limitUnits: LimitUnitOption[];
 };
 
-export default function FeaturesIndex({ features }: Props) {
+export default function FeaturesIndex({
+    features,
+    filters,
+    limitUnits,
+}: Props) {
+    const [creating, setCreating] = useState(false);
+    const openCreate = () => setCreating(true);
+
     return (
         <>
             <Head title="Features" />
             <h1 className="sr-only">Features</h1>
 
-            <StackedCard top className="h-auto">
-                <StackHeader className="justify-end">
-                    <NewFeatureButton />
+            <StackedCard
+                top
+                bottom={features.data.length > 0}
+                className="h-auto"
+            >
+                <StackHeader className="justify-between">
+                    <ListSearch
+                        form={FeatureController.index.form()}
+                        label="Search features"
+                        placeholder="Search name or key"
+                        search={filters.search}
+                    />
+                    <NewFeatureButton onClick={openCreate} />
                 </StackHeader>
 
                 <StackContent className="py-0">
-                    {features.length === 0 ? (
-                        <FeaturesEmpty />
+                    {features.data.length === 0 ? (
+                        <FeaturesEmpty
+                            search={filters.search}
+                            onCreate={openCreate}
+                        />
                     ) : (
                         <Table className={EDGE_CELL_PADDING}>
                             <TableHeader>
@@ -56,7 +85,7 @@ export default function FeaturesIndex({ features }: Props) {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {features.map((feature) => (
+                                {features.data.map((feature) => (
                                     <TableRow key={feature.id}>
                                         <TableCell
                                             className={cn(
@@ -89,35 +118,66 @@ export default function FeaturesIndex({ features }: Props) {
                         </Table>
                     )}
                 </StackContent>
+
+                <StackFooter>
+                    <ListPagination page={features} noun="features" />
+                </StackFooter>
             </StackedCard>
+
+            <CreateFeatureDialog
+                limitUnits={limitUnits}
+                open={creating}
+                onOpenChange={setCreating}
+            />
         </>
     );
 }
 
-function NewFeatureButton() {
+function NewFeatureButton({ onClick }: { onClick: () => void }) {
     return (
-        <Button nativeButton={false} render={<Link href={create()} />}>
+        <Button onClick={onClick}>
             <PlusIcon />
             New feature
         </Button>
     );
 }
 
-function FeaturesEmpty() {
+function FeaturesEmpty({
+    search,
+    onCreate,
+}: {
+    search: string | null;
+    onCreate: () => void;
+}) {
     return (
         <Empty>
             <EmptyHeader>
                 <EmptyMedia variant="icon">
                     <PuzzleIcon />
                 </EmptyMedia>
-                <EmptyTitle>No features yet</EmptyTitle>
+                <EmptyTitle>
+                    {search
+                        ? 'No features match your search'
+                        : 'No features yet'}
+                </EmptyTitle>
                 <EmptyDescription>
-                    A feature is something a plan can include, such as
-                    messaging. Plans include features from their edit page.
+                    {search
+                        ? 'Try another name or key.'
+                        : 'A feature is something a plan can include, such as messaging. Plans include features from their edit page.'}
                 </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-                <NewFeatureButton />
+                {search ? (
+                    <Button
+                        nativeButton={false}
+                        variant="outline"
+                        render={<Link href={index()} />}
+                    >
+                        Clear search
+                    </Button>
+                ) : (
+                    <NewFeatureButton onClick={onCreate} />
+                )}
             </EmptyContent>
         </Empty>
     );

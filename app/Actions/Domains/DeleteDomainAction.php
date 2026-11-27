@@ -6,15 +6,13 @@ namespace App\Actions\Domains;
 
 use App\Models\Domain;
 use App\Models\Tenant;
-use App\Repositories\Domains\DeleteDomainRepository;
-use App\Repositories\Domains\ListOccupiedDomainSlotsRepository;
+use App\Repositories\Domains\DomainRepository;
 use Illuminate\Validation\ValidationException;
 
 final readonly class DeleteDomainAction
 {
     public function __construct(
-        private ListOccupiedDomainSlotsRepository $occupiedSlots,
-        private DeleteDomainRepository $deleteDomain,
+        private DomainRepository $domains,
     ) {
     }
 
@@ -23,12 +21,12 @@ final readonly class DeleteDomainAction
      */
     public function handle(Tenant $tenant, Domain $domain): void
     {
-        if ($this->occupiedSlots->handle($tenant, except: $domain) === []) {
+        if ($this->domains->occupiedSlots($tenant, $domain->id) === []) {
             throw ValidationException::withMessages([
                 'domain' => __('A company must keep at least one domain.'),
             ]);
         }
 
-        $this->deleteDomain->handle($domain);
+        $this->domains->delete($domain);
     }
 }

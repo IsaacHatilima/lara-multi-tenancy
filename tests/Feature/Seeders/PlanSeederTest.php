@@ -10,10 +10,10 @@ beforeEach(function () {
 test('it creates Free, Basic and Pro', function () {
     $this->seed(PlanSeeder::class);
 
-    expect(Plan::query()->orderBy('name')->get(['code', 'name', 'description'])->toArray())->toBe([
-        ['code' => 'basic', 'name' => 'Basic', 'description' => 'For small teams.'],
-        ['code' => 'free', 'name' => 'Free', 'description' => 'For trying the platform.'],
-        ['code' => 'pro', 'name' => 'Pro', 'description' => 'For growing companies.'],
+    expect(Plan::query()->orderBy('name')->get(['code', 'name', 'description', 'price_minor', 'currency', 'interval', 'trial_days'])->toArray())->toBe([
+        ['code' => 'basic', 'name' => 'Basic', 'description' => 'For small teams.', 'price_minor' => 1900, 'currency' => 'EUR', 'interval' => 'month', 'trial_days' => 0],
+        ['code' => 'free', 'name' => 'Free', 'description' => 'For trying the platform.', 'price_minor' => 0, 'currency' => 'EUR', 'interval' => 'month', 'trial_days' => 0],
+        ['code' => 'pro', 'name' => 'Pro', 'description' => 'For growing companies.', 'price_minor' => 4900, 'currency' => 'EUR', 'interval' => 'month', 'trial_days' => 0],
     ]);
 });
 

@@ -9,7 +9,7 @@ export default function Dashboard() {
     return (
         <>
             <Head title="Overview" />
-            <DashboardOverview userName={user.name} />
+            <DashboardOverview userName={user.profile.full_name} />
             <DrawerExamples />
             <SheetExample />
         </>

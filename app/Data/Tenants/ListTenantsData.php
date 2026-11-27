@@ -16,7 +16,7 @@ final class ListTenantsData extends Data
 
     public static function fromRequest(ListTenantsRequest $request): self
     {
-        $search = trim($request->string('search')->value());
+        $search = trim($request->string('filter.search')->value());
 
         return new self(search: $search === '' ? null : $search);
     }

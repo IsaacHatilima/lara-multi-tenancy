@@ -12,15 +12,15 @@ use Illuminate\Validation\Rules\Unique;
 trait ProfileValidationRules
 {
     /**
-     * Get the validation rules used to validate user profiles.
+     * Get the validation rules for the names on a user's profile.
      *
      * @return array<string, array<int, Unique|ValidationRule|array<mixed>|string>>
      */
-    protected function profileRules(?int $userId = null): array
+    protected function profileRules(): array
     {
         return [
-            'name' => $this->nameRules(),
-            'email' => $this->emailRules($userId),
+            'first_name' => $this->nameRules(),
+            'last_name' => $this->nameRules(),
         ];
     }
 
@@ -39,7 +39,7 @@ trait ProfileValidationRules
      *
      * @return array<int, Unique|ValidationRule|array<mixed>|string>
      */
-    protected function emailRules(?int $userId = null): array
+    protected function emailRules(?string $userId = null): array
     {
         return [
             'required',
