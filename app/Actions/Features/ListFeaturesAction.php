@@ -6,12 +6,12 @@ namespace App\Actions\Features;
 
 use App\Data\Features\FeatureResource;
 use App\Models\Feature;
-use App\Repositories\Features\ListFeaturesRepository;
+use App\Repositories\Features\FeatureRepository;
 
 final readonly class ListFeaturesAction
 {
     public function __construct(
-        private ListFeaturesRepository $listFeatures,
+        private FeatureRepository $features,
     ) {
     }
 
@@ -20,7 +20,7 @@ final readonly class ListFeaturesAction
      */
     public function handle(): array
     {
-        return array_values($this->listFeatures->handle()
+        return array_values($this->features->list()
             ->map(fn (Feature $feature): FeatureResource => FeatureResource::fromModel($feature))
             ->all());
     }

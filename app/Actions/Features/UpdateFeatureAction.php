@@ -6,17 +6,17 @@ namespace App\Actions\Features;
 
 use App\Data\Features\UpdateFeatureData;
 use App\Models\Feature;
-use App\Repositories\Features\UpdateFeatureRepository;
+use App\Repositories\Features\FeatureRepository;
 
 final readonly class UpdateFeatureAction
 {
     public function __construct(
-        private UpdateFeatureRepository $updateFeature,
+        private FeatureRepository $features,
     ) {
     }
 
     public function handle(Feature $feature, UpdateFeatureData $data): Feature
     {
-        return $this->updateFeature->handle($feature, $data);
+        return $this->features->update($feature, $data);
     }
 }

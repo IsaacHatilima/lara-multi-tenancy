@@ -7,14 +7,14 @@ namespace App\Actions\Plans;
 use App\Data\Plans\PlanFeatureResource;
 use App\Models\Feature;
 use App\Models\Plan;
-use App\Repositories\Features\ListFeaturesRepository;
-use App\Repositories\Plans\ListPlanFeatureLimitsRepository;
+use App\Repositories\Features\FeatureRepository;
+use App\Repositories\Plans\PlanRepository;
 
 final readonly class ListPlanFeaturesAction
 {
     public function __construct(
-        private ListFeaturesRepository $listFeatures,
-        private ListPlanFeatureLimitsRepository $listPlanFeatureLimits,
+        private FeatureRepository $features,
+        private PlanRepository $plans,
     ) {
     }
 
@@ -25,9 +25,9 @@ final readonly class ListPlanFeaturesAction
      */
     public function handle(Plan $plan): array
     {
-        $planLimits = $this->listPlanFeatureLimits->handle($plan);
+        $planLimits = $this->plans->featureLimits($plan);
 
-        return array_values($this->listFeatures->handle()
+        return array_values($this->features->list()
             ->map(fn (Feature $feature): PlanFeatureResource => PlanFeatureResource::fromModel($feature, $planLimits))
             ->all());
     }

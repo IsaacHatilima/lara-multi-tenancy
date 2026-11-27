@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Actions\Plans;
 
 use App\Models\Plan;
-use App\Repositories\Plans\DeletePlanRepository;
+use App\Repositories\Plans\PlanRepository;
 
 final readonly class DeletePlanAction
 {
     public function __construct(
-        private DeletePlanRepository $deletePlan,
+        private PlanRepository $plans,
     ) {
     }
 
     public function handle(Plan $plan): void
     {
-        $this->deletePlan->handle($plan);
+        $this->plans->delete($plan);
     }
 }

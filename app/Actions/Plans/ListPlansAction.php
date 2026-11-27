@@ -6,12 +6,12 @@ namespace App\Actions\Plans;
 
 use App\Data\Plans\PlanResource;
 use App\Models\Plan;
-use App\Repositories\Plans\ListPlansRepository;
+use App\Repositories\Plans\PlanRepository;
 
 final readonly class ListPlansAction
 {
     public function __construct(
-        private ListPlansRepository $listPlans,
+        private PlanRepository $plans,
     ) {
     }
 
@@ -20,7 +20,7 @@ final readonly class ListPlansAction
      */
     public function handle(): array
     {
-        return array_values($this->listPlans->handle()
+        return array_values($this->plans->list()
             ->map(fn (Plan $plan): PlanResource => PlanResource::fromModel($plan))
             ->all());
     }
