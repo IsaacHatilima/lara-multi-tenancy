@@ -11,14 +11,14 @@ A review is useful when every finding is real, caused by this change, and fixabl
 
 ## What blocks
 
-| Put under Findings                                                                                 | Put under Notes                                |
-| -------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| A bug the change introduces: wrong result, crash, data loss, broken contract                       | Problems that exist on the base branch too     |
-| A spec requirement or acceptance criterion the change misses                                       | Taste: naming or layout with no rule behind it |
-| A broken rule from project guidance or a selected skill                                            | Optional improvements and follow-ups           |
-| Introduced complexity with a simpler equivalent (`simplicity`)                                     | Questions you couldn't settle from the code    |
-| A swallowed error: an empty catch, a catch that returns a default, a fallback that hides a failure |                                                |
-| A missing test for a behaviour the change adds, named by the bug it would catch                    |                                                |
+| Put under Findings | Put under Notes |
+|---|---|
+| A bug the change introduces: wrong result, crash, data loss, broken contract | Problems that exist on the base branch too |
+| A spec requirement or acceptance criterion the change misses | Taste: naming or layout with no rule behind it |
+| A broken rule from project guidance or a selected skill | Optional improvements and follow-ups |
+| Introduced complexity with a simpler equivalent (`simplicity`) | Questions you couldn't settle from the code |
+| A swallowed error: an empty catch, a catch that returns a default, a fallback that hides a failure | |
+| A missing test for a behaviour the change adds, named by the bug it would catch | |
 
 A new path from changed code into an old problem is a finding. Sending user input to an existing unsafe query is one.
 

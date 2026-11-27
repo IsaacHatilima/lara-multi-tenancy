@@ -7,19 +7,19 @@ Code examples for each rule in `SKILL.md`. The underlying principles are languag
 Brand primitives so they can't be mixed up. Validate once at the boundary. Downstream code trusts the type.
 
 ```ts
-type AgentId = string & { readonly __brand: 'AgentId' };
+type AgentId = string & { readonly __brand: "AgentId" };
 
 function isAgentId(input: string): input is AgentId {
-    return isUUID(input);
+  return isUUID(input);
 }
 
 function parseAgentId(input: string): AgentId {
-    if (!isAgentId(input)) throw new Error(`Invalid agent id: ${input}`);
-    return input;
+  if (!isAgentId(input)) throw new Error(`Invalid agent id: ${input}`);
+  return input;
 }
 
 function focusAgent(id: AgentId): void {
-    /* input is trusted */
+  /* input is trusted */
 }
 ```
 
@@ -35,9 +35,9 @@ type DiffState = { loading: boolean; diff?: GitDiff; error?: string };
 
 // Do. Only valid states exist.
 type DiffState =
-    | { kind: 'loading' }
-    | { kind: 'ready'; diff: GitDiff }
-    | { kind: 'error'; error: string };
+  | { kind: "loading" }
+  | { kind: "ready"; diff: GitDiff }
+  | { kind: "error"; error: string };
 ```
 
 Pick one discriminant name (`kind`, `type`, `tag`) and stick to it.
@@ -53,13 +53,13 @@ type NonEmpty<T> = [T, ...T[]];
 
 // Don't: T[] plus a length check every caller must repeat
 function pickWinner(entries: string[]): string {
-    if (entries.length === 0) throw new Error('no entries');
-    return entries[Math.floor(Math.random() * entries.length)];
+  if (entries.length === 0) throw new Error("no entries");
+  return entries[Math.floor(Math.random() * entries.length)];
 }
 
 // Do: an empty value of the type can't exist
 function pickWinner(entries: NonEmpty<string>): string {
-    return entries[Math.floor(Math.random() * entries.length)];
+  return entries[Math.floor(Math.random() * entries.length)];
 }
 ```
 
@@ -100,12 +100,12 @@ Strengthen when the loose type forces a lie at a use site. The tells are `!`, `a
 ```ts
 // Don't: partiality smuggled past the compiler
 function newestSession(sessions: Session[]): Session {
-    return sessions.at(0)!;
+  return sessions.at(0)!;
 }
 
 // Do: strengthen the input; the assertion disappears
 function newestSession(sessions: NonEmpty<Session>): Session {
-    return sessions[0];
+  return sessions[0];
 }
 ```
 
@@ -118,14 +118,14 @@ External data is always `unknown`. Narrow before use.
 ```ts
 // Don't
 function handle(input: any) {
-    return input.foo.bar;
+  return input.foo.bar;
 }
 
 // Do
 function handle(input: unknown) {
-    if (typeof input === 'object' && input !== null && 'foo' in input) {
-        // narrowed; compiler verifies access
-    }
+  if (typeof input === "object" && input !== null && "foo" in input) {
+    // narrowed; compiler verifies access
+  }
 }
 ```
 
@@ -136,17 +136,17 @@ External sources include RPC payloads, `JSON.parse`, `postMessage`, IPC, file co
 Before writing a property-by-property type guard for external data, look for the repository's runtime schema library and existing schemas. Let one schema own validation and derive the TypeScript type from it. Do not maintain a schema, a duplicate interface, and a guard that can drift apart.
 
 ```ts
-import { z } from 'zod';
+import { z } from "zod";
 
 const UserSchema = z.object({
-    id: z.string().uuid(),
-    role: z.enum(['admin', 'member']),
+  id: z.string().uuid(),
+  role: z.enum(["admin", "member"]),
 });
 
 type User = z.infer<typeof UserSchema>;
 
 function parseUser(input: unknown): User {
-    return UserSchema.parse(input);
+  return UserSchema.parse(input);
 }
 ```
 
@@ -157,14 +157,14 @@ Use `safeParse` when failure is an expected branch. Use the equivalent inference
 Every `as` is a potential runtime crash. Cast only after the type system has verified the claim.
 
 ```ts
-import { z } from 'zod';
+import { z } from "zod";
 
 // Don't
 const user = data as User;
 
 // Don't
 function isUser(data: unknown): data is User {
-    return typeof data === 'object' && data !== null && 'id' in data;
+  return typeof data === "object" && data !== null && "id" in data;
 }
 
 // Do
@@ -172,7 +172,7 @@ const userSchema = z.object({ id: z.string(), name: z.string() });
 type User = z.infer<typeof userSchema>;
 
 function parseUser(data: unknown): User {
-    return userSchema.parse(data);
+  return userSchema.parse(data);
 }
 ```
 
@@ -181,10 +181,7 @@ When the type comes first, annotate the validator with the type it proves. The c
 ```ts
 type User = { id: string; name: string };
 
-const userSchema: z.ZodType<User> = z.object({
-    id: z.string(),
-    name: z.string(),
-});
+const userSchema: z.ZodType<User> = z.object({ id: z.string(), name: z.string() });
 ```
 
 When refactoring an `as` out of existing code, identify why TypeScript can't infer:
@@ -206,8 +203,8 @@ From best to last-resort:
 
 ```ts
 function area(s: Shape): number {
-    if ('radius' in s) return Math.PI * s.radius ** 2; // narrowed to circle
-    return s.width * s.height; // narrowed to rect
+  if ("radius" in s) return Math.PI * s.radius ** 2; // narrowed to circle
+  return s.width * s.height; // narrowed to rect
 }
 ```
 
@@ -216,8 +213,8 @@ function area(s: Shape): number {
 A guard must actually verify the claim. A lying guard is worse than `as`.
 
 ```ts
-function isCircle(s: Shape): s is Shape & { kind: 'circle' } {
-    return s.kind === 'circle';
+function isCircle(s: Shape): s is Shape & { kind: "circle" } {
+  return s.kind === "circle";
 }
 ```
 
@@ -230,32 +227,32 @@ In default arms, assign the discriminant to a `never`-typed local.
 ```ts
 // Value-returning switch
 function area(s: Shape): number {
-    switch (s.kind) {
-        case 'circle':
-            return Math.PI * s.radius ** 2;
-        case 'rect':
-            return s.width * s.height;
-        default: {
-            const _exhaustive: never = s;
-            return _exhaustive;
-        }
+  switch (s.kind) {
+    case "circle":
+      return Math.PI * s.radius ** 2;
+    case "rect":
+      return s.width * s.height;
+    default: {
+      const _exhaustive: never = s;
+      return _exhaustive;
     }
+  }
 }
 
 // Void switch
 function handle(s: Shape): void {
-    switch (s.kind) {
-        case 'circle':
-            drawCircle(s);
-            break;
-        case 'rect':
-            drawRect(s);
-            break;
-        default: {
-            const _exhaustive: never = s;
-            void _exhaustive;
-        }
+  switch (s.kind) {
+    case "circle":
+      drawCircle(s);
+      break;
+    case "rect":
+      drawRect(s);
+      break;
+    default: {
+      const _exhaustive: never = s;
+      void _exhaustive;
     }
+  }
 }
 ```
 
@@ -267,10 +264,10 @@ Return-style in value-returning switches, void-style in statement switches.
 
 ```ts
 // Don't. Widens, loses literal types.
-const config = { theme: 'dark', cols: 3 } as Config;
+const config = { theme: "dark", cols: 3 } as Config;
 
 // Do. Validates AND preserves literal types.
-const config = { theme: 'dark', cols: 3 } satisfies Config;
+const config = { theme: "dark", cols: 3 } satisfies Config;
 // config.theme is "dark" (literal), not string
 ```
 
@@ -289,17 +286,17 @@ When a `.proto`, OpenAPI spec, GraphQL schema, or database migration already def
 ```ts
 // Don't. Duplicate shape, drifts when the schema changes.
 type CheckSummary = {
-    totalCount: number;
-    checks: { name: string; status: string }[];
+  totalCount: number;
+  checks: { name: string; status: string }[];
 };
 function renderChecks(s: CheckSummary) {
-    /* ... */
+  /* ... */
 }
 
 // Do. Derive from the generated schema type.
-import type { ChecksMessage } from '<generated module>';
-function renderChecks(s: Pick<ChecksMessage, 'totalCount' | 'checks'>) {
-    /* ... */
+import type { ChecksMessage } from "<generated module>";
+function renderChecks(s: Pick<ChecksMessage, "totalCount" | "checks">) {
+  /* ... */
 }
 ```
 
@@ -310,21 +307,21 @@ Reach for `Pick`, `Omit`, `Parameters`, `ReturnType`, `Awaited`, `typeof` before
 ```ts
 // Don't. Swap two args, still compiles.
 openFile(uri, {
-    startLineNumber: 10,
-    startColumn: 1,
-    endLineNumber: 10,
-    endColumn: 1,
+  startLineNumber: 10,
+  startColumn: 1,
+  endLineNumber: 10,
+  endColumn: 1,
 });
 
 // Do. Order-independent, self-documenting.
 openFile({
-    uri,
-    selection: {
-        startLineNumber: 10,
-        startColumn: 1,
-        endLineNumber: 10,
-        endColumn: 1,
-    },
+  uri,
+  selection: {
+    startLineNumber: 10,
+    startColumn: 1,
+    endLineNumber: 10,
+    endColumn: 1,
+  },
 });
 ```
 

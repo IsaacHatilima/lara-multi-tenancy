@@ -25,13 +25,13 @@ The two brand colours plus two that exist only for the logo and icon. Greek Blue
 
 ### Which colours work on which ground (3:1 minimum for graphics)
 
-| Mark             | Paper  | Midnight Edition | Egyptian Blue | Trumpet Gold |
-| ---------------- | ------ | ---------------- | ------------- | ------------ |
-| Egyptian Blue    | ✓ 9.7  | ✗ 1.8            | same          | ✓ 5.3        |
-| Trumpet Gold     | ✗ 1.8  | ✓ 9.8            | ✓ 5.3         | same         |
-| Greek Blue       | ✗ 2.9  | ✓ 6.1            | ✓ 3.3         | ✗ 1.6        |
-| Midnight Edition | ✓ 18.0 | same             | ✗ 1.8         | ✓ 9.8        |
-| Paper            | same   | ✓ 18.0           | ✓ 9.7         | ✗ 1.8        |
+| Mark | Paper | Midnight Edition | Egyptian Blue | Trumpet Gold |
+|---|---|---|---|---|
+| Egyptian Blue | ✓ 9.7 | ✗ 1.8 | same | ✓ 5.3 |
+| Trumpet Gold | ✗ 1.8 | ✓ 9.8 | ✓ 5.3 | same |
+| Greek Blue | ✗ 2.9 | ✓ 6.1 | ✓ 3.3 | ✗ 1.6 |
+| Midnight Edition | ✓ 18.0 | same | ✗ 1.8 | ✓ 9.8 |
+| Paper | same | ✓ 18.0 | ✓ 9.7 | ✗ 1.8 |
 
 - On Paper: Egyptian Blue, Midnight Edition.
 - On Midnight Edition: Trumpet Gold, Greek Blue, Paper.
@@ -46,68 +46,68 @@ Saturated cobalt drives the interface and a voltage-yellow accent marks what mat
 
 Light is the default; dark follows the system setting or `data-theme="dark"`. Use the semantic tokens in UI code, never raw scale steps.
 
-| Token          | Light   | Dark    | Use                                                                                                                                                                           |
-| -------------- | ------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| bg             | #FAFAFA | #0D1219 | Page background: a plain off-white in light, the Midnight Edition ink in dark. Text on it uses `text` (18.0:1) and `text-muted` (5.5:1 light, 7.9:1 dark).                    |
-| surface        | #FFFFFF | #191C22 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`.                                                                              |
-| surface-raised | #FFFFFF | #23272C | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`.                                                                   |
-| surface-sunken | #F1F2F4 | #13171C | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`.                                                                      |
-| border         | #E2E3E5 | #2D3137 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that.                                                                        |
-| border-strong  | #848587 | #6B7077 | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.4:1 dark on surface).                             |
-| text           | #0D1219 | #FAFAFA | Primary text and icons on every surface. Midnight Edition in light; the paper off-white in dark.                                                                              |
-| text-muted     | #656668 | #A7A8AA | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`.                                                                               |
-| primary        | #00399C | #81AFFF | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Egyptian Blue (primary-700 light, primary-300 dark). Label text on it uses `on-primary`. |
-| primary-hover  | #062B70 | #B1CEFF | Hover and pressed fill of `primary`.                                                                                                                                          |
-| primary-soft   | #F0F5FF | #062B70 | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`.                                                                |
-| on-primary     | #FFFFFF | #0D1219 | Text and icons on `primary` and `primary-hover` (10.2:1 light, 8.5:1 dark). Dark mode uses ink, not white.                                                                    |
-| link           | #00399C | #B1CEFF | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text.                                                                 |
-| link-hover     | #062B70 | #D9E7FF | Hover state of `link`.                                                                                                                                                        |
-| accent         | #816100 | #C89800 | The single secondary hue, Trumpet Gold: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`.                        |
-| accent-soft    | #FAF5E9 | #312300 | Tinted background for accent badges and callouts. Text on it uses `accent`.                                                                                                   |
-| on-accent      | #FFFFFF | #0D1219 | Text and icons on `accent` (5.8:1 light, 7.1:1 dark).                                                                                                                         |
-| focus          | #816100 | #C89800 | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 5.5:1 on `bg` in light, 7.1:1 in dark. It uses the accent so it never blends into Egyptian Blue controls.              |
-| selection      | #D9E7FF | #062B70 | Text selection background. Text keeps `text`.                                                                                                                                 |
-| disabled-bg    | #F1F2F4 | #23272C | Fill of disabled buttons and inputs.                                                                                                                                          |
-| disabled-text  | #848587 | #656668 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here.                                                                          |
-| success        | #13794A | #1BA766 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.4:1 light, 5.5:1 dark on `surface`). Always paired with a check icon and a word.                       |
-| success-soft   | #E4F3EB | #0F2A1E | Background of success banners and badges. Text on it uses `success`.                                                                                                          |
-| on-success     | #FFFFFF | #0D1219 | Text on solid `success` fills.                                                                                                                                                |
-| warning        | #96521C | #FC9B45 | Warning text, icons and fills (6.0:1 light, 8.1:1 dark on `surface`). Always paired with a triangle icon and a word.                                                          |
-| warning-soft   | #FEEEDA | #2D1E0B | Background of warning banners and badges. Text on it uses `warning`.                                                                                                          |
-| on-warning     | #FFFFFF | #0D1219 | Text on solid `warning` fills.                                                                                                                                                |
-| danger         | #B8331E | #E57361 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.7:1 dark on `surface`). Always paired with an icon and a word.                                             |
-| danger-soft    | #FBE9E5 | #2E1612 | Background of error banners and field errors. Text on it uses `danger`.                                                                                                       |
-| on-danger      | #FFFFFF | #0D1219 | Text on solid `danger` fills.                                                                                                                                                 |
-| info           | #00399C | #B1CEFF | Informational text and icons. Deliberately the brand hue, so there is no separate blue.                                                                                       |
-| info-soft      | #F0F5FF | #062B70 | Background of info banners. Text on it uses `info`.                                                                                                                           |
-| chart-1        | #816100 | #C89800 | Chart series 1, the anchor shade of Trumpet Gold. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
-| chart-2        | #493500 | #EED192 | Chart series 2, a darker Trumpet Gold in light and a lighter Trumpet Gold in dark.                                                                                            |
-| chart-3        | #654B00 | #EAB313 | Chart series 3, a lighter Trumpet Gold in light and a deeper Trumpet Gold in dark.                                                                                            |
-| chart-4        | #A57C00 | #A57C00 | Chart series 4, a mid shade of Trumpet Gold.                                                                                                                                  |
-| chart-5        | #312300 | #F5E8CC | Chart series 5, the remaining Trumpet Gold shade that still holds 3:1.                                                                                                        |
-| chart-alt      | #00399C | #81AFFF | The one contrasting chart series: Egyptian Blue, the primary brand colour. Chart colours are only Trumpet Gold shades and Egyptian Blue, never status or logo colours.        |
-| chart-grid     | #E2E3E5 | #2D3137 | Gridlines and axis rules inside charts. Axis labels use `text-muted`.                                                                                                         |
-| ink            | #0D1219 | #0D1219 | Raw near-black, Midnight Edition: the light theme's text and the dark theme's page background. Use the semantic tokens in UI.                                                 |
-| logo-spark     | #06A1BF | #06A1BF | Logo and icon only: Greek Blue, the highlight or signal dot. Never a UI colour.                                                                                               |
-| logo-ink       | #0D1219 | #0D1219 | Logo and icon only: wordmark and one-colour versions, Midnight Edition.                                                                                                       |
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| bg | #FAFAFA | #0D1219 | Page background: a plain off-white in light, the Midnight Edition ink in dark. Text on it uses `text` (18.0:1) and `text-muted` (5.5:1 light, 7.9:1 dark). |
+| surface | #FFFFFF | #191C22 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`. |
+| surface-raised | #FFFFFF | #23272C | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`. |
+| surface-sunken | #F1F2F4 | #13171C | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`. |
+| border | #E2E3E5 | #2D3137 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that. |
+| border-strong | #848587 | #6B7077 | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.4:1 dark on surface). |
+| text | #0D1219 | #FAFAFA | Primary text and icons on every surface. Midnight Edition in light; the paper off-white in dark. |
+| text-muted | #656668 | #A7A8AA | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`. |
+| primary | #00399C | #81AFFF | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Egyptian Blue (primary-700 light, primary-300 dark). Label text on it uses `on-primary`. |
+| primary-hover | #062B70 | #B1CEFF | Hover and pressed fill of `primary`. |
+| primary-soft | #F0F5FF | #062B70 | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`. |
+| on-primary | #FFFFFF | #0D1219 | Text and icons on `primary` and `primary-hover` (10.2:1 light, 8.5:1 dark). Dark mode uses ink, not white. |
+| link | #00399C | #B1CEFF | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text. |
+| link-hover | #062B70 | #D9E7FF | Hover state of `link`. |
+| accent | #816100 | #C89800 | The single secondary hue, Trumpet Gold: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`. |
+| accent-soft | #FAF5E9 | #312300 | Tinted background for accent badges and callouts. Text on it uses `accent`. |
+| on-accent | #FFFFFF | #0D1219 | Text and icons on `accent` (5.8:1 light, 7.1:1 dark). |
+| focus | #816100 | #C89800 | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 5.5:1 on `bg` in light, 7.1:1 in dark. It uses the accent so it never blends into Egyptian Blue controls. |
+| selection | #D9E7FF | #062B70 | Text selection background. Text keeps `text`. |
+| disabled-bg | #F1F2F4 | #23272C | Fill of disabled buttons and inputs. |
+| disabled-text | #848587 | #656668 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here. |
+| success | #13794A | #1BA766 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.4:1 light, 5.5:1 dark on `surface`). Always paired with a check icon and a word. |
+| success-soft | #E4F3EB | #0F2A1E | Background of success banners and badges. Text on it uses `success`. |
+| on-success | #FFFFFF | #0D1219 | Text on solid `success` fills. |
+| warning | #96521C | #FC9B45 | Warning text, icons and fills (6.0:1 light, 8.1:1 dark on `surface`). Always paired with a triangle icon and a word. |
+| warning-soft | #FEEEDA | #2D1E0B | Background of warning banners and badges. Text on it uses `warning`. |
+| on-warning | #FFFFFF | #0D1219 | Text on solid `warning` fills. |
+| danger | #B8331E | #E57361 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.7:1 dark on `surface`). Always paired with an icon and a word. |
+| danger-soft | #FBE9E5 | #2E1612 | Background of error banners and field errors. Text on it uses `danger`. |
+| on-danger | #FFFFFF | #0D1219 | Text on solid `danger` fills. |
+| info | #00399C | #B1CEFF | Informational text and icons. Deliberately the brand hue, so there is no separate blue. |
+| info-soft | #F0F5FF | #062B70 | Background of info banners. Text on it uses `info`. |
+| chart-1 | #816100 | #C89800 | Chart series 1, the anchor shade of Trumpet Gold. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
+| chart-2 | #493500 | #EED192 | Chart series 2, a darker Trumpet Gold in light and a lighter Trumpet Gold in dark. |
+| chart-3 | #654B00 | #EAB313 | Chart series 3, a lighter Trumpet Gold in light and a deeper Trumpet Gold in dark. |
+| chart-4 | #A57C00 | #A57C00 | Chart series 4, a mid shade of Trumpet Gold. |
+| chart-5 | #312300 | #F5E8CC | Chart series 5, the remaining Trumpet Gold shade that still holds 3:1. |
+| chart-alt | #00399C | #81AFFF | The one contrasting chart series: Egyptian Blue, the primary brand colour. Chart colours are only Trumpet Gold shades and Egyptian Blue, never status or logo colours. |
+| chart-grid | #E2E3E5 | #2D3137 | Gridlines and axis rules inside charts. Axis labels use `text-muted`. |
+| ink | #0D1219 | #0D1219 | Raw near-black, Midnight Edition: the light theme's text and the dark theme's page background. Use the semantic tokens in UI. |
+| logo-spark | #06A1BF | #06A1BF | Logo and icon only: Greek Blue, the highlight or signal dot. Never a UI colour. |
+| logo-ink | #0D1219 | #0D1219 | Logo and icon only: wordmark and one-colour versions, Midnight Edition. |
 
 ## Scales
 
 Each brand scale is generated from its library anchor. The anchor keeps its exact value at the step nearest its lightness: Egyptian Blue at primary-700, Trumpet Gold at accent-300. Identical in both themes.
 
-| Step | Primary (Egyptian Blue) | Primary roles                                                   | Accent (Trumpet Gold) | Accent roles                      | Neutral |
-| ---- | ----------------------- | --------------------------------------------------------------- | --------------------- | --------------------------------- | ------- |
-| 50   | #F0F5FF                 | light: primary-soft                                             | #FAF5E9               | light: accent-soft                | #F8F9FB |
-| 100  | #D9E7FF                 | light: selection; dark: link-hover                              | #F5E8CC               | dark: chart-5                     | #F1F2F4 |
-| 200  | #B1CEFF                 | dark: primary-hover, link                                       | #EED192               | dark: chart-2                     | #E2E3E5 |
-| 300  | #81AFFF                 | dark: primary                                                   | #EAB313               | brand anchor; dark: chart-3       | #CBCCCE |
-| 400  | #508EFF                 |                                                                 | #C89800               | dark: accent, chart-1             | #A7A8AA |
-| 500  | #0E67FF                 |                                                                 | #A57C00               | light: chart-4; dark: chart-4     | #848587 |
-| 600  | #004CCA                 |                                                                 | #816100               | light: accent, chart-1            | #656668 |
-| 700  | #00399C                 | brand anchor; light: primary, link                              | #654B00               | light: chart-3                    | #464749 |
-| 800  | #062B70                 | light: primary-hover, link-hover; dark: primary-soft, selection | #493500               | light: chart-2                    | #2F3032 |
-| 900  | #071F4B                 |                                                                 | #312300               | light: chart-5; dark: accent-soft | #1B1C1E |
-| 950  | #07132C                 |                                                                 | #1C1300               |                                   | #111214 |
+| Step | Primary (Egyptian Blue) | Primary roles | Accent (Trumpet Gold) | Accent roles | Neutral |
+|---|---|---|---|---|---|
+| 50 | #F0F5FF | light: primary-soft | #FAF5E9 | light: accent-soft | #F8F9FB |
+| 100 | #D9E7FF | light: selection; dark: link-hover | #F5E8CC | dark: chart-5 | #F1F2F4 |
+| 200 | #B1CEFF | dark: primary-hover, link | #EED192 | dark: chart-2 | #E2E3E5 |
+| 300 | #81AFFF | dark: primary | #EAB313 | brand anchor; dark: chart-3 | #CBCCCE |
+| 400 | #508EFF |  | #C89800 | dark: accent, chart-1 | #A7A8AA |
+| 500 | #0E67FF |  | #A57C00 | light: chart-4; dark: chart-4 | #848587 |
+| 600 | #004CCA |  | #816100 | light: accent, chart-1 | #656668 |
+| 700 | #00399C | brand anchor; light: primary, link | #654B00 | light: chart-3 | #464749 |
+| 800 | #062B70 | light: primary-hover, link-hover; dark: primary-soft, selection | #493500 | light: chart-2 | #2F3032 |
+| 900 | #071F4B |  | #312300 | light: chart-5; dark: accent-soft | #1B1C1E |
+| 950 | #07132C |  | #1C1300 |  | #111214 |
 
 ## Accessible pairings
 

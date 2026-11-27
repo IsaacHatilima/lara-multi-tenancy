@@ -182,14 +182,13 @@ Other text after `/factory` can be the user talking about an existing job. Work 
 - **Approving** a `needs-human` job: they approve by merging its PR on GitHub. Tell them the PR, and that the feature page on the branch says Shipped or Not shipped (`job.json` `doc`) and merges as it stands. The next `/factory run` records the merge.
 - **Feedback on a `needs-human` job**, or a request to rework it: pass their words verbatim on stdin:
 
-    ```bash
-    <bin>/job feedback <job> <<'FACTORY_FEEDBACK'
-    <their feedback>
-    FACTORY_FEEDBACK
-    ```
+  ```bash
+  <bin>/job feedback <job> <<'FACTORY_FEEDBACK'
+  <their feedback>
+  FACTORY_FEEDBACK
+  ```
 
-    It saves `feedback-<k>.md` and starts the next round with a fresh round budget. Go to **build** with `The user gave feedback: read feedback-<k>.md and address it, push, and update build.md for round <N>.` and continue like any job. When the job was blocked at its spec, the script says `back to the spec-writer` instead: go to **spec** with `<header> The user answered the blocked spec: read feedback-<k>.md and rewrite spec.md.`
-
+  It saves `feedback-<k>.md` and starts the next round with a fresh round budget. Go to **build** with `The user gave feedback: read feedback-<k>.md and address it, push, and update build.md for round <N>.` and continue like any job. When the job was blocked at its spec, the script says `back to the spec-writer` instead: go to **spec** with `<header> The user answered the blocked spec: read feedback-<k>.md and rewrite spec.md.`
 - **Rejecting or benching a `queued`, `needs-info` or `needs-human` job**: pass their reason verbatim on stdin to `<bin>/job reject <job>`. It saves `rejection.md`, closes the job's PR if it has one, and records `rejected` locally. It does not change an external task. A later request to try again creates a new local job; preserve the old job's history.
 - **An answer to a `needs-info` question**: pass their exact answer on stdin to `<bin>/job answer <job>`. The script records the answer locally and returns the job to intake, subject to concurrency. Follow its reported state and go to **intake** when it starts; do not post the answer on an external service.
 
@@ -207,33 +206,33 @@ Prepare the project the session is in. Work in the main checkout and stay on the
 
 5. **Tailor `AGENTS.md`** (or `CLAUDE.md`, whichever the project uses; create `AGENTS.md` if neither exists). Every agent reads it. Make sure it says how to set up a fresh checkout, how to start the dev server on a given port, and the validation commands matching `factory/checks.sh`. Then add this section, filling in the project's specifics:
 
-    ```markdown
-    ## Software factory
+   ```markdown
+   ## Software factory
 
-    `/factory <description>` (`$factory <description>` in Codex) creates a local
-    job and builds it through intake → spec → build → gate → review → documentation
-    → approval, one PR per job. Confirmed review fixes pass through a teacher that
-    records reusable lessons in `Knowledge/`; spec, build and review read relevant
-    lessons first. `/factory run` resumes the local queue. Optional
-    `/factory mitarbo <task-key>` reads one task through a connected Mitarbo tool.
-    State is in `factory/jobs/` (gitignored). Checks:
-    `factory/checks.sh`. Dashboard: `cd factory && python3 -m http.server`, then
-    open http://localhost:8000/dashboard.html.
+   `/factory <description>` (`$factory <description>` in Codex) creates a local
+   job and builds it through intake → spec → build → gate → review → documentation
+   → approval, one PR per job. Confirmed review fixes pass through a teacher that
+   records reusable lessons in `Knowledge/`; spec, build and review read relevant
+   lessons first. `/factory run` resumes the local queue. Optional
+   `/factory mitarbo <task-key>` reads one task through a connected Mitarbo tool.
+   State is in `factory/jobs/` (gitignored). Checks:
+   `factory/checks.sh`. Dashboard: `cd factory && python3 -m http.server`, then
+   open http://localhost:8000/dashboard.html.
 
-    Each job works in its own git worktree at `.worktrees/<job-id>` (gitignored).
-    A tool run from the repository root that doesn't read `.gitignore` sees those
-    copies too; exclude `.worktrees/` in its config.
+   Each job works in its own git worktree at `.worktrees/<job-id>` (gitignored).
+   A tool run from the repository root that doesn't read `.gitignore` sees those
+   copies too; exclude `.worktrees/` in its config.
 
-    - What the project is for: <one line, so intake can tell what belongs>
-    - Security hot spots: <its auth, data access rules, payment and webhook code, where user input meets queries or HTML>
-    - Design system: <where the design tokens, theme and shared components live>
-    - Users: <the kinds of users the app has>
-    - A person must always see: <changes the approver must escalate in this project, beyond its defaults>
-    ```
+   - What the project is for: <one line, so intake can tell what belongs>
+   - Security hot spots: <its auth, data access rules, payment and webhook code, where user input meets queries or HTML>
+   - Design system: <where the design tokens, theme and shared components live>
+   - Users: <the kinds of users the app has>
+   - A person must always see: <changes the approver must escalate in this project, beyond its defaults>
+   ```
 
-    When the project has a UI, also state its browser workflow in `AGENTS.md` as the one to use, not an option: for example, "Browser checks use `agent-browser` with a session named after the job and the agent's port. Don't use editor or environment preview tools: other jobs share their tabs." The builder and the UI and UX reviewers follow the workflow `AGENTS.md` prescribes, and a project that only says a tool "can" be used leaves them to the environment's own preview tools, whose page snapshots cost several times as many tokens.
+   When the project has a UI, also state its browser workflow in `AGENTS.md` as the one to use, not an option: for example, "Browser checks use `agent-browser` with a session named after the job and the agent's port. Don't use editor or environment preview tools: other jobs share their tabs." The builder and the UI and UX reviewers follow the workflow `AGENTS.md` prescribes, and a project that only says a tool "can" be used leaves them to the environment's own preview tools, whose page snapshots cost several times as many tokens.
 
-    Exclude `.worktrees/` in any test runner, linter or watcher that doesn't read `.gitignore`, such as Jest's `testPathIgnorePatterns` or Vitest's `exclude`.
+   Exclude `.worktrees/` in any test runner, linter or watcher that doesn't read `.gitignore`, such as Jest's `testPathIgnorePatterns` or Vitest's `exclude`.
 
 6. **Verify.** `bash factory/checks.sh` exits 0 in the main checkout; if it fails there, the factory can never pass a job, so fix the script (not the project) or tell the user what's broken. `<bin>/job queue` runs without an error. `python3 -m json.tool factory/config.json` succeeds. `git check-ignore factory/jobs/x .worktrees/x` prints both paths, and `git status --porcelain --untracked-files=all` lists `factory/config.json`, `factory/checks.sh` and `factory/dashboard.html` as committable.
 

@@ -25,13 +25,13 @@ The two brand colours plus two that exist only for the logo and icon. Tansy and 
 
 ### Which colours work on which ground (3:1 minimum for graphics)
 
-| Mark          | Paper  | Darkness | Fun Green | Orange Piñata |
-| ------------- | ------ | -------- | --------- | ------------- |
-| Fun Green     | ✓ 7.4  | ✗ 2.4    | same      | ✗ 2.6         |
-| Orange Piñata | ✗ 2.8  | ✓ 6.1    | ✗ 2.6     | same          |
-| Tansy         | ✗ 1.7  | ✓ 10.1   | ✓ 4.3     | ✗ 1.6         |
-| Darkness      | ✓ 17.4 | same     | ✗ 2.4     | ✓ 6.1         |
-| Paper         | same   | ✓ 17.4   | ✓ 7.4     | ✗ 2.8         |
+| Mark | Paper | Darkness | Fun Green | Orange Piñata |
+|---|---|---|---|---|
+| Fun Green | ✓ 7.4 | ✗ 2.4 | same | ✗ 2.6 |
+| Orange Piñata | ✗ 2.8 | ✓ 6.1 | ✗ 2.6 | same |
+| Tansy | ✗ 1.7 | ✓ 10.1 | ✓ 4.3 | ✗ 1.6 |
+| Darkness | ✓ 17.4 | same | ✗ 2.4 | ✓ 6.1 |
+| Paper | same | ✓ 17.4 | ✓ 7.4 | ✗ 2.8 |
 
 - On Paper: Fun Green, Darkness.
 - On Darkness: Orange Piñata, Tansy, Paper.
@@ -46,68 +46,68 @@ Leafy green is dependable enough for every button, and the orange accent is loud
 
 Light is the default; dark follows the system setting or `data-theme="dark"`. Use the semantic tokens in UI code, never raw scale steps.
 
-| Token          | Light   | Dark    | Use                                                                                                                                                                            |
-| -------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| bg             | #FAFAFA | #14170E | Page background: a plain off-white in light, the Darkness ink in dark. Text on it uses `text` (17.4:1) and `text-muted` (5.5:1 light, 7.7:1 dark).                             |
-| surface        | #FFFFFF | #1F211B | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`.                                                                               |
-| surface-raised | #FFFFFF | #292C25 | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`.                                                                    |
-| surface-sunken | #F1F2F0 | #1A1C16 | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`.                                                                       |
-| border         | #E3E4E1 | #343630 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that.                                                                         |
-| border-strong  | #858683 | #73766E | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface).                              |
-| text           | #14170E | #FAFAFA | Primary text and icons on every surface. Darkness in light; the paper off-white in dark.                                                                                       |
-| text-muted     | #666664 | #A8A9A6 | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`.                                                                                |
-| primary        | #165F39 | #89C49E | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Fun Green (primary-700 light, primary-300 dark). Label text on it uses `on-primary`.      |
-| primary-hover  | #134429 | #B7DAC2 | Hover and pressed fill of `primary`.                                                                                                                                           |
-| primary-soft   | #F0F7F2 | #134429 | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`.                                                                 |
-| on-primary     | #FFFFFF | #14170E | Text and icons on `primary` and `primary-hover` (7.7:1 light, 9.0:1 dark). Dark mode uses ink, not white.                                                                      |
-| link           | #165F39 | #B7DAC2 | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text.                                                                  |
-| link-hover     | #134429 | #DCECE1 | Hover state of `link`.                                                                                                                                                         |
-| accent         | #A44100 | #F99A6F | The single secondary hue, Orange Piñata: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`.                        |
-| accent-soft    | #FEF2ED | #411500 | Tinted background for accent badges and callouts. Text on it uses `accent`.                                                                                                    |
-| on-accent      | #FFFFFF | #14170E | Text and icons on `accent` (6.3:1 light, 8.5:1 dark).                                                                                                                          |
-| focus          | #A44100 | #F99A6F | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 6.0:1 on `bg` in light, 8.5:1 in dark. It uses the accent so it never blends into Fun Green controls.                   |
-| selection      | #DCECE1 | #134429 | Text selection background. Text keeps `text`.                                                                                                                                  |
-| disabled-bg    | #F1F2F0 | #292C25 | Fill of disabled buttons and inputs.                                                                                                                                           |
-| disabled-text  | #858683 | #666664 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here.                                                                           |
-| success        | #007763 | #00A588 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.5:1 light, 5.2:1 dark on `surface`). Always paired with a check icon and a word.                        |
-| success-soft   | #E2F3EF | #082A25 | Background of success banners and badges. Text on it uses `success`.                                                                                                           |
-| on-success     | #FFFFFF | #14170E | Text on solid `success` fills.                                                                                                                                                 |
-| warning        | #8A5B00 | #EAA825 | Warning text, icons and fills (5.9:1 light, 7.8:1 dark on `surface`). Always paired with a triangle icon and a word.                                                           |
-| warning-soft   | #F8F0D9 | #29200A | Background of warning banners and badges. Text on it uses `warning`.                                                                                                           |
-| on-warning     | #FFFFFF | #14170E | Text on solid `warning` fills.                                                                                                                                                 |
-| danger         | #B82E42 | #E5707A | Errors and destructive actions: text, icons, fills (6.0:1 light, 5.4:1 dark on `surface`). Always paired with an icon and a word.                                              |
-| danger-soft    | #FBE8E8 | #2E1517 | Background of error banners and field errors. Text on it uses `danger`.                                                                                                        |
-| on-danger      | #FFFFFF | #14170E | Text on solid `danger` fills.                                                                                                                                                  |
-| info           | #165F39 | #B7DAC2 | Informational text and icons. Deliberately the brand hue, so there is no separate blue.                                                                                        |
-| info-soft      | #F0F7F2 | #134429 | Background of info banners. Text on it uses `info`.                                                                                                                            |
-| chart-1        | #A44100 | #F99A6F | Chart series 1, the anchor shade of Orange Piñata. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
-| chart-2        | #5F2200 | #FDE1D5 | Chart series 2, a darker Orange Piñata in light and a lighter Orange Piñata in dark.                                                                                           |
-| chart-3        | #823200 | #D05400 | Chart series 3, a lighter Orange Piñata in light and a deeper Orange Piñata in dark.                                                                                           |
-| chart-4        | #D05400 | #FCC1A8 | Chart series 4, a mid shade of Orange Piñata.                                                                                                                                  |
-| chart-5        | #411500 | #F96A15 | Chart series 5, the remaining Orange Piñata shade that still holds 3:1.                                                                                                        |
-| chart-alt      | #165F39 | #89C49E | The one contrasting chart series: Fun Green, the primary brand colour. Chart colours are only Orange Piñata shades and Fun Green, never status or logo colours.                |
-| chart-grid     | #E3E4E1 | #343630 | Gridlines and axis rules inside charts. Axis labels use `text-muted`.                                                                                                          |
-| ink            | #14170E | #14170E | Raw near-black, Darkness: the light theme's text and the dark theme's page background. Use the semantic tokens in UI.                                                          |
-| logo-spark     | #CDC545 | #CDC545 | Logo and icon only: Tansy, the highlight or signal dot. Never a UI colour.                                                                                                     |
-| logo-ink       | #14170E | #14170E | Logo and icon only: wordmark and one-colour versions, Darkness.                                                                                                                |
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| bg | #FAFAFA | #14170E | Page background: a plain off-white in light, the Darkness ink in dark. Text on it uses `text` (17.4:1) and `text-muted` (5.5:1 light, 7.7:1 dark). |
+| surface | #FFFFFF | #1F211B | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`. |
+| surface-raised | #FFFFFF | #292C25 | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`. |
+| surface-sunken | #F1F2F0 | #1A1C16 | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`. |
+| border | #E3E4E1 | #343630 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that. |
+| border-strong | #858683 | #73766E | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface). |
+| text | #14170E | #FAFAFA | Primary text and icons on every surface. Darkness in light; the paper off-white in dark. |
+| text-muted | #666664 | #A8A9A6 | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`. |
+| primary | #165F39 | #89C49E | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Fun Green (primary-700 light, primary-300 dark). Label text on it uses `on-primary`. |
+| primary-hover | #134429 | #B7DAC2 | Hover and pressed fill of `primary`. |
+| primary-soft | #F0F7F2 | #134429 | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`. |
+| on-primary | #FFFFFF | #14170E | Text and icons on `primary` and `primary-hover` (7.7:1 light, 9.0:1 dark). Dark mode uses ink, not white. |
+| link | #165F39 | #B7DAC2 | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text. |
+| link-hover | #134429 | #DCECE1 | Hover state of `link`. |
+| accent | #A44100 | #F99A6F | The single secondary hue, Orange Piñata: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`. |
+| accent-soft | #FEF2ED | #411500 | Tinted background for accent badges and callouts. Text on it uses `accent`. |
+| on-accent | #FFFFFF | #14170E | Text and icons on `accent` (6.3:1 light, 8.5:1 dark). |
+| focus | #A44100 | #F99A6F | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 6.0:1 on `bg` in light, 8.5:1 in dark. It uses the accent so it never blends into Fun Green controls. |
+| selection | #DCECE1 | #134429 | Text selection background. Text keeps `text`. |
+| disabled-bg | #F1F2F0 | #292C25 | Fill of disabled buttons and inputs. |
+| disabled-text | #858683 | #666664 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here. |
+| success | #007763 | #00A588 | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.5:1 light, 5.2:1 dark on `surface`). Always paired with a check icon and a word. |
+| success-soft | #E2F3EF | #082A25 | Background of success banners and badges. Text on it uses `success`. |
+| on-success | #FFFFFF | #14170E | Text on solid `success` fills. |
+| warning | #8A5B00 | #EAA825 | Warning text, icons and fills (5.9:1 light, 7.8:1 dark on `surface`). Always paired with a triangle icon and a word. |
+| warning-soft | #F8F0D9 | #29200A | Background of warning banners and badges. Text on it uses `warning`. |
+| on-warning | #FFFFFF | #14170E | Text on solid `warning` fills. |
+| danger | #B82E42 | #E5707A | Errors and destructive actions: text, icons, fills (6.0:1 light, 5.4:1 dark on `surface`). Always paired with an icon and a word. |
+| danger-soft | #FBE8E8 | #2E1517 | Background of error banners and field errors. Text on it uses `danger`. |
+| on-danger | #FFFFFF | #14170E | Text on solid `danger` fills. |
+| info | #165F39 | #B7DAC2 | Informational text and icons. Deliberately the brand hue, so there is no separate blue. |
+| info-soft | #F0F7F2 | #134429 | Background of info banners. Text on it uses `info`. |
+| chart-1 | #A44100 | #F99A6F | Chart series 1, the anchor shade of Orange Piñata. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
+| chart-2 | #5F2200 | #FDE1D5 | Chart series 2, a darker Orange Piñata in light and a lighter Orange Piñata in dark. |
+| chart-3 | #823200 | #D05400 | Chart series 3, a lighter Orange Piñata in light and a deeper Orange Piñata in dark. |
+| chart-4 | #D05400 | #FCC1A8 | Chart series 4, a mid shade of Orange Piñata. |
+| chart-5 | #411500 | #F96A15 | Chart series 5, the remaining Orange Piñata shade that still holds 3:1. |
+| chart-alt | #165F39 | #89C49E | The one contrasting chart series: Fun Green, the primary brand colour. Chart colours are only Orange Piñata shades and Fun Green, never status or logo colours. |
+| chart-grid | #E3E4E1 | #343630 | Gridlines and axis rules inside charts. Axis labels use `text-muted`. |
+| ink | #14170E | #14170E | Raw near-black, Darkness: the light theme's text and the dark theme's page background. Use the semantic tokens in UI. |
+| logo-spark | #CDC545 | #CDC545 | Logo and icon only: Tansy, the highlight or signal dot. Never a UI colour. |
+| logo-ink | #14170E | #14170E | Logo and icon only: wordmark and one-colour versions, Darkness. |
 
 ## Scales
 
 Each brand scale is generated from its library anchor. The anchor keeps its exact value at the step nearest its lightness: Fun Green at primary-700, Orange Piñata at accent-400. Identical in both themes.
 
-| Step | Primary (Fun Green) | Primary roles                                                   | Accent (Orange Piñata) | Accent roles                      | Neutral |
-| ---- | ------------------- | --------------------------------------------------------------- | ---------------------- | --------------------------------- | ------- |
-| 50   | #F0F7F2             | light: primary-soft                                             | #FEF2ED                | light: accent-soft                | #F8F9F7 |
-| 100  | #DCECE1             | light: selection; dark: link-hover                              | #FDE1D5                | dark: chart-2                     | #F1F2F0 |
-| 200  | #B7DAC2             | dark: primary-hover, link                                       | #FCC1A8                | dark: chart-4                     | #E3E4E1 |
-| 300  | #89C49E             | dark: primary                                                   | #F99A6F                | dark: accent, chart-1             | #CBCCCA |
-| 400  | #50B179             |                                                                 | #F96A15                | brand anchor; dark: chart-5       | #A8A9A6 |
-| 500  | #22975C             |                                                                 | #D05400                | light: chart-4; dark: chart-3     | #858683 |
-| 600  | #0C7946             |                                                                 | #A44100                | light: accent, chart-1            | #666664 |
-| 700  | #165F39             | brand anchor; light: primary, link                              | #823200                | light: chart-3                    | #474745 |
-| 800  | #134429             | light: primary-hover, link-hover; dark: primary-soft, selection | #5F2200                | light: chart-2                    | #30302E |
-| 900  | #0E2C1B             |                                                                 | #411500                | light: chart-5; dark: accent-soft | #1C1C1A |
-| 950  | #09180F             |                                                                 | #250D03                |                                   | #121211 |
+| Step | Primary (Fun Green) | Primary roles | Accent (Orange Piñata) | Accent roles | Neutral |
+|---|---|---|---|---|---|
+| 50 | #F0F7F2 | light: primary-soft | #FEF2ED | light: accent-soft | #F8F9F7 |
+| 100 | #DCECE1 | light: selection; dark: link-hover | #FDE1D5 | dark: chart-2 | #F1F2F0 |
+| 200 | #B7DAC2 | dark: primary-hover, link | #FCC1A8 | dark: chart-4 | #E3E4E1 |
+| 300 | #89C49E | dark: primary | #F99A6F | dark: accent, chart-1 | #CBCCCA |
+| 400 | #50B179 |  | #F96A15 | brand anchor; dark: chart-5 | #A8A9A6 |
+| 500 | #22975C |  | #D05400 | light: chart-4; dark: chart-3 | #858683 |
+| 600 | #0C7946 |  | #A44100 | light: accent, chart-1 | #666664 |
+| 700 | #165F39 | brand anchor; light: primary, link | #823200 | light: chart-3 | #474745 |
+| 800 | #134429 | light: primary-hover, link-hover; dark: primary-soft, selection | #5F2200 | light: chart-2 | #30302E |
+| 900 | #0E2C1B |  | #411500 | light: chart-5; dark: accent-soft | #1C1C1A |
+| 950 | #09180F |  | #250D03 |  | #121211 |
 
 ## Accessible pairings
 

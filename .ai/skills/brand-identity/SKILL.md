@@ -19,12 +19,12 @@ Collect what only the person can decide: the hues they want (any number of words
 
 A system needs four colours, each with a role:
 
-| Role        | Used for                                                                                             | Library filter                                  |
-| ----------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| **primary** | Primary buttons, links, selected states, active navigation                                           | `--role primary`: mid lightness                 |
-| **accent**  | One highlight per view, badges, chart emphasis, the focus ring. At least 35° of hue from the primary | `--role accent`: clearly coloured               |
-| **ink**     | Text in light mode and the dark-mode page; the greys are generated from it                           | `--role ink`: near-black                        |
-| **spark**   | The logo's highlight only, never UI                                                                  | `--role spark`: light enough to read on the ink |
+| Role | Used for | Library filter |
+|---|---|---|
+| **primary** | Primary buttons, links, selected states, active navigation | `--role primary`: mid lightness |
+| **accent** | One highlight per view, badges, chart emphasis, the focus ring. At least 35° of hue from the primary | `--role accent`: clearly coloured |
+| **ink** | Text in light mode and the dark-mode page; the greys are generated from it | `--role ink`: near-black |
+| **spark** | The logo's highlight only, never UI | `--role spark`: light enough to read on the ink |
 
 Map the ask onto the roles. The first or dominant hue is usually the primary and a contrasting one the accent. A gray, charcoal, slate or black request is the ink, because the neutrals derive from it. Search the library:
 
@@ -45,15 +45,15 @@ Write the spec with the four slugs, then build it:
 
 ```json
 {
-    "slug": "fieldstone",
-    "name": "Fieldstone",
-    "character": "grounded, honest, alert",
-    "uses": "agriculture platforms, field operations, logistics",
-    "rationale": "Two or three sentences on why these four work together, as the reference systems write it.",
-    "primary": "bold-avocado",
-    "accent": "pickled-radish",
-    "spark": "winter-willow-green",
-    "ink": "river-styx"
+  "slug": "fieldstone",
+  "name": "Fieldstone",
+  "character": "grounded, honest, alert",
+  "uses": "agriculture platforms, field operations, logistics",
+  "rationale": "Two or three sentences on why these four work together, as the reference systems write it.",
+  "primary": "bold-avocado",
+  "accent": "pickled-radish",
+  "spark": "winter-willow-green",
+  "ink": "river-styx"
 }
 ```
 
@@ -79,15 +79,15 @@ The [reference systems](systems/index.md) are 32 finished examples of this outpu
 
 **Other web projects:** copy `<slug>.css` into the global stylesheet and use the semantic tokens everywhere (`var(--primary)`, `var(--surface)`, `var(--text-muted)`). In Tailwind v4, expose them with `@theme inline`. With shadcn/ui, don't paste the CSS as it is: shadcn's `--accent` means a subtle hover background, so map the tokens instead:
 
-| shadcn variable                                     | System token                                     |
-| --------------------------------------------------- | ------------------------------------------------ |
-| `--background` / `--foreground`                     | `bg` / `text`                                    |
-| `--card`, `--popover` (and their foregrounds)       | `surface`, `surface-raised` (`text`)             |
-| `--primary`, `--primary-foreground`                 | `primary`, `on-primary`                          |
-| `--secondary`, `--muted`, `--muted-foreground`      | `surface-sunken`, `surface-sunken`, `text-muted` |
-| `--accent`, `--accent-foreground`                   | `primary-soft`, `text`                           |
-| `--destructive` / `--border` / `--input` / `--ring` | `danger` / `border` / `border-strong` / `focus`  |
-| `--chart-1` … `--chart-5`                           | `chart-1` … `chart-5`                            |
+| shadcn variable | System token |
+|---|---|
+| `--background` / `--foreground` | `bg` / `text` |
+| `--card`, `--popover` (and their foregrounds) | `surface`, `surface-raised` (`text`) |
+| `--primary`, `--primary-foreground` | `primary`, `on-primary` |
+| `--secondary`, `--muted`, `--muted-foreground` | `surface-sunken`, `surface-sunken`, `text-muted` |
+| `--accent`, `--accent-foreground` | `primary-soft`, `text` |
+| `--destructive` / `--border` / `--input` / `--ring` | `danger` / `border` / `border-strong` / `focus` |
+| `--chart-1` … `--chart-5` | `chart-1` … `chart-5` |
 
 and add `--brand-accent` and `--brand-accent-foreground` (`accent`, `on-accent`) with the status and logo tokens.
 
@@ -133,24 +133,19 @@ Colours: <name> (`docs/brand/<slug>.md`, built from `docs/brand/<slug>.spec.json
 Character: <three words>
 
 ## Colours
-
 Primary <name> `<hex>` · Accent <name> `<hex>` · Logo spark <name> `<hex>` · Logo ink <name> `<hex>`
 Tokens: `<stylesheet or theme file>`. Use roles, never hex.
 
 ## Typography
-
 Display: <family, weights> · Text: <family, weights> · Scale: <steps or "the starter's">
 
 ## Logo
-
 Files: <paths>. Grounds: <from the guidelines' table>. Clear space and minimum size: <values>.
 
 ## Voice
-
 <two or three sentences>
 
 ## Don't
-
 - <the rules from section 6 that matter most for this product>
 ```
 

@@ -25,13 +25,13 @@ The two brand colours plus two that exist only for the logo and icon. Golden Bei
 
 ### Which colours work on which ground (3:1 minimum for graphics)
 
-| Mark         | Paper  | Kala Black | Vino Tinto | Ansel |
-| ------------ | ------ | ---------- | ---------- | ----- |
-| Vino Tinto   | ✓ 13.3 | ✗ 1.3      | same       | ✗ 2.2 |
-| Ansel        | ✓ 6.0  | ✗ 2.8      | ✗ 2.2      | same  |
-| Golden Beige | ✗ 2.1  | ✓ 7.8      | ✓ 6.2      | ✗ 2.8 |
-| Kala Black   | ✓ 16.8 | same       | ✗ 1.3      | ✗ 2.8 |
-| Paper        | same   | ✓ 16.8     | ✓ 13.3     | ✓ 6.0 |
+| Mark | Paper | Kala Black | Vino Tinto | Ansel |
+|---|---|---|---|---|
+| Vino Tinto | ✓ 13.3 | ✗ 1.3 | same | ✗ 2.2 |
+| Ansel | ✓ 6.0 | ✗ 2.8 | ✗ 2.2 | same |
+| Golden Beige | ✗ 2.1 | ✓ 7.8 | ✓ 6.2 | ✗ 2.8 |
+| Kala Black | ✓ 16.8 | same | ✗ 1.3 | ✗ 2.8 |
+| Paper | same | ✓ 16.8 | ✓ 13.3 | ✓ 6.0 |
 
 - On Paper: Vino Tinto, Ansel, Kala Black.
 - On Kala Black: Golden Beige, Paper.
@@ -46,68 +46,68 @@ Wine red stays the anchor. A deep library teal is the accent, the classic bookbi
 
 Light is the default; dark follows the system setting or `data-theme="dark"`. Use the semantic tokens in UI code, never raw scale steps.
 
-| Token          | Light   | Dark    | Use                                                                                                                                                                        |
-| -------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| bg             | #FAFAFA | #211718 | Page background: a plain off-white in light, the Kala Black ink in dark. Text on it uses `text` (16.8:1) and `text-muted` (5.5:1 light, 7.3:1 dark).                       |
-| surface        | #FFFFFF | #2A2323 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`.                                                                           |
-| surface-raised | #FFFFFF | #352D2E | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`.                                                                |
-| surface-sunken | #F4F1F1 | #251D1E | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`.                                                                   |
-| border         | #E5E2E2 | #403838 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that.                                                                     |
-| border-strong  | #878485 | #7F7677 | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface).                          |
-| text           | #211718 | #FAFAFA | Primary text and icons on every surface. Kala Black in light; the paper off-white in dark.                                                                                 |
-| text-muted     | #686565 | #AAA7A8 | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`.                                                                            |
-| primary        | #541625 | #DF9AA4 | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Vino Tinto (primary-800 light, primary-300 dark). Label text on it uses `on-primary`. |
-| primary-hover  | #35161C | #EBC0C6 | Hover and pressed fill of `primary`.                                                                                                                                       |
-| primary-soft   | #FBF3F3 | #541625 | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`.                                                             |
-| on-primary     | #FFFFFF | #211718 | Text and icons on `primary` and `primary-hover` (13.8:1 light, 7.7:1 dark). Dark mode uses ink, not white.                                                                 |
-| link           | #541625 | #EBC0C6 | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text.                                                              |
-| link-hover     | #35161C | #F5E0E3 | Hover state of `link`.                                                                                                                                                     |
-| accent         | #056986 | #86BAD0 | The single secondary hue, Ansel: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`.                            |
-| accent-soft    | #F0F6F9 | #0D2731 | Tinted background for accent badges and callouts. Text on it uses `accent`.                                                                                                |
-| on-accent      | #FFFFFF | #211718 | Text and icons on `accent` (6.2:1 light, 8.3:1 dark).                                                                                                                      |
-| focus          | #056986 | #86BAD0 | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 6.0:1 on `bg` in light, 8.3:1 in dark. It uses the accent so it never blends into Vino Tinto controls.              |
-| selection      | #F5E0E3 | #541625 | Text selection background. Text keeps `text`.                                                                                                                              |
-| disabled-bg    | #F4F1F1 | #352D2E | Fill of disabled buttons and inputs.                                                                                                                                       |
-| disabled-text  | #878485 | #686565 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here.                                                                       |
-| success        | #13794A | #24AC6A | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.4:1 light, 5.3:1 dark on `surface`). Always paired with a check icon and a word.                    |
-| success-soft   | #E4F3EB | #0F2A1E | Background of success banners and badges. Text on it uses `success`.                                                                                                       |
-| on-success     | #FFFFFF | #211718 | Text on solid `success` fills.                                                                                                                                             |
-| warning        | #915608 | #F4A134 | Warning text, icons and fills (5.9:1 light, 7.3:1 dark on `surface`). Always paired with a triangle icon and a word.                                                       |
-| warning-soft   | #FBEFD9 | #2B1F0A | Background of warning banners and badges. Text on it uses `warning`.                                                                                                       |
-| on-warning     | #FFFFFF | #211718 | Text on solid `warning` fills.                                                                                                                                             |
-| danger         | #B33C00 | #E57855 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.2:1 dark on `surface`). Always paired with an icon and a word.                                          |
-| danger-soft    | #FBE9E3 | #2E170F | Background of error banners and field errors. Text on it uses `danger`.                                                                                                    |
-| on-danger      | #FFFFFF | #211718 | Text on solid `danger` fills.                                                                                                                                              |
-| info           | #541625 | #EBC0C6 | Informational text and icons. Deliberately the brand hue, so there is no separate blue.                                                                                    |
-| info-soft      | #FBF3F3 | #541625 | Background of info banners. Text on it uses `info`.                                                                                                                        |
-| chart-1        | #056986 | #86BAD0 | Chart series 1, the anchor shade of Ansel. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series.     |
-| chart-2        | #103B4A | #DBE9EF | Chart series 2, a darker Ansel in light and a lighter Ansel in dark.                                                                                                       |
-| chart-3        | #105268 | #1F87A9 | Chart series 3, a lighter Ansel in light and a deeper Ansel in dark.                                                                                                       |
-| chart-4        | #1F87A9 | #B5D4E1 | Chart series 4, a mid shade of Ansel.                                                                                                                                      |
-| chart-5        | #0D2731 | #4DA2C2 | Chart series 5, the remaining Ansel shade that still holds 3:1.                                                                                                            |
-| chart-alt      | #541625 | #DF9AA4 | The one contrasting chart series: Vino Tinto, the primary brand colour. Chart colours are only Ansel shades and Vino Tinto, never status or logo colours.                  |
-| chart-grid     | #E5E2E2 | #403838 | Gridlines and axis rules inside charts. Axis labels use `text-muted`.                                                                                                      |
-| ink            | #211718 | #211718 | Raw near-black, Kala Black: the light theme's text and the dark theme's page background. Use the semantic tokens in UI.                                                    |
-| logo-spark     | #D1A577 | #D1A577 | Logo and icon only: Golden Beige, the highlight or signal dot. Never a UI colour.                                                                                          |
-| logo-ink       | #211718 | #211718 | Logo and icon only: wordmark and one-colour versions, Kala Black.                                                                                                          |
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| bg | #FAFAFA | #211718 | Page background: a plain off-white in light, the Kala Black ink in dark. Text on it uses `text` (16.8:1) and `text-muted` (5.5:1 light, 7.3:1 dark). |
+| surface | #FFFFFF | #2A2323 | Cards, panels, table bodies and inputs, placed on `bg`. Text on it uses `text` and `text-muted`. |
+| surface-raised | #FFFFFF | #352D2E | Menus, popovers, dialogs and toasts. Pair with `shadow-pop`; in dark it is one step lighter than `surface`. |
+| surface-sunken | #F4F1F1 | #251D1E | Wells, table headers, code blocks and segmented-control tracks. Text on it uses `text` and `text-muted`. |
+| border | #E5E2E2 | #403838 | Decorative dividers and card outlines. Never the only edge of a control; use `border-strong` for that. |
+| border-strong | #878485 | #7F7677 | Edges of inputs, checkboxes, secondary buttons and chips. At least 3:1 on `bg` and `surface` in both themes (3.5:1 light, 3.5:1 dark on surface). |
+| text | #211718 | #FAFAFA | Primary text and icons on every surface. Kala Black in light; the paper off-white in dark. |
+| text-muted | #686565 | #AAA7A8 | Secondary text, captions, helper text and placeholders on `bg`, `surface` and `surface-sunken`. |
+| primary | #541625 | #DF9AA4 | Fill of primary buttons, selected tabs, toggles, progress bars and active nav marks: Vino Tinto (primary-800 light, primary-300 dark). Label text on it uses `on-primary`. |
+| primary-hover | #35161C | #EBC0C6 | Hover and pressed fill of `primary`. |
+| primary-soft | #FBF3F3 | #541625 | Tinted backgrounds: selected rows, hover on secondary buttons, info banners. Text on it uses `text` or `link`. |
+| on-primary | #FFFFFF | #211718 | Text and icons on `primary` and `primary-hover` (13.8:1 light, 7.7:1 dark). Dark mode uses ink, not white. |
+| link | #541625 | #EBC0C6 | Inline links and text-style buttons on `bg`, `surface` and `primary-soft`. Always underlined in running text. |
+| link-hover | #35161C | #F5E0E3 | Hover state of `link`. |
+| accent | #056986 | #86BAD0 | The single secondary hue, Ansel: highlights, new-feature badges, chart emphasis, one accent button per view. Label text on it uses `on-accent`. |
+| accent-soft | #F0F6F9 | #0D2731 | Tinted background for accent badges and callouts. Text on it uses `accent`. |
+| on-accent | #FFFFFF | #211718 | Text and icons on `accent` (6.2:1 light, 8.3:1 dark). |
+| focus | #056986 | #86BAD0 | Keyboard focus ring: 2px solid with a 2px gap in `bg`. 6.0:1 on `bg` in light, 8.3:1 in dark. It uses the accent so it never blends into Vino Tinto controls. |
+| selection | #F5E0E3 | #541625 | Text selection background. Text keeps `text`. |
+| disabled-bg | #F4F1F1 | #352D2E | Fill of disabled buttons and inputs. |
+| disabled-text | #878485 | #686565 | Text and icons on `disabled-bg`. Exempt from contrast rules, so never put required information here. |
+| success | #13794A | #24AC6A | Success text, icons and fills on `bg`, `surface` and `success-soft` (5.4:1 light, 5.3:1 dark on `surface`). Always paired with a check icon and a word. |
+| success-soft | #E4F3EB | #0F2A1E | Background of success banners and badges. Text on it uses `success`. |
+| on-success | #FFFFFF | #211718 | Text on solid `success` fills. |
+| warning | #915608 | #F4A134 | Warning text, icons and fills (5.9:1 light, 7.3:1 dark on `surface`). Always paired with a triangle icon and a word. |
+| warning-soft | #FBEFD9 | #2B1F0A | Background of warning banners and badges. Text on it uses `warning`. |
+| on-warning | #FFFFFF | #211718 | Text on solid `warning` fills. |
+| danger | #B33C00 | #E57855 | Errors and destructive actions: text, icons, fills (5.9:1 light, 5.2:1 dark on `surface`). Always paired with an icon and a word. |
+| danger-soft | #FBE9E3 | #2E170F | Background of error banners and field errors. Text on it uses `danger`. |
+| on-danger | #FFFFFF | #211718 | Text on solid `danger` fills. |
+| info | #541625 | #EBC0C6 | Informational text and icons. Deliberately the brand hue, so there is no separate blue. |
+| info-soft | #FBF3F3 | #541625 | Background of info banners. Text on it uses `info`. |
+| chart-1 | #056986 | #86BAD0 | Chart series 1, the anchor shade of Ansel. Use alone for single-series charts. At least 3:1 on `surface` in both themes. Add a direct label or marker to every series. |
+| chart-2 | #103B4A | #DBE9EF | Chart series 2, a darker Ansel in light and a lighter Ansel in dark. |
+| chart-3 | #105268 | #1F87A9 | Chart series 3, a lighter Ansel in light and a deeper Ansel in dark. |
+| chart-4 | #1F87A9 | #B5D4E1 | Chart series 4, a mid shade of Ansel. |
+| chart-5 | #0D2731 | #4DA2C2 | Chart series 5, the remaining Ansel shade that still holds 3:1. |
+| chart-alt | #541625 | #DF9AA4 | The one contrasting chart series: Vino Tinto, the primary brand colour. Chart colours are only Ansel shades and Vino Tinto, never status or logo colours. |
+| chart-grid | #E5E2E2 | #403838 | Gridlines and axis rules inside charts. Axis labels use `text-muted`. |
+| ink | #211718 | #211718 | Raw near-black, Kala Black: the light theme's text and the dark theme's page background. Use the semantic tokens in UI. |
+| logo-spark | #D1A577 | #D1A577 | Logo and icon only: Golden Beige, the highlight or signal dot. Never a UI colour. |
+| logo-ink | #211718 | #211718 | Logo and icon only: wordmark and one-colour versions, Kala Black. |
 
 ## Scales
 
 Each brand scale is generated from its library anchor. The anchor keeps its exact value at the step nearest its lightness: Vino Tinto at primary-800, Ansel at accent-600. Identical in both themes.
 
-| Step | Primary (Vino Tinto) | Primary roles                                                     | Accent (Ansel) | Accent roles                         | Neutral |
-| ---- | -------------------- | ----------------------------------------------------------------- | -------------- | ------------------------------------ | ------- |
-| 50   | #FBF3F3              | light: primary-soft                                               | #F0F6F9        | light: accent-soft                   | #FBF8F8 |
-| 100  | #F5E0E3              | light: selection; dark: link-hover                                | #DBE9EF        | dark: chart-2                        | #F4F1F1 |
-| 200  | #EBC0C6              | dark: primary-hover, link                                         | #B5D4E1        | dark: chart-4                        | #E5E2E2 |
-| 300  | #DF9AA4              | dark: primary                                                     | #86BAD0        | dark: accent, chart-1                | #CECBCB |
-| 400  | #D57082              |                                                                   | #4DA2C2        | dark: chart-5                        | #AAA7A8 |
-| 500  | #BA5065              |                                                                   | #1F87A9        | light: chart-4; dark: chart-3        | #878485 |
-| 600  | #93394C              |                                                                   | #056986        | brand anchor; light: accent, chart-1 | #686565 |
-| 700  | #702C3A              |                                                                   | #105268        | light: chart-3                       | #494647 |
-| 800  | #541625              | brand anchor; light: primary, link; dark: primary-soft, selection | #103B4A        | light: chart-2                       | #322F2F |
-| 900  | #35161C              | light: primary-hover, link-hover                                  | #0D2731        | light: chart-5; dark: accent-soft    | #1E1B1B |
-| 950  | #200F11              |                                                                   | #09171C        |                                      | #141112 |
+| Step | Primary (Vino Tinto) | Primary roles | Accent (Ansel) | Accent roles | Neutral |
+|---|---|---|---|---|---|
+| 50 | #FBF3F3 | light: primary-soft | #F0F6F9 | light: accent-soft | #FBF8F8 |
+| 100 | #F5E0E3 | light: selection; dark: link-hover | #DBE9EF | dark: chart-2 | #F4F1F1 |
+| 200 | #EBC0C6 | dark: primary-hover, link | #B5D4E1 | dark: chart-4 | #E5E2E2 |
+| 300 | #DF9AA4 | dark: primary | #86BAD0 | dark: accent, chart-1 | #CECBCB |
+| 400 | #D57082 |  | #4DA2C2 | dark: chart-5 | #AAA7A8 |
+| 500 | #BA5065 |  | #1F87A9 | light: chart-4; dark: chart-3 | #878485 |
+| 600 | #93394C |  | #056986 | brand anchor; light: accent, chart-1 | #686565 |
+| 700 | #702C3A |  | #105268 | light: chart-3 | #494647 |
+| 800 | #541625 | brand anchor; light: primary, link; dark: primary-soft, selection | #103B4A | light: chart-2 | #322F2F |
+| 900 | #35161C | light: primary-hover, link-hover | #0D2731 | light: chart-5; dark: accent-soft | #1E1B1B |
+| 950 | #200F11 |  | #09171C |  | #141112 |
 
 ## Accessible pairings
 
