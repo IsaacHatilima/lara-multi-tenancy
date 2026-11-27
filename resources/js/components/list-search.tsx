@@ -1,4 +1,4 @@
-import { Form } from '@inertiajs/react';
+import { Form, router } from '@inertiajs/react';
 import { SearchIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import type { RouteFormDefinition } from '@/wayfinder';
@@ -10,7 +10,10 @@ type Props = {
     search: string | null;
 };
 
-/** A list's search box; it submits `filter[search]` to the list's own route. */
+/**
+ * A list's search box; it submits `filter[search]` to the list's own route. Emptying it, with the clear button or
+ * by deleting the text, goes back to the unfiltered list.
+ */
 export function ListSearch({ form, label, placeholder, search }: Props) {
     return (
         <Form {...form} className="relative w-full max-w-72" role="search">
@@ -24,6 +27,11 @@ export function ListSearch({ form, label, placeholder, search }: Props) {
                 aria-label={label}
                 placeholder={placeholder}
                 defaultValue={search ?? ''}
+                onChange={(event) => {
+                    if (event.target.value === '' && search !== null) {
+                        router.get(form.action, {}, { preserveScroll: true });
+                    }
+                }}
                 className="pl-8"
             />
         </Form>
