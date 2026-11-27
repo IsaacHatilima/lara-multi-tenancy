@@ -1,5 +1,6 @@
 import { Form, Head, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
+import EmailController from '@/actions/App/Http/Controllers/Settings/EmailController';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/delete-user';
 import { SettingsSection } from '@/components/settings-section';
@@ -29,10 +30,7 @@ export default function Profile({
 
             <h1 className="sr-only">Profile settings</h1>
 
-            <SettingsSection
-                title="Profile"
-                description="Update your name and email address"
-            >
+            <SettingsSection title="Profile" description="Update your name">
                 <Form
                     {...ProfileController.update.form()}
                     options={{
@@ -84,6 +82,33 @@ export default function Profile({
                                 </div>
                             </div>
 
+                            <div className="flex justify-end">
+                                <Button
+                                    type="submit"
+                                    disabled={processing}
+                                    data-test="update-profile-button"
+                                >
+                                    Save
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </Form>
+            </SettingsSection>
+
+            <SettingsSection
+                title="Email address"
+                description="Changing it asks you to verify the new address"
+            >
+                <Form
+                    {...EmailController.update.form()}
+                    options={{
+                        preserveScroll: true,
+                    }}
+                    className="space-y-6"
+                >
+                    {({ processing, errors }) => (
+                        <>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
 
@@ -132,7 +157,7 @@ export default function Profile({
                                 <Button
                                     type="submit"
                                     disabled={processing}
-                                    data-test="update-profile-button"
+                                    data-test="update-email-button"
                                 >
                                     Save
                                 </Button>
