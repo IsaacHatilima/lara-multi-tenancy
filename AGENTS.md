@@ -11,6 +11,10 @@ These override the installed skills where they differ.
 - Return the saved model without `refresh()`. Ids, UUIDs and timestamps are set in PHP. Refresh only when the database fills in a value the caller reads, such as a column default or a trigger, and prefer a model `$attributes` default over that.
 - Use plain Eloquent for simple lookups. Use `spatie/laravel-query-builder` for tables and lists with search, filters or sorts. Pass the validated FormRequest to `QueryBuilder::for($query, $request)` and allowlist every filter. This is the one case where a repository takes a request; never call `request()` in a repository.
 
+**Models**
+
+- Every model uses `LogsActivity` unless told otherwise. Its `getActivitylogOptions()` returns `LogOptions::defaults()->logFillable()->logOnlyDirty()->dontLogEmptyChanges()`, or an explicit `logOnly([...])` when the fillable list would include a secret such as a password or token.
+
 **Keys**
 
 - Users and other entity tables are keyed by UUID (`HasUuids`, `$table->uuid('id')->primary()`), and foreign keys to them use `foreignUuid()`.
