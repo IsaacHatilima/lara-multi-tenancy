@@ -91,8 +91,9 @@ test('the list shows every feature by name', function () {
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('features/index')
-            ->has('features', 2)
-            ->where('features.0', [
+            ->has('features.data', 2)
+            ->where('filters.search', null)
+            ->where('features.data.0', [
                 'id' => $messaging->id,
                 'key' => 'messaging',
                 'name' => 'Messaging',
@@ -100,8 +101,25 @@ test('the list shows every feature by name', function () {
                 'limitUnit' => null,
                 'limitUnitLabel' => null,
             ])
-            ->where('features.1.limitUnit', 'megabytes')
-            ->where('features.1.limitUnitLabel', 'Megabytes'));
+            ->where('features.data.1.limitUnit', 'megabytes')
+            ->where('features.data.1.limitUnitLabel', 'Megabytes'));
+});
+
+test('the list searches feature names and keys', function (string $search) {
+    Feature::factory()->create(['key' => 'file_storage', 'name' => 'Storage']);
+    Feature::factory()->create(['key' => 'crm', 'name' => 'CRM']);
+
+    $this->actingAs(featureManager())->get(route('features.index', ['filter' => ['search' => $search]]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('features.data', 1)
+            ->where('features.data.0.name', 'Storage')
+            ->where('filters.search', $search));
+})->with(['name' => ['stor'], 'key' => ['file_']]);
+
+test('the list rejects filters it does not offer', function () {
+    $this->actingAs(featureManager())
+        ->get(route('features.index', ['filter' => ['limit_unit' => 'count']]))
+        ->assertSessionHasErrors('filter');
 });
 
 test('the create form offers the limit units', function () {

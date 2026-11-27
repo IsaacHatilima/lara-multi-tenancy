@@ -9,6 +9,8 @@ use App\Data\Features\UpdateFeatureData;
 use App\Models\Feature;
 use App\Models\Plan;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Entry file for all Feature persistence. Each operation lives in its own class in this folder; this class composes
@@ -41,11 +43,11 @@ final readonly class FeatureRepository
     }
 
     /**
-     * @return Collection<int, Feature>
+     * @return LengthAwarePaginator<int, Feature>
      */
-    public function list(): Collection
+    public function list(Request $request, int $perPage): LengthAwarePaginator
     {
-        return $this->listFeatures->handle();
+        return $this->listFeatures->handle($request, $perPage);
     }
 
     /**
